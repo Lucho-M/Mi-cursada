@@ -14,4 +14,7 @@ El compilador de React no está habilitado en esta plantilla debido a su impacto
 ## Ampliando la configuración de ESLint
 
 Si estás desarrollando una aplicación de producción, recomendamos usar TypeScript con reglas de lint conscientes de tipos habilitadas. Consulta la [plantilla de TS](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) para obtener información sobre cómo integrar TypeScript y [`typescript-eslint`](https://typescript-eslint.io) en tu proyecto.
+<<<<<<< HEAD
     
+=======
+>>>>>>> 763e395b32e3c0844f1eb9c333e805ac6bc140fb
