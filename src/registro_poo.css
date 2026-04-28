@@ -1,0 +1,305 @@
+/* Variables de color (reutilizadas de login.css) */
+:root {
+  --bg: #F4F1EB;
+  --ink: #125092;
+  --ink-light: #6B6560;
+  --primary: #1aab7a;
+  --primary-dark: #148f65;
+  --primary-light: #e6f7f2;
+  --border: #D8D3CA;
+  --card: #FDFBF7;
+  --shadow: 0 4px 24px rgba(18, 80, 146, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.registro-shell {
+  display: flex;
+  width: 900px;
+  min-height: 600px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background: var(--card);
+}
+
+/* LEFT GREEN PANEL - FORM */
+.green-panel-registro {
+  flex: 1;
+  background: linear-gradient(145deg, #1aab7a 0%, #148f65 100%);
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+}
+
+.green-panel-registro h2 {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.green-panel-registro > p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 32px;
+}
+
+/* FORMULARIO */
+.form-step {
+  margin-bottom: 32px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  opacity: 0.95;
+}
+
+.field input,
+.select-carrera {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.95);
+  outline: none;
+  transition: all 0.15s;
+}
+
+.field input::placeholder,
+.select-carrera::placeholder {
+  color: #b0aaa5;
+}
+
+.field input:focus,
+.select-carrera:focus {
+  border-color: #fff;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.select-carrera {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23125092' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* BOTONES */
+.button-group {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn-continuar {
+  flex: 1;
+  padding: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.btn-continuar:hover:not(.disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+}
+
+.btn-continuar.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-siguiente {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-registrarse {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+  font-weight: 700;
+}
+
+.btn-registrarse:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* INDICADOR DE PROGRESO */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.15s;
+}
+
+.dot.active {
+  background: #fff;
+  width: 24px;
+  border-radius: 5px;
+}
+
+/* RIGHT PANEL - BIENVENIDA */
+.welcome-panel {
+  width: 320px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.brand-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.brand-name-welcome {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.3rem;
+  color: var(--primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.brand-logo-welcome {
+  background: var(--ink);
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.brand-logo-welcome span {
+  display: block;
+  font-size: 0.45rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.welcome-panel h3 {
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.welcome-panel p {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.btn-login-desde-registro {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  letter-spacing: 0.01em;
+  margin-bottom: 16px;
+}
+
+.btn-login-desde-registro:hover {
+  background: var(--primary-dark);
+}
+
+.message-registro {
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  font-style: italic;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .registro-shell {
+    width: 95%;
+    flex-direction: column;
+  }
+
+  .welcome-panel {
+    width: 100%;
+    min-height: auto;
+    padding: 32px 24px;
+  }
+
+  .green-panel-registro {
+    width: 100%;
+  }
+}

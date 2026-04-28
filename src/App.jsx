@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-import Login from "./Login";
+import Login from "./Login_POO_front";
+import Registro from "./Registro_POO_front";
 import FormularioComision from "./componentes/FormularioComision";
 import ListaMaterias from "./Materias";
 import Navegacion from "./Navegacion";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [pantalla, setPantalla] = useState("login"); // "login" o "registro"
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (usuario) => {
@@ -18,8 +20,18 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const irARegistro = () => {
+    setPantalla("registro");
+  };
+
+  const irALogin = () => {
+    setPantalla("login");
+  };
+
   if (!user) {
-    return <Login />;
+    return pantalla === "login" ? 
+      <Login onRegistro={irARegistro} /> : 
+      <Registro onLogin={irALogin} />;
   }
 
  return (
