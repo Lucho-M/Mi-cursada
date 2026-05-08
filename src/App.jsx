@@ -4,47 +4,26 @@ import { onAuthStateChanged } from "firebase/auth";
 
 import Login from "./Login_POO_front";
 import Registro from "./Registro_POO_front";
-import FormularioComision from "./componentes/FormularioComision";
-import ListaMaterias from "./Materias";
-import Navegacion from "./Navegacion";
+import Panel from "./Panel";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [pantalla, setPantalla] = useState("login"); // "login" o "registro"
+  const [pantalla, setPantalla] = useState("login");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (usuario) => {
       setUser(usuario);
     });
-
     return () => unsubscribe();
   }, []);
 
-  const irARegistro = () => {
-    setPantalla("registro");
-  };
-
-  const irALogin = () => {
-    setPantalla("login");
-  };
-
   if (!user) {
-    return pantalla === "login" ? 
-      <Login onRegistro={irARegistro} /> : 
-      <Registro onLogin={irALogin} />;
+    return pantalla === "login"
+      ? <Login onRegistro={() => setPantalla("registro")} />
+      : <Registro onLogin={() => setPantalla("login")} />;
   }
 
- return (
-  <>
-    <h1>Mi Cursada</h1>
-    <Navegacion />
-
-    {/* 👇 FIRMA */}
-    <p className="firma">
-      Proyecto de login CRUD - Desarrollo de Software - Lucho Mendieta
-    </p>
-  </>
-);
+  return <Panel firebaseUser={user} />;
 }
 
 export default App;
