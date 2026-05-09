@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Usuario from "./Usuario_POO_modelo";
 import AuthService from "./AuthService_POO_logica_firebase";
+import { auth } from "./firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 import "./login.css";
 
 function traducirError(codigo) {
@@ -26,12 +28,14 @@ function LoginPOO({ onRegistro }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [recuperando, setRecuperando] = useState(false);
+  const [emailRecupero, setEmailRecupero] = useState("");
+  const [mensajeRecupero, setMensajeRecupero] = useState("");
 
   const authService = new AuthService();
 
   const login = async () => {
     setError("");
-
     const usuario = new Usuario(null, null, email, password);
 
     if (!usuario.esValidoLogin()) {
@@ -48,9 +52,29 @@ function LoginPOO({ onRegistro }) {
     }
   };
 
+  const enviarRecupero = async () => {
+    setMensajeRecupero("");
+
+    if (!emailRecupero.trim()) {
+      setMensajeRecupero("error:Ingresá tu email para recuperar la contraseña.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, emailRecupero);
+      setMensajeRecupero("ok:Te enviamos un email con instrucciones para recuperar tu contraseña. Revisá tu bandeja de entrada.");
+    } catch (err) {
+      if (err.code === "auth/user-not-found" || err.code === "auth/invalid-email") {
+        setMensajeRecupero("error:No encontramos una cuenta con ese email.");
+      } else {
+        setMensajeRecupero("error:Ocurrió un error. Intentá de nuevo.");
+      }
+      console.log(err);
+    }
+  };
+
   return (
     <div className="auth-shell">
-      {/* FORM */}
       <div className="form-panel">
         <div className="brand">
           <div className="brand-name">Mi Cursada</div>
@@ -60,51 +84,110 @@ function LoginPOO({ onRegistro }) {
           </div>
         </div>
 
-        <h2>Iniciar Sesión</h2>
-        <p className="subtitle">Ingresá tus datos para continuar</p>
+        {!recuperando && (
+          <>
+            <h2>Iniciar Sesión</h2>
+            <p className="subtitle">Ingresá tus datos para continuar</p>
 
-        {/* MENSAJE DE ERROR */}
-        {error && (
-          <div style={{
-            background: "#ffe0e0",
-            color: "#c0392b",
-            border: "1px solid #e74c3c",
-            borderRadius: "8px",
-            padding: "10px 14px",
-            marginBottom: "12px",
-            fontSize: "0.88rem",
-            fontWeight: 500,
-          }}>
-            ⚠️ {error}
-          </div>
+            {error && (
+              <div style={{
+                background: "#ffe0e0",
+                color: "#c0392b",
+                border: "1px solid #e74c3c",
+                borderRadius: "8px",
+                padding: "10px 14px",
+                marginBottom: "12px",
+                fontSize: "0.88rem",
+                fontWeight: 500,
+              }}>
+                ⚠️ {error}
+              </div>
+            )}
+
+            <div className="field">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="Ingresá tu email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label>Contraseña</label>
+              <input
+                type="password"
+                placeholder="Ingresá tu contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <a
+              className="forgot"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setRecuperando(true);
+                setError("");
+                setEmailRecupero(email);
+              }}
+            >
+              ¿Olvidaste tu contraseña?
+            </a>
+
+            <button className="btn-login" onClick={login}>Ingresar</button>
+          </>
         )}
 
-        <div className="field">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Ingresá tu email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        {recuperando && (
+          <>
+            <h2>Recuperar contraseña</h2>
+            <p className="subtitle">Te enviamos un link a tu email para que puedas crear una nueva contraseña.</p>
 
-        <div className="field">
-          <label>Contraseña</label>
-          <input
-            type="password"
-            placeholder="Ingresá tu contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+            {mensajeRecupero && (
+              <div style={{
+                background: mensajeRecupero.startsWith("ok:") ? "#e0ffe0" : "#ffe0e0",
+                color: mensajeRecupero.startsWith("ok:") ? "#1a7a1a" : "#c0392b",
+                border: `1px solid ${mensajeRecupero.startsWith("ok:") ? "#2ecc71" : "#e74c3c"}`,
+                borderRadius: "8px",
+                padding: "10px 14px",
+                marginBottom: "12px",
+                fontSize: "0.88rem",
+                fontWeight: 500,
+              }}>
+                {mensajeRecupero.startsWith("ok:") ? "✅" : "⚠️"} {mensajeRecupero.split(":")[1]}
+              </div>
+            )}
 
-        <a className="forgot">¿Olvidaste tu contraseña?</a>
+            <div className="field">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="Ingresá tu email"
+                value={emailRecupero}
+                onChange={(e) => setEmailRecupero(e.target.value)}
+              />
+            </div>
 
-        <button className="btn-login" onClick={login}>Ingresar</button>
+            <button className="btn-login" onClick={enviarRecupero}>
+              Enviar email de recuperación
+            </button>
+
+            <a
+              className="forgot"
+              style={{ cursor: "pointer", marginTop: "12px", display: "block" }}
+              onClick={() => {
+                setRecuperando(false);
+                setMensajeRecupero("");
+              }}
+            >
+              ← Volver al login
+            </a>
+          </>
+        )}
       </div>
 
-      {/* GREEN PANEL */}
       <div className="green-panel">
         <h3>¡Hola!</h3>
         <p>¿No tenés cuenta? Registrate para acceder a todos los servicios</p>
