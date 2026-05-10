@@ -2,10 +2,7 @@ import CARRERAS_DISPONIBLES from "./carrerasData";
 
 class Carreras {
   constructor() {
-    this.carreras = CARRERAS_DISPONIBLES.map((nombre, index) => ({
-      id: index + 1,
-      nombre: nombre
-    }));
+    this.carreras = CARRERAS_DISPONIBLES;
   }
 
   obtenerTodas() {
@@ -13,25 +10,23 @@ class Carreras {
   }
 
   obtenerPorId(id) {
-    return this.carreras.find(carrera => carrera.id === id);
+    return this.carreras.find((c) => c.id === id) || null;
   }
 
   obtenerPorNombre(nombre) {
-    return this.carreras.find(carrera => carrera.nombre === nombre);
+    return this.carreras.find((c) => c.nombre === nombre) || null;
   }
 
-  agregarCarrera(nombre) {
-    if (this.obtenerPorNombre(nombre)) {
-      throw new Error("La carrera ya existe");
-    }
-    const nuevoId = Math.max(...this.carreras.map(c => c.id)) + 1;
-    const nuevaCarrera = { id: nuevoId, nombre };
-    this.carreras.push(nuevaCarrera);
-    return nuevaCarrera;
+  obtenerLicenciaturas() {
+    return this.carreras.filter((c) => c.tipo === "Licenciatura");
   }
 
-  listarCarreras() {
-    return this.carreras.map(carrera => carrera.nombre);
+  obtenerTecnicaturas() {
+    return this.carreras.filter((c) => c.tipo === "Tecnicatura");
+  }
+
+  listarNombres() {
+    return this.carreras.map((c) => c.nombre);
   }
 
   obtenerTotal() {
