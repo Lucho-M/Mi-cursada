@@ -18,7 +18,7 @@ class AuthService {
       nombre: usuario.nombre,
       dni: usuario.dni,
       email: usuario.email,
-      carrera: usuario.carrera,
+      carreras: usuario.carreras,
       rol: usuario.rol
     });
 
