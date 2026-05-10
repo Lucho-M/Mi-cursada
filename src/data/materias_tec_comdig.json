@@ -1,0 +1,171 @@
+[
+  {
+    "codigo": "00001", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00096", "nombre": "Problemáticas de la Comunicación Social I",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00097", "nombre": "Tecnologías Digitales I",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005", "nombre": "Inglés",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00098", "nombre": "Culturas Digitales I",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00097"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00099", "nombre": "Psicología y Comunicación Social",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00100", "nombre": "Prácticas y Análisis del Discurso",
+    "carrera_id": "TEC_COMDIG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00096", "00097"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00101", "nombre": "Tecnologías Digitales II",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00096"],
+      "para_aprobar": ["00097"]
+    }
+  },
+  {
+    "codigo": "00102", "nombre": "Problemáticas de la Comunicación Social II",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00096", "00099"],
+      "para_aprobar": ["00097"]
+    }
+  },
+  {
+    "codigo": "00103", "nombre": "Fundamentos del Big Data",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00097"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00104", "nombre": "Narrativas Digitales",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00099", "00098"],
+      "para_aprobar": ["00096", "00097"]
+    }
+  },
+  {
+    "codigo": "00105", "nombre": "Culturas Digitales II",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00097"],
+      "para_aprobar": ["00098"]
+    }
+  },
+  {
+    "codigo": "00106", "nombre": "Periodismo Digital y Nuevos Medios I",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00098"],
+      "para_aprobar": ["00096", "00097"]
+    }
+  },
+  {
+    "codigo": "00107", "nombre": "Pensamiento de Diseño I",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00101"],
+      "para_aprobar": ["00096", "00097"]
+    }
+  },
+  {
+    "codigo": "00108", "nombre": "Comunicación Digital en Organizaciones",
+    "carrera_id": "TEC_COMDIG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00102"],
+      "para_aprobar": ["96", "98", "104"]
+    }
+  },
+  {
+    "codigo": "00109", "nombre": "Planificación y Marketing Digital",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00101", "00102", "00108"],
+      "para_aprobar": ["00098", "00099", "00104"]
+    }
+  },
+  {
+    "codigo": "00110", "nombre": "Gestión de la Comunicación Digital",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00101", "00105", "00107"],
+      "para_aprobar": ["00098", "00102", "00104"]
+    }
+  },
+  {
+    "codigo": "00111", "nombre": "Lenguajes de Programación",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00105", "00107"],
+      "para_aprobar": ["00097", "00098", "00103"]
+    }
+  },
+  {
+    "codigo": "00112", "nombre": "Producción de Materiales Educativos Digitales",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00100", "00105", "00107"],
+      "para_aprobar": ["00099", "00104"]
+    }
+  },
+  {
+    "codigo": "00113", "nombre": "Periodismo Digital y Nuevos Medios II",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00100", "00107", "00109", "00110"],
+      "para_aprobar": ["00102", "00104", "00106"]
+    }
+  },
+  {
+    "codigo": "00114", "nombre": "Pensamiento de Diseño II",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00105"],
+      "para_aprobar": ["00101", "00103", "00104", "00107"]
+    }
+  },
+  {
+    "codigo": "00115", "nombre": "Taller de Producción y Edición Multimedia",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00109", "00110"],
+      "para_aprobar": ["00104", "00106"]
+    }
+  },
+  {
+    "codigo": "00116", "nombre": "Comunicación Digital de Gobierno y Ciudades Inteligentes",
+    "carrera_id": "TEC_COMDIG", "anio": 3, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00105", "00110"],
+      "para_aprobar": ["00101", "00103", "00108"]
+    }
+  }
+]

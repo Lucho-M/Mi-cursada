@@ -1,0 +1,194 @@
+[
+  {
+    "codigo": "269",
+    "nombre": "Ciencia, Tecnología e Innovación",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "2",
+    "nombre": "Matemática General",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "184",
+    "nombre": "Algoritmos y Estructuras de Datos",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "270",
+    "nombre": "Organización de Computadoras",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "177",
+    "nombre": "Álgebra",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["2"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "271",
+    "nombre": "Estructuras de Datos",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["184"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "5",
+    "nombre": "Inglés",
+    "carrera_id": "TEC_PROG",
+    "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "189",
+    "nombre": "Programación Avanzada",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["184"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "180",
+    "nombre": "Probabilidad y Estadística",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["177"],
+      "para_aprobar": ["2"]
+    }
+  },
+  {
+    "codigo": "273",
+    "nombre": "Desarrollo de Software",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["184"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "274",
+    "nombre": "Inglés Comunicacional",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["5"]
+    }
+  },
+  {
+    "codigo": "186",
+    "nombre": "Gestión de Datos",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["271"],
+      "para_aprobar": ["184"]
+    }
+  },
+  {
+    "codigo": "183",
+    "nombre": "Inferencia Estadística y Reconocimiento de Patrones",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["271", "180"],
+      "para_aprobar": ["184"]
+    }
+  },
+  {
+    "codigo": "188",
+    "nombre": "Visualización de la Información",
+    "carrera_id": "TEC_PROG",
+    "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["271", "189"],
+      "para_aprobar": ["184"]
+    }
+  },
+  {
+    "codigo": "275",
+    "nombre": "Sistemas Operativos",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["186"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "276",
+    "nombre": "Redes de Computadoras",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "277",
+    "nombre": "Conceptos y Paradigmas de Lenguajes de Programación",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["271", "189"]
+    }
+  },
+  {
+    "codigo": "278",
+    "nombre": "Programación Concurrente",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["275", "276"],
+      "para_aprobar": ["189"]
+    }
+  },
+  {
+    "codigo": "191",
+    "nombre": "Inteligencia Artificial",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["183"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "279",
+    "nombre": "Metodologías Ágiles para el Desarrollo de Software",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["189", "186"],
+      "para_aprobar": ["273"]
+    }
+  },
+  {
+    "codigo": "280",
+    "nombre": "Práctica Profesional Supervisada (PPS)",
+    "carrera_id": "TEC_PROG",
+    "anio": 3, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["Tener cursado 2do año de la carrera"],
+      "para_aprobar": ["Tener aprobado 1er año de la carrera"]
+    }
+  }
+]

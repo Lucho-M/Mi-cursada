@@ -1,0 +1,101 @@
+[
+  {
+    "codigo": "00201", "nombre": "Didáctica de la Matemática",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00202", "nombre": "Epistemología e Historia de la Matemática",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00203", "nombre": "Álgebra Lineal y Fundamentos de la Geometría y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005", "nombre": "Inglés",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00204", "nombre": "Taller de Intervención y Reflexión Pedagógica (anual)",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00205", "nombre": "Diseño y Desarrollo Curricular",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00206", "nombre": "Sujetos de la Educación",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00207", "nombre": "Análisis Numérico y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00208", "nombre": "Análisis Vectorial I y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00209", "nombre": "Inclusión Educativa y Discapacidad",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00210", "nombre": "Probabilidad y Estadística y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00211", "nombre": "Ecuaciones Diferenciales I y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00212", "nombre": "Análisis Complejo y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00213", "nombre": "Trayecto de Integración Formativa (anual)",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00204"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00214", "nombre": "Evaluación",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00215", "nombre": "Ecuaciones Diferenciales II y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00211"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00216", "nombre": "Análisis Vectorial II y su Enseñanza",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00208"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00217", "nombre": "Tecnologías Aplicadas a la Enseñanza de la Matemática",
+    "carrera_id": "LIC_MAT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  }
+]

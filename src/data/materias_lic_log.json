@@ -1,0 +1,273 @@
+[
+  {
+    "codigo": "00001", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00051", "nombre": "Logística I",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00052", "nombre": "Matemática",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00053", "nombre": "Sociología de las Organizaciones",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005", "nombre": "Inglés",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00054", "nombre": "Geografía e Integración Territorial",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00055", "nombre": "Distribución I",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00051"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00056", "nombre": "Economía",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00053"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00057", "nombre": "Principios de Administración",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00117", "nombre": "Transporte Terrestre",
+    "carrera_id": "LIC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00058", "nombre": "Estadística Aplicada a la Logística",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00051"],
+      "para_aprobar": ["00052"]
+    }
+  },
+  {
+    "codigo": "00059", "nombre": "Logística II",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00055"],
+      "para_aprobar": ["00051"]
+    }
+  },
+  {
+    "codigo": "00060", "nombre": "Informática",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00061", "nombre": "Gestión Organizacional",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00057"],
+      "para_aprobar": ["00053"]
+    }
+  },
+  {
+    "codigo": "00118", "nombre": "Matemática Aplicada a la Logística",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00052"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00062", "nombre": "Distribución II",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00059"],
+      "para_aprobar": ["00055"]
+    }
+  },
+  {
+    "codigo": "00063", "nombre": "Gestión de Calidad de Producción y Servicio",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00055", "00057"]
+    }
+  },
+  {
+    "codigo": "00064", "nombre": "Administración de Inventario y Compras",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00059"],
+      "para_aprobar": ["00057"]
+    }
+  },
+  {
+    "codigo": "00065", "nombre": "Legislación Nacional e Internacional",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00053"]
+    }
+  },
+  {
+    "codigo": "00119", "nombre": "Transporte Aéreo",
+    "carrera_id": "LIC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00117"],
+      "para_aprobar": ["00055"]
+    }
+  },
+  {
+    "codigo": "00066", "nombre": "Portugués I",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00067", "nombre": "Logística III",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00059"]
+    }
+  },
+  {
+    "codigo": "00068", "nombre": "Higiene, Seguridad y Gestión Ambiental",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00063"],
+      "para_aprobar": ["00061"]
+    }
+  },
+  {
+    "codigo": "00120", "nombre": "Metodología de las Ciencias",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00121", "nombre": "Práctica Supervisada (1° cuatr. materia anual)",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00062", "00064"],
+      "para_aprobar": ["00054", "00059"]
+    }
+  },
+  {
+    "codigo": "00070", "nombre": "Sistemas de Información Aplicados",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00058", "00064"],
+      "para_aprobar": ["00060"]
+    }
+  },
+  {
+    "codigo": "00071", "nombre": "Marketing y Comercialización",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00061", "00062"]
+    }
+  },
+  {
+    "codigo": "00072", "nombre": "Diseño de Proyectos",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00067"],
+      "para_aprobar": ["00057", "00061"]
+    }
+  },
+  {
+    "codigo": "00122", "nombre": "Comercio Internacional",
+    "carrera_id": "LIC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00059", "00062", "00119"]
+    }
+  },
+  {
+    "codigo": "00123", "nombre": "Transporte Marítimo y Fluvial",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00119"],
+      "para_aprobar": ["00062", "00067"]
+    }
+  },
+  {
+    "codigo": "00124", "nombre": "Gestión con Materiales Peligrosos",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00067"],
+      "para_aprobar": ["00063", "00068"]
+    }
+  },
+  {
+    "codigo": "00125", "nombre": "Administración de Personal",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00061", "00065"]
+    }
+  },
+  {
+    "codigo": "00126", "nombre": "Portugués II",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00066"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00127", "nombre": "Taller de Problemáticas Contemporáneas de Logística y Transporte",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00122"],
+      "para_aprobar": ["00067", "00119"]
+    }
+  },
+  {
+    "codigo": "00128", "nombre": "Planeamiento Estratégico",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00071", "00072"]
+    }
+  },
+  {
+    "codigo": "00129", "nombre": "Seguridad Operativa",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00124"],
+      "para_aprobar": ["00068"]
+    }
+  },
+  {
+    "codigo": "00130", "nombre": "Logística Sustentable",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00063", "00067"]
+    }
+  },
+  {
+    "codigo": "00131", "nombre": "Taller Trabajo de Integración Final",
+    "carrera_id": "LIC_LOG", "anio": 4, "cuatrimestre": 2, "horas": 128,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["Todas las materias de 1°, 2° y 3° año"]
+    }
+  }
+]

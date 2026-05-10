@@ -1,0 +1,458 @@
+[
+  {
+    "codigo": "00001",
+    "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00032",
+    "nombre": "Problemáticas Socio Contemporáneas",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00029",
+    "nombre": "Matemática",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00221",
+    "nombre": "Introducción a la Ciencia Política",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00027",
+    "nombre": "Comunicación Institucional",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00222",
+    "nombre": "Teoría Política",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00221"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00154",
+    "nombre": "Historia Económica y Social",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00032"]
+    }
+  },
+  {
+    "codigo": "00030",
+    "nombre": "Economía",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00029"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00223",
+    "nombre": "Derecho",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005",
+    "nombre": "Inglés",
+    "carrera_id": "LIC_CPOL",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00224",
+    "nombre": "Sociología",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00222"],
+      "para_aprobar": ["00032", "00221"]
+    }
+  },
+  {
+    "codigo": "00225",
+    "nombre": "Epistemología",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00001", "00032"]
+    }
+  },
+  {
+    "codigo": "00157",
+    "nombre": "Administración Pública",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00222"],
+      "para_aprobar": ["00221"]
+    }
+  },
+  {
+    "codigo": "00226",
+    "nombre": "Historia Argentina y Latinoamericana",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00154"]
+    }
+  },
+  {
+    "codigo": "00037",
+    "nombre": "Estadística",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00030"],
+      "para_aprobar": ["00001", "00029"]
+    }
+  },
+  {
+    "codigo": "00227",
+    "nombre": "Teoría Política Contemporánea",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00224"],
+      "para_aprobar": ["00222"]
+    }
+  },
+  {
+    "codigo": "00159",
+    "nombre": "Métodos de Investigación en Ciencias Sociales",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00225"],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00034",
+    "nombre": "Sociología de las Organizaciones",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00032"]
+    }
+  },
+  {
+    "codigo": "00228",
+    "nombre": "Derecho Administrativo",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00157"],
+      "para_aprobar": ["00223"]
+    }
+  },
+  {
+    "codigo": "00229",
+    "nombre": "Instituciones Políticas y de Gobierno",
+    "carrera_id": "LIC_CPOL",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00224"],
+      "para_aprobar": ["00222"]
+    }
+  },
+  {
+    "codigo": "00163",
+    "nombre": "Finanzas Públicas",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00030", "00037", "00157"]
+    }
+  },
+  {
+    "codigo": "00230",
+    "nombre": "Actores Sociales",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00227", "00229"],
+      "para_aprobar": ["00224"]
+    }
+  },
+  {
+    "codigo": "00231",
+    "nombre": "Relaciones Internacionales I",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00227"],
+      "para_aprobar": ["00224"]
+    }
+  },
+  {
+    "codigo": "00232",
+    "nombre": "Análisis de las Políticas Públicas",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00159", "00227"],
+      "para_aprobar": ["00157", "00224"]
+    }
+  },
+  {
+    "codigo": "00038",
+    "nombre": "Informática",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00233",
+    "nombre": "Gobierno Local",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00230"],
+      "para_aprobar": ["00229"]
+    }
+  },
+  {
+    "codigo": "00234",
+    "nombre": "Opinión Pública",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00027", "00159", "00227"]
+    }
+  },
+  {
+    "codigo": "00103",
+    "nombre": "Fundamentos del Big Data",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00038"],
+      "para_aprobar": ["00037", "00159", "00227"]
+    }
+  },
+  {
+    "codigo": "00235",
+    "nombre": "Seminario I",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["20 materias + CPU"]
+    }
+  },
+  {
+    "codigo": "00156",
+    "nombre": "Macroeconomía",
+    "carrera_id": "LIC_CPOL",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00030", "00037"]
+    }
+  },
+  {
+    "codigo": "00236",
+    "nombre": "Teoría de los Partidos Políticos",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00224", "00229", "00230"]
+    }
+  },
+  {
+    "codigo": "00237",
+    "nombre": "Teoría Política Analítica",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00224", "00229", "00230"]
+    }
+  },
+  {
+    "codigo": "00238",
+    "nombre": "Relaciones Internacionales II",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00231"]
+    }
+  },
+  {
+    "codigo": "00239",
+    "nombre": "Política Argentina",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00233"],
+      "para_aprobar": ["00226", "00229", "00230"]
+    }
+  },
+  {
+    "codigo": "00240",
+    "nombre": "Seminario II",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["20 materias + CPU"]
+    }
+  },
+  {
+    "codigo": "00241",
+    "nombre": "Institución Presidencial y Poder Ejecutivo",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00236"],
+      "para_aprobar": ["00229", "00230"]
+    }
+  },
+  {
+    "codigo": "00242",
+    "nombre": "Análisis Político",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00236"],
+      "para_aprobar": ["00229", "00230"]
+    }
+  },
+  {
+    "codigo": "00243",
+    "nombre": "Historia Argentina y Latinoamericana del Siglo XX",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00237"],
+      "para_aprobar": ["00226", "00230"]
+    }
+  },
+  {
+    "codigo": "00244",
+    "nombre": "Comunicación Política",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00237"],
+      "para_aprobar": ["00233", "00234"]
+    }
+  },
+  {
+    "codigo": "00245",
+    "nombre": "Seminario III",
+    "carrera_id": "LIC_CPOL",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["20 materias + CPU"]
+    }
+  }
+]

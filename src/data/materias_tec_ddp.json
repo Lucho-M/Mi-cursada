@@ -1,0 +1,200 @@
+[
+  {
+    "codigo": "00132", "nombre": "Fundamentos del Diseño",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00003", "nombre": "Medios de Representación y Dibujo Mecánico",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00029", "nombre": "Matemática",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005", "nombre": "Inglés",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00001", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00133", "nombre": "Materiales",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00029"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00139", "nombre": "Morfología I",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00132", "00003"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00135", "nombre": "Historia del Arte y el Diseño",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00004", "nombre": "Herramientas Computacionales y Programación para la Ingeniería y la Ciencia",
+    "carrera_id": "TEC_DDP", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00140", "nombre": "Taller de Diseño I – Desarrollo de Producto",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00133", "00003", "00132"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00262", "nombre": "Representación y Modelado Digital",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00003", "00132"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00264", "nombre": "Métodos del Diseño",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00132"],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00263", "nombre": "Diseño Industrial",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00135"],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00147", "nombre": "Tecnología y Producción I",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00133"],
+      "para_aprobar": ["00029"]
+    }
+  },
+  {
+    "codigo": "00144", "nombre": "Taller de Diseño II – Forma y Función",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00140", "00262"],
+      "para_aprobar": ["00132", "00003"]
+    }
+  },
+  {
+    "codigo": "00265", "nombre": "Ciencia Aplicada al Diseño y Desarrollo de Productos",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00029", "00133"]
+    }
+  },
+  {
+    "codigo": "00143", "nombre": "Morfología II",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00139"],
+      "para_aprobar": ["00132"]
+    }
+  },
+  {
+    "codigo": "00151", "nombre": "Tecnología y Producción II",
+    "carrera_id": "TEC_DDP", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00133", "00147"],
+      "para_aprobar": ["00029"]
+    }
+  },
+  {
+    "codigo": "00148", "nombre": "Taller de Diseño III – Concepto y Tecnología",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00144", "00143", "00147"],
+      "para_aprobar": ["00140"]
+    }
+  },
+  {
+    "codigo": "00138", "nombre": "Semiótica",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00135"],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00150", "nombre": "Ergonomía",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 1, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["00144"],
+      "para_aprobar": ["00140"]
+    }
+  },
+  {
+    "codigo": "00266", "nombre": "Gestión de Empresas de Diseño",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00147"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00268", "nombre": "Tecnología y Producción III",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00151", "00265"],
+      "para_aprobar": ["00151"]
+    }
+  },
+  {
+    "codigo": "00136", "nombre": "Higiene y Seguridad Industrial",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00147"]
+    }
+  },
+  {
+    "codigo": "00267", "nombre": "Gestión de la Calidad",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["00151", "00144"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00152", "nombre": "Práctica Profesional Supervisada",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 2, "horas": 80,
+    "correlativas": {
+      "para_cursar": ["00148"],
+      "para_aprobar": ["00151"]
+    }
+  },
+  {
+    "codigo": "00153", "nombre": "Trabajo Final Integrador",
+    "carrera_id": "TEC_DDP", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00268", "00148"],
+      "para_aprobar": ["00262"]
+    }
+  }
+]

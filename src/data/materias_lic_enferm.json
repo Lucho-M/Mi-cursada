@@ -1,0 +1,316 @@
+[
+  {
+    "codigo": "282", "nombre": "Enfermería Básica I",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "283", "nombre": "Ciencias Biológicas I",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "284", "nombre": "Enfermería Comunitaria I",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 1, "horas": 112,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "269", "nombre": "Ciencia, Tecnología e Innovación",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "285", "nombre": "Psicología",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 1, "horas": 80,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "286", "nombre": "Enfermería Básica II",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 2, "horas": 144,
+    "correlativas": {
+      "para_cursar": ["282"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "287", "nombre": "Ciencias Biológicas II",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["283"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "288", "nombre": "Epidemiología",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 2, "horas": 80,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "289", "nombre": "Microbiología y Parasitología",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["283"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "290", "nombre": "Antropología",
+    "carrera_id": "LIC_ENFERM", "anio": 1, "cuatrimestre": 2, "horas": 80,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "291", "nombre": "Cuidados de Enfermería en el Adulto y el Anciano I",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 1, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["286", "287"],
+      "para_aprobar": ["282", "283"]
+    }
+  },
+  {
+    "codigo": "292", "nombre": "Enfermería Materno Infantil I",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 1, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["286", "287"],
+      "para_aprobar": ["282", "283"]
+    }
+  },
+  {
+    "codigo": "293", "nombre": "Nutrición y Dietoterapia",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["287"],
+      "para_aprobar": ["283"]
+    }
+  },
+  {
+    "codigo": "294", "nombre": "Introducción a la Sociología",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["290"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "295", "nombre": "Introducción a la Filosofía",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["290"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "296", "nombre": "Cuidados de Enfermería en el Adulto y el Anciano II",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 2, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["291"],
+      "para_aprobar": ["286", "287"]
+    }
+  },
+  {
+    "codigo": "297", "nombre": "Enfermería Materno Infantil II",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 2, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["292"],
+      "para_aprobar": ["286", "287"]
+    }
+  },
+  {
+    "codigo": "298", "nombre": "Farmacología",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["293"],
+      "para_aprobar": ["289"]
+    }
+  },
+  {
+    "codigo": "299", "nombre": "Ética y Deontología Profesional",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 2, "horas": 80,
+    "correlativas": {
+      "para_cursar": ["294", "295"],
+      "para_aprobar": ["290"]
+    }
+  },
+  {
+    "codigo": "38", "nombre": "Informática",
+    "carrera_id": "LIC_ENFERM", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "300", "nombre": "Cuidados de Enfermería en el Niño y el Adolescente",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 1, "horas": 144,
+    "correlativas": {
+      "para_cursar": ["297"],
+      "para_aprobar": ["292"]
+    }
+  },
+  {
+    "codigo": "301", "nombre": "Gestión de los Servicios de Enfermería Hospitalarios y Comunitarios I",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["299"],
+      "para_aprobar": ["284", "288", "290", "294", "295"]
+    }
+  },
+  {
+    "codigo": "302", "nombre": "Introducción a la Investigación en Enfermería",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["299"],
+      "para_aprobar": ["291"]
+    }
+  },
+  {
+    "codigo": "303", "nombre": "UNaB I (Seminario Optativo I)",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "304", "nombre": "Enfermería en Salud Mental",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 2, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["300", "301", "302"],
+      "para_aprobar": ["269", "38", "293", "296", "297", "298", "299"]
+    }
+  },
+  {
+    "codigo": "305", "nombre": "UNaB II (Seminario Optativo II)",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["303"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "5", "nombre": "Inglés",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "306", "nombre": "Práctica Integrada I",
+    "carrera_id": "LIC_ENFERM", "anio": 3, "cuatrimestre": 2, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["300", "301", "302"],
+      "para_aprobar": ["269", "38", "293", "296", "297", "298", "299"]
+    }
+  },
+  {
+    "codigo": "307", "nombre": "Enfermería en Cuidados Críticos I",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 1, "horas": 128,
+    "correlativas": {
+      "para_cursar": ["304", "305", "5", "306"],
+      "para_aprobar": ["300", "301", "302", "303"]
+    }
+  },
+  {
+    "codigo": "308", "nombre": "Investigación I",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 1, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["304", "305", "5", "306"],
+      "para_aprobar": ["300", "301", "302", "303"]
+    }
+  },
+  {
+    "codigo": "309", "nombre": "Taller de Investigación I",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["304", "305", "5", "306"],
+      "para_aprobar": ["300", "301", "302", "303"]
+    }
+  },
+  {
+    "codigo": "310", "nombre": "Enfermería en Cuidados Críticos II",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 2, "horas": 128,
+    "correlativas": {
+      "para_cursar": ["307"],
+      "para_aprobar": ["304", "305", "5", "306"]
+    }
+  },
+  {
+    "codigo": "311", "nombre": "Educación en Enfermería",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["304", "305", "5", "306"]
+    }
+  },
+  {
+    "codigo": "312", "nombre": "Filosofía del Cuidado",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 2, "horas": 80,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["304", "305", "5", "306"]
+    }
+  },
+  {
+    "codigo": "274", "nombre": "Inglés Comunicacional",
+    "carrera_id": "LIC_ENFERM", "anio": 4, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["5"]
+    }
+  },
+  {
+    "codigo": "313", "nombre": "Gestión de los Servicios de Enfermería Hospitalarios y Comunitarios II",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 1, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["308"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "314", "nombre": "Taller de Investigación II",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["309"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "315", "nombre": "Enfermería Comunitaria II",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 1, "horas": 80,
+    "correlativas": {
+      "para_cursar": ["311"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "316", "nombre": "Sociología de la Salud",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["312"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "317", "nombre": "Gestión de los Servicios de Enfermería Hospitalarios y Comunitarios III",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 2, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["313"],
+      "para_aprobar": ["308"]
+    }
+  },
+  {
+    "codigo": "318", "nombre": "Enfermería Comunitaria III",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 2, "horas": 80,
+    "correlativas": {
+      "para_cursar": ["315"],
+      "para_aprobar": ["311"]
+    }
+  },
+  {
+    "codigo": "319", "nombre": "Ética y Desarrollo Profesional",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["316"],
+      "para_aprobar": ["312"]
+    }
+  },
+  {
+    "codigo": "320", "nombre": "Práctica Integrada II",
+    "carrera_id": "LIC_ENFERM", "anio": 5, "cuatrimestre": 2, "horas": 112,
+    "correlativas": {
+      "para_cursar": ["308", "309", "310", "311", "312", "274"],
+      "para_aprobar": ["307"]
+    }
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "CAMPUS_UNAB",
+    "nombre": "Campus UNaB",
+    "alias": ["Campus Unab", "Campus", "Campus Unab - Aula Magna", "Campus Unab - Auditorio II", "Campus Unab - Taller Automatizacion"],
+    "direccion": "Blas Parera 132",
+    "localidad": "Burzaco"
+  },
+  {
+    "id": "NACIONAL",
+    "nombre": "Colegio Nacional",
+    "alias": ["Nacional", "nacional"],
+    "direccion": "Esteban Adrogué y Av. Espora",
+    "localidad": "Adrogué"
+  },
+  {
+    "id": "CASA_CULTURA",
+    "nombre": "Casa Municipal de la Cultura",
+    "alias": ["Casa de la Cultura Adrogué", "Casa de la Cultura"],
+    "direccion": "Esteban Adrogué 1224",
+    "localidad": "Adrogué"
+  },
+  {
+    "id": "ESCUELA_5",
+    "nombre": "Escuela N° 5",
+    "alias": ["Escuela N° 5", "Escuela Nº 5"],
+    "direccion": "Amenedo 1281, esquina Demaría",
+    "localidad": "Adrogué"
+  },
+  {
+    "id": "UBA",
+    "nombre": "UBA (sede prótesis dental)",
+    "alias": ["UBA"],
+    "direccion": null,
+    "localidad": null
+  },
+  {
+    "id": "CAPS",
+    "nombre": "CAPS (Centro de Atención Primaria de la Salud)",
+    "alias": ["CAPS"],
+    "direccion": null,
+    "localidad": null
+  },
+  {
+    "id": "VIRTUAL",
+    "nombre": "Virtual",
+    "alias": ["virtual", "Virtual"],
+    "direccion": null,
+    "localidad": null
+  }
+]

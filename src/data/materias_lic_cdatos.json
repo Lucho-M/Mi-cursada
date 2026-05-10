@@ -1,0 +1,281 @@
+[
+  {
+    "codigo": "00001",
+    "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00173",
+    "nombre": "Análisis Matemático I",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00174",
+    "nombre": "Herramientas Computacionales",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005",
+    "nombre": "Inglés",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00175",
+    "nombre": "Introducción a la Programación",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00174"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00176",
+    "nombre": "Análisis Matemático II",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00173"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00177",
+    "nombre": "Álgebra",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00173"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00178",
+    "nombre": "Administración",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00001"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00179",
+    "nombre": "Economía",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00178"],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00180",
+    "nombre": "Probabilidad y Estadística",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00177"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00181",
+    "nombre": "Recolección de Datos y Análisis Primario de la Inf.",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00174", "00175"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00182",
+    "nombre": "Introducción al Análisis Contable y Financiero",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00178"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00183",
+    "nombre": "Inferencia Estadística y Reconocimiento de Patrones",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00180"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00184",
+    "nombre": "Algoritmos y Estructuras de Datos",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00181"],
+      "para_aprobar": ["00175"]
+    }
+  },
+  {
+    "codigo": "00185",
+    "nombre": "Metodologías de Investigación",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00178"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00186",
+    "nombre": "Gestión de Datos",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00181"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00187",
+    "nombre": "Modelado y Simulación",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00184", "00186"],
+      "para_aprobar": ["00181"]
+    }
+  },
+  {
+    "codigo": "00188",
+    "nombre": "Visualización de la Información",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00181"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00189",
+    "nombre": "Programación Avanzada",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00186"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00190",
+    "nombre": "Análisis Multivariado",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00184"],
+      "para_aprobar": ["00173"]
+    }
+  },
+  {
+    "codigo": "00191",
+    "nombre": "Inteligencia Artificial",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00183"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00192",
+    "nombre": "Análisis en Redes Sociales",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00188"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00193",
+    "nombre": "Taller I - Big Data y las Políticas Públicas",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 2, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00194",
+    "nombre": "Técnicas de Investigación de Mercado",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00195",
+    "nombre": "Computación en la Nube",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00189"],
+      "para_aprobar": ["00186"]
+    }
+  },
+  {
+    "codigo": "00196",
+    "nombre": "Comercio Electrónico",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00194"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00197",
+    "nombre": "Taller II - Big Data y la Salud",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 4, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00193"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00198",
+    "nombre": "Formulación y Evaluación de Proyectos Tecnológicos",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 4, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00199",
+    "nombre": "Seminario Final",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 4, "cuatrimestre": 2, "horas": 160,
+    "correlativas": {
+      "para_cursar": ["Todas las materias de 3° año"],
+      "para_aprobar": ["Todas las materias de 3° año"]
+    }
+  },
+  {
+    "codigo": "00200",
+    "nombre": "Práctica Profesional Supervisada (PPS)",
+    "carrera_id": "LIC_CDATOS",
+    "anio": 4, "cuatrimestre": 2, "horas": 192,
+    "correlativas": {
+      "para_cursar": ["Todas las materias de 3° año"],
+      "para_aprobar": ["Todas las materias de 3° año"]
+    }
+  }
+]
