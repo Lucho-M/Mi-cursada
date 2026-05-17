@@ -1,0 +1,167 @@
+[
+  {
+    "codigo": "01", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "02", "nombre": "Matemática General",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "03", "nombre": "Medios de Representación y Dibujo Mecánico",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "04", "nombre": "Herramientas Computacionales y Programación para la Ingeniería y la Ciencia",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "05", "nombre": "Inglés",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "06", "nombre": "Automatización Industrial I",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "07", "nombre": "Circuitos Eléctricos",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "08", "nombre": "Metodología de Programación",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "09", "nombre": "Introducción a los Relés Inteligentes y Microprocesadores",
+    "carrera_id": "TEC_AUT", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "10", "nombre": "Matemática Aplicada",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["02"]
+    }
+  },
+  {
+    "codigo": "11", "nombre": "Sistemas de Control",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["06", "09"],
+      "para_aprobar": ["02", "04"]
+    }
+  },
+  {
+    "codigo": "12", "nombre": "Electrónica e Instrumentación",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["07"],
+      "para_aprobar": ["04"]
+    }
+  },
+  {
+    "codigo": "13", "nombre": "Gestión de la Calidad",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["08"],
+      "para_aprobar": ["01"]
+    }
+  },
+  {
+    "codigo": "14", "nombre": "Taller y Práctica de Laboratorio (anual)",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["06", "08", "09"],
+      "para_aprobar": ["04"]
+    }
+  },
+  {
+    "codigo": "15", "nombre": "Automatización Industrial II",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["11"],
+      "para_aprobar": ["06"]
+    }
+  },
+  {
+    "codigo": "16", "nombre": "Robótica Técnica",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["12"],
+      "para_aprobar": ["08"]
+    }
+  },
+  {
+    "codigo": "17", "nombre": "Microcontroladores",
+    "carrera_id": "TEC_AUT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["11"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "19", "nombre": "Administración de la Producción y Mantenimiento",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["13"]
+    }
+  },
+  {
+    "codigo": "20", "nombre": "Control de Máquinas Eléctricas",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["15", "16"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "21", "nombre": "Economía y Procesos Productivos",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["13"]
+    }
+  },
+  {
+    "codigo": "22", "nombre": "Práctica Supervisada (anual)",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["Todas las asign. de 1° y 2° año"],
+      "para_aprobar": ["14"]
+    }
+  },
+  {
+    "codigo": "23", "nombre": "Instrumentación y Comunicaciones Industriales",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["21"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "24", "nombre": "Higiene y Seguridad Industrial",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["19"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "25", "nombre": "Desarrollo de Proyectos",
+    "carrera_id": "TEC_AUT", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["19"],
+      "para_aprobar": ["14"]
+    }
+  }
+]

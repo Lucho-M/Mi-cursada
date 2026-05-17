@@ -1,0 +1,123 @@
+[
+  {
+    "id": "LIC_ADMIN",
+    "nombre": "Licenciatura en Administración",
+    "tipo": "Licenciatura",
+    "duracion_anios": 5,
+    "carga_horaria_total": 2656,
+    "resolucion": "RR-87/22-CS"
+  },
+  {
+    "id": "LIC_CPOL",
+    "nombre": "Licenciatura en Ciencia Política",
+    "tipo": "Licenciatura",
+    "duracion_anios": 4,
+    "carga_horaria_total": 2624,
+    "resolucion": "RR-90/22-CS"
+  },
+  {
+    "id": "LIC_CDATOS",
+    "nombre": "Licenciatura en Ciencias de Datos",
+    "tipo": "Licenciatura",
+    "duracion_anios": 4,
+    "carga_horaria_total": 2608,
+    "resolucion": "RR-170/24-CS"
+  },
+  {
+    "id": "LIC_ENFERM",
+    "nombre": "Licenciatura en Enfermería",
+    "tipo": "Licenciatura",
+    "duracion_anios": 5,
+    "carga_horaria_total": 3728,
+    "resolucion": null,
+    "titulacion_intermedia": "Enfermero/a"
+  },
+  {
+    "id": "LIC_MAT",
+    "nombre": "CCC - Licenciatura en Enseñanza de Matemática",
+    "tipo": "Licenciatura CCC",
+    "duracion_anios": 2,
+    "carga_horaria_total": 1200,
+    "resolucion": "RR-88/22-CS"
+  },
+  {
+    "id": "LIC_LOG",
+    "nombre": "Licenciatura en Logística y Transporte",
+    "tipo": "Licenciatura",
+    "duracion_anios": 4,
+    "carga_horaria_total": 2608,
+    "resolucion": "RR-166/22-CS"
+  },
+  {
+    "id": "TEC_AT",
+    "nombre": "Tecnicatura Universitaria en Acompañamiento Terapéutico",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1488,
+    "resolucion": "RR-164/22-CS"
+  },
+  {
+    "id": "TEC_AUT",
+    "nombre": "Tecnicatura en Automatización y Control",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1632,
+    "resolucion": "RR-162/22-CS"
+  },
+  {
+    "id": "TEC_CDATOS",
+    "nombre": "Tecnicatura Universitaria en Ciencias de Datos",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1472,
+    "resolucion": "RR-171/24-CS"
+  },
+  {
+    "id": "TEC_COMDIG",
+    "nombre": "Tecnicatura en Comunicación Digital",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1648,
+    "resolucion": "RR-86/22-CS"
+  },
+  {
+    "id": "TEC_DDP",
+    "nombre": "Tecnicatura en Diseño y Desarrollo de Producto",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1616,
+    "resolucion": "RR-163/22-CS"
+  },
+  {
+    "id": "TEC_GORG",
+    "nombre": "Tecnicatura en Gestión de las Organizaciones",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1632,
+    "resolucion": "RR-89/22-CS"
+  },
+  {
+    "id": "TEC_LOG",
+    "nombre": "Tecnicatura en Logística y Transporte",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1648,
+    "resolucion": "RR-165/22-CS"
+  },
+  {
+    "id": "TEC_PROG",
+    "nombre": "Tecnicatura en Programación",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1632,
+    "resolucion": "RR-55/21-CS"
+  },
+  {
+    "id": "TEC_PROT",
+    "nombre": "Tecnicatura en Prótesis Dental",
+    "tipo": "Tecnicatura",
+    "duracion_anios": 3,
+    "carga_horaria_total": 1584,
+    "resolucion": "RR-79/21-CS"
+  }
+]

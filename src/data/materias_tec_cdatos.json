@@ -1,0 +1,123 @@
+[
+  {
+    "codigo": "00269", "nombre": "Ciencia, Tecnología e Innovación",
+    "carrera_id": "TEC_CDATOS", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00002", "nombre": "Matemática General",
+    "carrera_id": "TEC_CDATOS", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00174", "nombre": "Herramientas Computacionales",
+    "carrera_id": "TEC_CDATOS", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00281", "nombre": "Lógica",
+    "carrera_id": "TEC_CDATOS", "anio": 1, "cuatrimestre": 2, "horas": 80,
+    "correlativas": {
+      "para_cursar": ["00002"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00175", "nombre": "Introducción a la Programación",
+    "carrera_id": "TEC_CDATOS", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00174"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00173", "nombre": "Análisis Matemático I",
+    "carrera_id": "TEC_CDATOS", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00005", "nombre": "Inglés",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00180", "nombre": "Probabilidad y Estadística",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00281"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00181", "nombre": "Recolección de Datos y Análisis Primario de la Inf.",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00175", "00174"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00183", "nombre": "Inferencia Estadística y Reconocimiento de Patrones",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00180"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00184", "nombre": "Algoritmos y Estructuras de Datos",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00181"],
+      "para_aprobar": ["00175"]
+    }
+  },
+  {
+    "codigo": "00186", "nombre": "Gestión de Datos",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00181"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00188", "nombre": "Visualización de la Información",
+    "carrera_id": "TEC_CDATOS", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00181"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00187", "nombre": "Modelado y Simulación",
+    "carrera_id": "TEC_CDATOS", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00184", "00186"],
+      "para_aprobar": ["00181"]
+    }
+  },
+  {
+    "codigo": "00191", "nombre": "Inteligencia Artificial",
+    "carrera_id": "TEC_CDATOS", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00183"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00190", "nombre": "Análisis Multivariado",
+    "carrera_id": "TEC_CDATOS", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00184"],
+      "para_aprobar": ["00173"]
+    }
+  },
+  {
+    "codigo": "00189", "nombre": "Programación Avanzada",
+    "carrera_id": "TEC_CDATOS", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00186"],
+      "para_aprobar": []
+    }
+  }
+]

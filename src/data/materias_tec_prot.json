@@ -1,0 +1,160 @@
+[
+  {
+    "codigo": "00001", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00004", "nombre": "Herramientas Computacionales y Programación para la Ingeniería y la Ciencia",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00246", "nombre": "Física-Química",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 1, "horas": 32,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00247", "nombre": "Anatomía y Biología Bucal",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00248", "nombre": "Oclusión",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00247"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00249", "nombre": "Materiales Dentales",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00246"]
+    }
+  },
+  {
+    "codigo": "00005", "nombre": "Inglés",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00250", "nombre": "Digitalización",
+    "carrera_id": "TEC_PROT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00004", "00247"]
+    }
+  },
+  {
+    "codigo": "00251", "nombre": "Diagnóstico y Odontología Digital I",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 1, "horas": 32,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00248", "00249", "00250"]
+    }
+  },
+  {
+    "codigo": "00252", "nombre": "Prótesis Removible",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00248", "00249", "00250"]
+    }
+  },
+  {
+    "codigo": "00253", "nombre": "Digitalización y Diseño I",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00248", "00249", "00250"]
+    }
+  },
+  {
+    "codigo": "00029", "nombre": "Matemática",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00254", "nombre": "Prótesis Fija",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00251", "00252", "00253"]
+    }
+  },
+  {
+    "codigo": "00255", "nombre": "Digitalización y Diseño II",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00251", "00252", "00253"]
+    }
+  },
+  {
+    "codigo": "00256", "nombre": "Procesos de Gestión de Laboratorio Dental",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00251", "00252", "00253"]
+    }
+  },
+  {
+    "codigo": "00257", "nombre": "Metodología de la Investigación",
+    "carrera_id": "TEC_PROT", "anio": 2, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00251", "00252", "00253", "00029"]
+    }
+  },
+  {
+    "codigo": "00258", "nombre": "Prótesis Implanto Asistida",
+    "carrera_id": "TEC_PROT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00251", "00252", "00253"]
+    }
+  },
+  {
+    "codigo": "00259", "nombre": "Diagnóstico y Odontología Digital II",
+    "carrera_id": "TEC_PROT", "anio": 3, "cuatrimestre": 1, "horas": 32,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00251", "00254", "00255"]
+    }
+  },
+  {
+    "codigo": "00260", "nombre": "Digitalización y Diseño III",
+    "carrera_id": "TEC_PROT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00255", "00254", "00252", "00251"]
+    }
+  },
+  {
+    "codigo": "00261", "nombre": "Práctica Profesional Supervisada (Anual)",
+    "carrera_id": "TEC_PROT", "anio": 3, "cuatrimestre": 1, "horas": 150,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["Todas las del 1° y 2° año"]
+    }
+  },
+  {
+    "codigo": "00262", "nombre": "Cirugía Guiada",
+    "carrera_id": "TEC_PROT", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00258", "00259", "00260"],
+      "para_aprobar": ["Todas las del 1° y 2° año"]
+    }
+  },
+  {
+    "codigo": "00263", "nombre": "Ortodoncia y Ortopedia",
+    "carrera_id": "TEC_PROT", "anio": 3, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["00258", "00259", "00260"],
+      "para_aprobar": ["Todas las del 1° y 2° año"]
+    }
+  }
+]

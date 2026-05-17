@@ -1,0 +1,186 @@
+[
+  {
+    "codigo": "01", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "27", "nombre": "Comunicación Institucional",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "28", "nombre": "Sistemas Contables I",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "29", "nombre": "Matemática",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "05", "nombre": "Inglés",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "30", "nombre": "Economía",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["29"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "31", "nombre": "Administración",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "32", "nombre": "Problemáticas Socio Contemporáneas",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "33", "nombre": "Teoría y Comportamiento Organizacional",
+    "carrera_id": "TEC_GORG", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["27"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "34", "nombre": "Sociología de las Organizaciones",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["33"],
+      "para_aprobar": ["27"]
+    }
+  },
+  {
+    "codigo": "35", "nombre": "Sistemas Contables II",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["31"],
+      "para_aprobar": ["28", "29"]
+    }
+  },
+  {
+    "codigo": "36", "nombre": "Gestión de la Producción",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["30", "31"],
+      "para_aprobar": ["28", "29"]
+    }
+  },
+  {
+    "codigo": "37", "nombre": "Estadística",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["31"],
+      "para_aprobar": ["29"]
+    }
+  },
+  {
+    "codigo": "38", "nombre": "Informática",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "39", "nombre": "Gestión de Cooperativas",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["27", "31", "33", "32"]
+    }
+  },
+  {
+    "codigo": "40", "nombre": "Gestión de Talento Humano y Relaciones Laborales",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["35", "36"],
+      "para_aprobar": ["28", "30", "31", "33", "27"]
+    }
+  },
+  {
+    "codigo": "41", "nombre": "Gestión de Costos",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["35"],
+      "para_aprobar": ["28"]
+    }
+  },
+  {
+    "codigo": "42", "nombre": "Gestión de la Comercialización e Investigación Comercial",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["35", "36"],
+      "para_aprobar": ["28"]
+    }
+  },
+  {
+    "codigo": "43", "nombre": "Taller y Práctica Profesionalizante",
+    "carrera_id": "TEC_GORG", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["35", "36"],
+      "para_aprobar": ["28", "30", "31", "33", "27"]
+    }
+  },
+  {
+    "codigo": "44", "nombre": "Legislación Comercial y Tributaria",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["28"]
+    }
+  },
+  {
+    "codigo": "45", "nombre": "Estrategia Empresarial",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["42"],
+      "para_aprobar": ["34", "36"]
+    }
+  },
+  {
+    "codigo": "46", "nombre": "Sistemas de Información para la Gestión de las Organizaciones",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["41"],
+      "para_aprobar": ["34", "36", "38"]
+    }
+  },
+  {
+    "codigo": "47", "nombre": "Práctica Supervisada (anual)",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["39", "40", "41", "42"],
+      "para_aprobar": ["35", "36", "43"]
+    }
+  },
+  {
+    "codigo": "48", "nombre": "Higiene, Seguridad y Gestión Ambiental",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["34"]
+    }
+  },
+  {
+    "codigo": "49", "nombre": "Evaluación y Administración de Proyecto",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["46"],
+      "para_aprobar": ["37", "41"]
+    }
+  },
+  {
+    "codigo": "50", "nombre": "Control de Gestión",
+    "carrera_id": "TEC_GORG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["46"],
+      "para_aprobar": ["37", "41"]
+    }
+  }
+]

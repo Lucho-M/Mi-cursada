@@ -1,0 +1,167 @@
+[
+  {
+    "codigo": "01", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "51", "nombre": "Logística I",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 96,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "52", "nombre": "Matemática",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "53", "nombre": "Sociología de las Organizaciones",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "05", "nombre": "Inglés",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "54", "nombre": "Geografía e Integración Territorial",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "55", "nombre": "Distribución I",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["51"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "56", "nombre": "Economía",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["53"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "57", "nombre": "Principios de Administración",
+    "carrera_id": "TEC_LOG", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "58", "nombre": "Estadística Aplicada a la Logística",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["51"],
+      "para_aprobar": ["52"]
+    }
+  },
+  {
+    "codigo": "59", "nombre": "Logística II",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["55"],
+      "para_aprobar": ["51"]
+    }
+  },
+  {
+    "codigo": "60", "nombre": "Informática",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "61", "nombre": "Gestión Organizacional",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["57"],
+      "para_aprobar": ["53"]
+    }
+  },
+  {
+    "codigo": "62", "nombre": "Distribución II",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["59"],
+      "para_aprobar": ["55"]
+    }
+  },
+  {
+    "codigo": "63", "nombre": "Gestión de Calidad de Producción y Servicio",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["55", "57"]
+    }
+  },
+  {
+    "codigo": "64", "nombre": "Administración de Inventario y Compras",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["59"],
+      "para_aprobar": ["57"]
+    }
+  },
+  {
+    "codigo": "65", "nombre": "Legislación Nacional e Internacional",
+    "carrera_id": "TEC_LOG", "anio": 2, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["53"]
+    }
+  },
+  {
+    "codigo": "66", "nombre": "Portugués",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "67", "nombre": "Logística III",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["59"]
+    }
+  },
+  {
+    "codigo": "68", "nombre": "Higiene, Seguridad y Gestión Ambiental",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["63"],
+      "para_aprobar": ["61"]
+    }
+  },
+  {
+    "codigo": "69", "nombre": "Práctica Supervisada (anual)",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 1, "horas": 96,
+    "correlativas": {
+      "para_cursar": ["62", "64"],
+      "para_aprobar": ["54", "59", "61"]
+    }
+  },
+  {
+    "codigo": "70", "nombre": "Sistemas de Información Aplicados",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["58", "64"],
+      "para_aprobar": ["60"]
+    }
+  },
+  {
+    "codigo": "71", "nombre": "Marketing y Comercialización",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["61", "62"]
+    }
+  },
+  {
+    "codigo": "72", "nombre": "Diseño de Proyectos",
+    "carrera_id": "TEC_LOG", "anio": 3, "cuatrimestre": 2, "horas": 48,
+    "correlativas": {
+      "para_cursar": ["67"],
+      "para_aprobar": ["57", "61"]
+    }
+  }
+]

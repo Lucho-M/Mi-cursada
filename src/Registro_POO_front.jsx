@@ -4,7 +4,6 @@ import AuthService from "./AuthService_POO_logica_firebase";
 import Carreras from "./Carreras";
 import "./registro_poo.css";
 
-// Traduce errores de Firebase a mensajes entendibles
 function traducirError(codigo) {
   switch (codigo) {
     case "auth/email-already-in-use":
@@ -21,12 +20,11 @@ function traducirError(codigo) {
       return "Ocurrió un error al registrarse. Intentá de nuevo.";
   }
 }
-
 function RegistroPOOFront({ onLogin }) {
   const [paso, setPaso] = useState(1);
   const [dni, setDni] = useState("");
   const [nombre, setNombre] = useState("");
-  const [carrera, setCarrera] = useState("");
+  const [carrerasSeleccionadas, setCarrerasSeleccionadas] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,8 +34,16 @@ function RegistroPOOFront({ onLogin }) {
   const carreras = carrerasService.obtenerTodas();
   const authService = new AuthService();
 
+  const toggleCarrera = (nombreCarrera) => {
+    setCarrerasSeleccionadas((prev) =>
+      prev.includes(nombreCarrera)
+        ? prev.filter((c) => c !== nombreCarrera)
+        : [...prev, nombreCarrera]
+    );
+  };
+
   const validarPaso1 = () => {
-    return dni.trim() !== "" && nombre.trim() !== "" && carrera !== "";
+    return dni.trim() !== "" && nombre.trim() !== "" && carrerasSeleccionadas.length > 0;
   };
 
   const validarPaso2 = () => {
@@ -51,7 +57,7 @@ function RegistroPOOFront({ onLogin }) {
 
   const siguiente = () => {
     if (paso === 1 && !validarPaso1()) {
-      setError("Completá todos los campos antes de continuar.");
+      setError("Completá todos los campos y seleccioná al menos una carrera.");
       return;
     }
     setError("");
@@ -77,7 +83,7 @@ function RegistroPOOFront({ onLogin }) {
 
     try {
       setError("");
-      const usuario = new Usuario(nombre, dni, email, password, carrera);
+      const usuario = new Usuario(nombre, dni, email, password, carrerasSeleccionadas);
 
       if (!usuario.esValidoRegistro()) {
         setError("Por favor completá todos los campos correctamente.");
@@ -85,11 +91,11 @@ function RegistroPOOFront({ onLogin }) {
       }
 
       await authService.registrarse(usuario);
-      alert("¡Registro exitoso! 🎉");
+      alert("¡Registro exitoso! ");
       setPaso(1);
       setDni("");
       setNombre("");
-      setCarrera("");
+      setCarrerasSeleccionadas([]);
       setEmail("");
       setPassword("");
       setConfirmPassword("");
@@ -100,31 +106,18 @@ function RegistroPOOFront({ onLogin }) {
       console.log(err);
     }
   };
-
   return (
     <div className="registro-shell">
-      {/* LEFT GREEN PANEL */}
       <div className="green-panel-registro">
         <h2>Crear Cuenta</h2>
         <p>Completá tus datos para registrarte</p>
 
-        {/* MENSAJE DE ERROR */}
         {error && (
-          <div style={{
-            background: "#ffe0e0",
-            color: "#c0392b",
-            border: "1px solid #e74c3c",
-            borderRadius: "8px",
-            padding: "10px 14px",
-            marginBottom: "12px",
-            fontSize: "0.88rem",
-            fontWeight: 500,
-          }}>
+          <div style={{background:"#ffe0e0",color:"#c0392b",border:"1px solid #e74c3c",borderRadius:"8px",padding:"10px 14px",marginBottom:"12px",fontSize:"0.88rem",fontWeight:500}}>
             ⚠️ {error}
           </div>
         )}
 
-        {/* PASO 1 */}
         {paso === 1 && (
           <div className="form-step">
             <div className="field">
@@ -148,24 +141,35 @@ function RegistroPOOFront({ onLogin }) {
             </div>
 
             <div className="field">
-              <label>CARRERA QUE CURSÁS</label>
-              <select
-                value={carrera}
-                onChange={(e) => setCarrera(e.target.value)}
-                className="select-carrera"
-              >
-                <option value="" disabled>Seleccioná tu carrera</option>
+              <label>CARRERA/S QUE CURSÁS</label>
+              <p style={{fontSize:"0.8rem",color:"#666",margin:"2px 0 8px"}}>
+                Podés seleccionar más de una si cursás simultáneamente.
+              </p>
+              <div style={{maxHeight:"180px",overflowY:"auto",border:"1px solid #ddd",borderRadius:"8px",padding:"8px"}}>
                 {carreras.map((carr) => (
-                  <option key={carr.id} value={carr.nombre}>
+                  <label
+                    key={carr.id}
+                    style={{display:"flex",alignItems:"center",gap:"8px",padding:"6px 4px",cursor:"pointer",fontSize:"0.85rem",borderBottom:"1px solid #f0f0f0"}}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={carrerasSeleccionadas.includes(carr.nombre)}
+                      onChange={() => toggleCarrera(carr.nombre)}
+                      style={{accentColor:"#2e7d32",width:"16px",height:"16px"}}
+                    />
                     {carr.nombre}
-                  </option>
+                  </label>
                 ))}
-              </select>
+              </div>
+              {carrerasSeleccionadas.length > 0 && (
+                <p style={{fontSize:"0.8rem",color:"#2e7d32",marginTop:"6px"}}>
+                  ✅ {carrerasSeleccionadas.length} carrera{carrerasSeleccionadas.length > 1 ? "s" : ""} seleccionada{carrerasSeleccionadas.length > 1 ? "s" : ""}
+                </p>
+              )}
             </div>
           </div>
         )}
 
-        {/* PASO 2 */}
         {paso === 2 && (
           <div className="form-step">
             <div className="field">
@@ -200,40 +204,23 @@ function RegistroPOOFront({ onLogin }) {
           </div>
         )}
 
-        {/* BOTONES */}
         <div className="button-group">
           {paso === 2 && (
-            <button className="btn-continuar" onClick={anterior}>
-              Atrás
-            </button>
+            <button className="btn-continuar" onClick={anterior}>Atrás</button>
           )}
-
           {paso === 1 ? (
-            <button className="btn-continuar" onClick={siguiente}>
-              Continuar
-            </button>
+            <button className="btn-continuar" onClick={siguiente}>Continuar</button>
           ) : (
-            <button
-              className="btn-continuar btn-registrarse"
-              onClick={registrarse}
-            >
-              Registrarse
-            </button>
+            <button className="btn-continuar btn-registrarse" onClick={registrarse}>Registrarse</button>
           )}
         </div>
 
-        {/* INDICADOR DE PROGRESO */}
         <div className="progress-dots">
           {[1, 2].map((numero) => (
-            <div
-              key={numero}
-              className={`dot ${paso === numero ? "active" : ""}`}
-            ></div>
+            <div key={numero} className={`dot ${paso === numero ? "active" : ""}`}></div>
           ))}
         </div>
       </div>
-
-      {/* RIGHT PANEL - BIENVENIDA */}
       <div className="welcome-panel">
         <div className="brand-welcome">
           <div className="brand-name-welcome">Mi Cursada</div>
@@ -244,41 +231,15 @@ function RegistroPOOFront({ onLogin }) {
         </div>
 
         <h3>¡Bienvenido!</h3>
-        <p>
-          ¿Ya tenés una cuenta? Iniciá sesión para continuar o completá el
-          formulario para registrarte.
-        </p>
+        <p>¿Ya tenés una cuenta? Iniciá sesión para continuar o completá el formulario para registrarte.</p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%", marginBottom: "16px" }}>
-          <button
-            className="btn-login-desde-registro"
-            onClick={onLogin}
-            style={{ marginBottom: "0" }}
-          >
+        <div style={{display:"flex",flexDirection:"column",gap:"10px",width:"100%",marginBottom:"16px"}}>
+          <button className="btn-login-desde-registro" onClick={onLogin} style={{marginBottom:"0"}}>
             Iniciar sesión
           </button>
-
           <button
-            onClick={() => {
-              if (paso === 1) {
-                siguiente();
-              } else {
-                registrarse();
-              }
-            }}
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "var(--primary-light)",
-              color: "var(--primary-dark)",
-              border: "1.5px solid var(--border)",
-              borderRadius: "8px",
-              fontFamily: '"DM Sans", sans-serif',
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "background 0.15s",
-            }}
+            onClick={() => { if (paso === 1) { siguiente(); } else { registrarse(); } }}
+            style={{width:"100%",padding:"12px",background:"var(--primary-light)",color:"var(--primary-dark)",border:"1.5px solid var(--border)",borderRadius:"8px",fontFamily:'"DM Sans", sans-serif',fontSize:"0.9rem",fontWeight:600,cursor:"pointer",transition:"background 0.15s"}}
           >
             Siguiente Paso
           </button>

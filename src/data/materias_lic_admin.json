@@ -1,0 +1,482 @@
+[
+  {
+    "codigo": "00001",
+    "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00027",
+    "nombre": "Comunicación Institucional",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00028",
+    "nombre": "Sistemas Contables I",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00029",
+    "nombre": "Matemática",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00005",
+    "nombre": "Inglés",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00030",
+    "nombre": "Economía",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00029"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00031",
+    "nombre": "Administración",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00032",
+    "nombre": "Problemáticas Socio Contemporáneas",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00033",
+    "nombre": "Teoría y Comportamiento Organizacional",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00027"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00154",
+    "nombre": "Historia Económica y Social",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 1,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00034",
+    "nombre": "Sociología de las Organizaciones",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00033"],
+      "para_aprobar": ["00027"]
+    }
+  },
+  {
+    "codigo": "00035",
+    "nombre": "Sistemas Contables II",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00031"],
+      "para_aprobar": ["28-29"]
+    }
+  },
+  {
+    "codigo": "00036",
+    "nombre": "Gestión de la Producción",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00030", "00031"],
+      "para_aprobar": ["00028", "00029"]
+    }
+  },
+  {
+    "codigo": "00037",
+    "nombre": "Estadística",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00031"],
+      "para_aprobar": ["00029"]
+    }
+  },
+  {
+    "codigo": "00038",
+    "nombre": "Informática",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00039",
+    "nombre": "Gestión de Cooperativas",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00027", "00031", "00032", "00033"]
+    }
+  },
+  {
+    "codigo": "00155",
+    "nombre": "Gestión de las Relaciones Laborales",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00035", "00036"],
+      "para_aprobar": ["00027", "00028", "00030", "00031", "00033"]
+    }
+  },
+  {
+    "codigo": "00041",
+    "nombre": "Gestión de Costos",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00035"],
+      "para_aprobar": ["00028"]
+    }
+  },
+  {
+    "codigo": "00042",
+    "nombre": "Gestión de la Comercialización e Invest. Comercial",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00035", "00036"],
+      "para_aprobar": ["00028"]
+    }
+  },
+  {
+    "codigo": "00156",
+    "nombre": "Macroeconomía",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 2,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00037"],
+      "para_aprobar": ["00030"]
+    }
+  },
+  {
+    "codigo": "00044",
+    "nombre": "Legislación Comercial y Tributaria",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00028"]
+    }
+  },
+  {
+    "codigo": "00045",
+    "nombre": "Estrategia Empresarial",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00042"],
+      "para_aprobar": ["00034", "00036"]
+    }
+  },
+  {
+    "codigo": "00046",
+    "nombre": "Sistemas de Información para la Gestión de las Org.",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00041"],
+      "para_aprobar": ["00034", "00036", "00038"]
+    }
+  },
+  {
+    "codigo": "00157",
+    "nombre": "Administración Pública",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00032", "00033", "00034"]
+    }
+  },
+  {
+    "codigo": "00158",
+    "nombre": "Matemática Financiera",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 1,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00037"],
+      "para_aprobar": ["00030"]
+    }
+  },
+  {
+    "codigo": "00048",
+    "nombre": "Higiene, Seguridad y Gestión Ambiental",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00034"]
+    }
+  },
+  {
+    "codigo": "00049",
+    "nombre": "Evaluación y Administración de Proyecto",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00046"],
+      "para_aprobar": ["00037", "00041"]
+    }
+  },
+  {
+    "codigo": "00050",
+    "nombre": "Control de Gestión",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 48,
+    "correlativas": {
+      "para_cursar": ["00046"],
+      "para_aprobar": ["00037", "00041"]
+    }
+  },
+  {
+    "codigo": "00159",
+    "nombre": "Métodos de Investigación en Ciencias Sociales",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00001", "00034"]
+    }
+  },
+  {
+    "codigo": "00160",
+    "nombre": "Derecho del Trabajo y Seguridad Social",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 3,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00044"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00161",
+    "nombre": "Estadística Aplicada a la Administración",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00037", "00046"]
+    }
+  },
+  {
+    "codigo": "00162",
+    "nombre": "Derecho Civil y Comercial",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00160"],
+      "para_aprobar": ["00044"]
+    }
+  },
+  {
+    "codigo": "00163",
+    "nombre": "Finanzas Públicas",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00037", "00156", "00157", "00158"]
+    }
+  },
+  {
+    "codigo": "00164",
+    "nombre": "Microeconomía",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00156"]
+    }
+  },
+  {
+    "codigo": "00165",
+    "nombre": "Economía Social",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 1,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00039"]
+    }
+  },
+  {
+    "codigo": "00166",
+    "nombre": "Administración Financiera",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00157"],
+      "para_aprobar": ["00050", "00157", "00158"]
+    }
+  },
+  {
+    "codigo": "00167",
+    "nombre": "Comercio Exterior",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": ["00163"],
+      "para_aprobar": ["00045", "00156"]
+    }
+  },
+  {
+    "codigo": "00168",
+    "nombre": "Administración de la Producción",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00036"],
+      "para_aprobar": ["00045", "00050"]
+    }
+  },
+  {
+    "codigo": "00169",
+    "nombre": "Marketing",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 4,
+    "cuatrimestre": 2,
+    "horas": 96,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00042", "00045", "00159"]
+    }
+  },
+  {
+    "codigo": "00170",
+    "nombre": "Taller Trabajo de Integración Final",
+    "carrera_id": "LIC_ADMIN",
+    "anio": 5,
+    "cuatrimestre": 1,
+    "horas": 192,
+    "correlativas": {
+      "para_cursar": ["00166", "00168", "00169"],
+      "para_aprobar": ["00159", "00161", "00162", "00163", "00164"]
+    }
+  }
+]

@@ -1,0 +1,189 @@
+[
+  {
+    "codigo": "00001", "nombre": "Taller de Ciencia, Tecnología y Sociedad",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00073", "nombre": "Contextualización del Campo Profesional del Acompañante Terapéutico",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00027", "nombre": "Comunicación Institucional",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00074", "nombre": "Salud Pública y Salud Mental",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00172", "nombre": "Fundamentos de Psicología General y de Intervención Socio-comunitaria",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 1, "horas": 64,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00075", "nombre": "Psicopatología y Neurociencias",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00172"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00076", "nombre": "Modalidades de Intervención en el Acompañante Terapéutico",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00073"],
+      "para_aprobar": []
+    }
+  },
+  {
+    "codigo": "00077", "nombre": "Problemáticas Socio Contemporáneas",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 2, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00078", "nombre": "Taller y Prácticas Profesionalizantes I",
+    "carrera_id": "TEC_AT", "anio": 1, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00073"],
+      "para_aprobar": ["00172"]
+    }
+  },
+  {
+    "codigo": "00079", "nombre": "Investigación en Salud",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["0077", "0074"],
+      "para_aprobar": ["00001"]
+    }
+  },
+  {
+    "codigo": "00080", "nombre": "Ética y Ocupación Humana",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00076"],
+      "para_aprobar": ["00172"]
+    }
+  },
+  {
+    "codigo": "00081", "nombre": "Bioética y Psicofarmacología",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00075"],
+      "para_aprobar": ["00172", "0074"]
+    }
+  },
+  {
+    "codigo": "00082", "nombre": "Psicología de Grupos I",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00172"],
+      "para_aprobar": ["00073"]
+    }
+  },
+  {
+    "codigo": "00038", "nombre": "Informática",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 1, "horas": 48,
+    "correlativas": { "para_cursar": [], "para_aprobar": [] }
+  },
+  {
+    "codigo": "00085", "nombre": "Sistemas Familiares",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["00082"],
+      "para_aprobar": ["00172"]
+    }
+  },
+  {
+    "codigo": "00086", "nombre": "Teorías del Desarrollo I. Infancia y Adolescencia",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00082"],
+      "para_aprobar": ["00172"]
+    }
+  },
+  {
+    "codigo": "00087", "nombre": "Taller y Prácticas Profesionalizantes II",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["82", "76", "74"],
+      "para_aprobar": ["00078"]
+    }
+  },
+  {
+    "codigo": "00088", "nombre": "Técnicas de Prevención",
+    "carrera_id": "TEC_AT", "anio": 2, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["00076"]
+    }
+  },
+  {
+    "codigo": "00089", "nombre": "Teoría Psicosocial y Comunitaria",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00079"],
+      "para_aprobar": ["076", "074"]
+    }
+  },
+  {
+    "codigo": "00090", "nombre": "Psicología de Grupos II",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": [],
+      "para_aprobar": ["82", "172", "76"]
+    }
+  },
+  {
+    "codigo": "00091", "nombre": "Teorías del Desarrollo II. Adultos y Adultos Mayores",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 1, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00086"],
+      "para_aprobar": ["00172"]
+    }
+  },
+  {
+    "codigo": "00092", "nombre": "Acompañamiento Terapéutico en la Niñez y la Adolescencia",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 1, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["00086"],
+      "para_aprobar": ["172", "076"]
+    }
+  },
+  {
+    "codigo": "00093", "nombre": "Intervención Comunitaria y Recursos Sociales",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["00088"],
+      "para_aprobar": ["086", "082"]
+    }
+  },
+  {
+    "codigo": "00094", "nombre": "Acompañamiento Terapéutico del Adulto y del Adulto Mayor",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["00086"],
+      "para_aprobar": ["074", "076"]
+    }
+  },
+  {
+    "codigo": "00095", "nombre": "Taller y Prácticas Profesionalizantes III",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 2, "horas": 64,
+    "correlativas": {
+      "para_cursar": ["91", "90", "88"],
+      "para_aprobar": ["86", "87"]
+    }
+  },
+  {
+    "codigo": "00171", "nombre": "Acompañamiento Terapéutico en el Campo de las Adicciones",
+    "carrera_id": "TEC_AT", "anio": 3, "cuatrimestre": 2, "horas": 32,
+    "correlativas": {
+      "para_cursar": ["90", "88"],
+      "para_aprobar": ["73", "87", "172"]
+    }
+  }
+]
