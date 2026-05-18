@@ -1,9 +1,11 @@
 import { auth, db } from "./firebase";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail
 } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 
 class AuthService {
   async registrarse(usuario) {
@@ -12,7 +14,6 @@ class AuthService {
       usuario.email,
       usuario.password
     );
-
     await addDoc(collection(db, "usuarios"), {
       uid: userCredential.user.uid,
       nombre: usuario.nombre,
@@ -21,17 +22,25 @@ class AuthService {
       carreras: usuario.carreras,
       rol: usuario.rol
     });
-
+    await sendEmailVerification(userCredential.user);
     return true;
   }
 
   async login(usuario) {
-    await signInWithEmailAndPassword(
-      auth,
-      usuario.email,
-      usuario.password
-    );
+    await signInWithEmailAndPassword(auth, usuario.email, usuario.password);
+    return true;
+  }
 
+  async buscarEmailPorDNI(dni) {
+    const q = query(collection(db, "usuarios"), where("dni", "==", dni));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return null;
+    const datos = snapshot.docs[0].data();
+    return datos.email;
+  }
+
+  async enviarRecuperoPorEmail(email) {
+    await sendPasswordResetEmail(auth, email);
     return true;
   }
 }
