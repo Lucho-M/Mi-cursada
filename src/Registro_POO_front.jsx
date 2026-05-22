@@ -26,6 +26,7 @@ function RegistroPOOFront({ onLogin }) {
   const [nombre, setNombre] = useState("");
   const [carrerasSeleccionadas, setCarrerasSeleccionadas] = useState([]);
   const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -49,6 +50,7 @@ function RegistroPOOFront({ onLogin }) {
   const validarPaso2 = () => {
     return (
       email.trim() !== "" &&
+      email === confirmEmail &&
       password.trim() !== "" &&
       password === confirmPassword &&
       password.length >= 6
@@ -71,7 +73,9 @@ function RegistroPOOFront({ onLogin }) {
 
   const registrarse = async () => {
     if (!validarPaso2()) {
-      if (password !== confirmPassword) {
+      if (email !== confirmEmail) {
+        setError("Los emails no coinciden.");
+      } else if (password !== confirmPassword) {
         setError("Las contraseñas no coinciden.");
       } else if (password.length < 6) {
         setError("La contraseña debe tener al menos 6 caracteres.");
@@ -97,6 +101,7 @@ function RegistroPOOFront({ onLogin }) {
       setNombre("");
       setCarrerasSeleccionadas([]);
       setEmail("");
+      setConfirmEmail("");
       setPassword("");
       setConfirmPassword("");
       if (onLogin) onLogin();
@@ -179,6 +184,16 @@ function RegistroPOOFront({ onLogin }) {
                 placeholder="Ingresá tu email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label>CONFIRMAR EMAIL</label>
+              <input
+                type="email"
+                placeholder="Repetí tu email"
+                value={confirmEmail}
+                onChange={(e) => setConfirmEmail(e.target.value)}
               />
             </div>
 

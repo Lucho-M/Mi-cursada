@@ -1,9 +1,12 @@
 import { auth, db } from "./firebase";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail
 } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { normalizarDni } from "./utils/normalizarDni";
 
 class AuthService {
   async registrarse(usuario) {
@@ -13,12 +16,14 @@ class AuthService {
       usuario.password
     );
 
+    await sendEmailVerification(userCredential.user);
+
     await addDoc(collection(db, "usuarios"), {
       uid: userCredential.user.uid,
       nombre: usuario.nombre,
-      dni: usuario.dni,
+      dni: normalizarDni(usuario.dni),
       email: usuario.email,
-      carreras: usuario.carreras,
+      carrera: usuario.carrera,
       rol: usuario.rol
     });
 
@@ -33,6 +38,20 @@ class AuthService {
     );
 
     return true;
+  }
+
+  async recuperarPassword(email) {
+    await sendPasswordResetEmail(auth, email);
+    return true;
+  }
+
+  async buscarEmailPorDNI(dni) {
+    const dniNorm = normalizarDni(dni);
+    const snap = await getDocs(
+      query(collection(db, "usuarios"), where("dni", "==", dniNorm))
+    );
+    if (snap.empty) throw new Error("DNI no encontrado");
+    return snap.docs[0].data().email;
   }
 }
 

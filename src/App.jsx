@@ -23,7 +23,24 @@ function App() {
       : <Registro onLogin={() => setPantalla("login")} />;
   }
 
-  return <Panel firebaseUser={user} />;
+  return (
+    <>
+      {!user.emailVerified && (
+        <div style={{
+          background: "#fff3cd",
+          color: "#856404",
+          border: "1px solid #ffc107",
+          padding: "10px 20px",
+          textAlign: "center",
+          fontSize: "0.88rem",
+          fontWeight: 500,
+        }}>
+          ⚠️ Tu email no esta verificado. Revisa tu bandeja de entrada o spam para confirmar tu cuenta.
+        </div>
+      )}
+      <Panel firebaseUser={user} />
+    </>
+  );
 }
 
 export default App;
