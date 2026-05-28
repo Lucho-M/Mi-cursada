@@ -20,7 +20,7 @@ function traducirError(codigo) {
       return "Ocurrió un error al registrarse. Intentá de nuevo.";
   }
 }
-function RegistroPOOFront({ onLogin }) {
+function RegistroPOOFront({ onLogin, onRegistroExitoso }) {
   const [paso, setPaso] = useState(1);
   const [dni, setDni] = useState("");
   const [nombre, setNombre] = useState("");
@@ -95,7 +95,8 @@ function RegistroPOOFront({ onLogin }) {
       }
 
       await authService.registrarse(usuario);
-      alert("¡Registro exitoso! ");
+      onRegistroExitoso?.({ nombre, dni, email, carreras: carrerasSeleccionadas, rol: "alumno" });
+      alert("¡Registro exitoso! Revisá tu casilla de email para verificar tu cuenta.");
       setPaso(1);
       setDni("");
       setNombre("");
@@ -147,27 +148,27 @@ function RegistroPOOFront({ onLogin }) {
 
             <div className="field">
               <label>CARRERA/S QUE CURSÁS</label>
-              <p style={{fontSize:"0.8rem",color:"#666",margin:"2px 0 8px"}}>
+              <p style={{fontSize:"0.8rem",color:"rgba(255,255,255,0.8)",margin:"2px 0 8px"}}>
                 Podés seleccionar más de una si cursás simultáneamente.
               </p>
-              <div style={{maxHeight:"180px",overflowY:"auto",border:"1px solid #ddd",borderRadius:"8px",padding:"8px"}}>
+              <div style={{maxHeight:"180px",overflowY:"auto",border:"1.5px solid rgba(255,255,255,0.4)",borderRadius:"8px",padding:"8px",background:"rgba(255,255,255,0.95)"}}>
                 {carreras.map((carr) => (
                   <label
                     key={carr.id}
-                    style={{display:"flex",alignItems:"center",gap:"8px",padding:"6px 4px",cursor:"pointer",fontSize:"0.85rem",borderBottom:"1px solid #f0f0f0"}}
+                    style={{display:"flex",alignItems:"center",gap:"8px",padding:"6px 4px",cursor:"pointer",fontSize:"0.85rem",borderBottom:"1px solid #e8e8e8",color:"#1a3a2a"}}
                   >
                     <input
                       type="checkbox"
                       checked={carrerasSeleccionadas.includes(carr.nombre)}
                       onChange={() => toggleCarrera(carr.nombre)}
-                      style={{accentColor:"#2e7d32",width:"16px",height:"16px"}}
+                      style={{accentColor:"#148f65",width:"16px",height:"16px"}}
                     />
                     {carr.nombre}
                   </label>
                 ))}
               </div>
               {carrerasSeleccionadas.length > 0 && (
-                <p style={{fontSize:"0.8rem",color:"#2e7d32",marginTop:"6px"}}>
+                <p style={{fontSize:"0.8rem",color:"rgba(255,255,255,0.95)",fontWeight:600,marginTop:"6px"}}>
                   ✅ {carrerasSeleccionadas.length} carrera{carrerasSeleccionadas.length > 1 ? "s" : ""} seleccionada{carrerasSeleccionadas.length > 1 ? "s" : ""}
                 </p>
               )}

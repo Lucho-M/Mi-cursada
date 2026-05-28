@@ -8,6 +8,11 @@ import {
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { normalizarDni } from "./utils/normalizarDni";
 
+const actionCodeSettings = {
+  url: window.location.origin,
+  handleCodeInApp: false,
+};
+
 class AuthService {
   async registrarse(usuario) {
     const userCredential = await createUserWithEmailAndPassword(
@@ -16,14 +21,15 @@ class AuthService {
       usuario.password
     );
 
-    await sendEmailVerification(userCredential.user);
+    await sendEmailVerification(userCredential.user, actionCodeSettings);
 
     await addDoc(collection(db, "usuarios"), {
       uid: userCredential.user.uid,
       nombre: usuario.nombre,
       dni: normalizarDni(usuario.dni),
       email: usuario.email,
-      carrera: usuario.carrera,
+      carrera: Array.isArray(usuario.carreras) ? (usuario.carreras[0] || "") : (usuario.carreras || ""),
+      carreras: usuario.carreras || [],
       rol: usuario.rol
     });
 
@@ -41,7 +47,7 @@ class AuthService {
   }
 
   async recuperarPassword(email) {
-    await sendPasswordResetEmail(auth, email);
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
     return true;
   }
 

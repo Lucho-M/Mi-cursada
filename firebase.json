@@ -1,5 +1,9 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
   "hosting": {
+    "site": "mi-cursada",
     "public": "dist",
     "ignore": [
       "firebase.json",
