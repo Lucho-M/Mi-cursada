@@ -4,7 +4,7 @@ class Profesor extends Usuario {
   constructor(nombre, dni, email, password, departamento) {
     super(nombre, dni, email, password, departamento);
     this.rol = 'profesor';
-    this.comisiones = []; // [{ id, materiaId, materiaNombre, horario, aula, alumnos: [] }]
+    this.comisiones = [];
   }
 
   asignarComision(comision) {
