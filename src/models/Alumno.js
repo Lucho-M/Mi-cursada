@@ -12,14 +12,19 @@ class Alumno extends Usuario {
   }
 
   obtenerPromedio() {
-    const conNota = this.historialAcademico.filter(h => h.nota !== null && h.nota !== undefined);
+    const conNota = this.historialAcademico.filter(h => h.estado !== 'equivalencia' && h.nota !== null && h.nota !== undefined);
     if (!conNota.length) return 0;
     const suma = conNota.reduce((acc, h) => acc + Number(h.nota), 0);
     return (suma / conNota.length).toFixed(1);
   }
 
   obtenerMateriasAprobadas() {
-    return this.historialAcademico.filter(h => Number(h.nota) >= 4);
+    return this.historialAcademico.filter(h =>
+      h.estado === 'equivalencia' ||
+      h.estado === 'aprobada_libre' ||
+      h.estado === 'aprobada' ||
+      Number(h.nota) >= 4
+    );
   }
 
   puedeInscribirse(materia) {
