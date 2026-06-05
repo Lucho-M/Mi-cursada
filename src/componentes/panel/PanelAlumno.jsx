@@ -124,8 +124,8 @@ function PanelAlumno({ perfil, seccion }) {
   const alumnoObj = new Alumno(perfil?.nombre, perfil?.dni, perfil?.email, '', perfil?.carrera);
   alumnoObj.cargarHistorial(
     notas
-      .filter(n => n.parcial === 'final' || n.parcial === 'aprobacion')
-      .map(n => ({ materiaId: n.materiaId, nota: n.nota }))
+      .filter(n => n.parcial === 'final' || n.parcial === 'aprobacion' || n.estado === 'equivalencia' || n.estado === 'aprobada' || n.estado === 'aprobada_libre')
+      .map(n => ({ materiaId: n.materiaId, nota: n.nota, estado: n.estado }))
   );
   const materiasAprobadas = alumnoObj.obtenerMateriasAprobadas().length;
   const promedio = notas.length ? alumnoObj.obtenerPromedio() : '—';
