@@ -6,7 +6,6 @@ import carrerasData from './data/carreras.json';
 
 const ESTADOS = [
   { key: 'sin_cursar',    label: 'Sin cursar',             color: '#999',    bg: '#f5f5f5' },
-  { key: 'cursando',      label: 'Cursando',               color: '#856404', bg: '#fff3cd' },
   { key: 'aprobada',      label: 'Aprobada regular',       color: '#1a7a1a', bg: '#e0ffe0' },
   { key: 'aprobada_libre',label: 'Aprobada libre',         color: '#1a5c8a', bg: '#e0f0ff' },
   { key: 'equivalencia',  label: 'Equivalencia',           color: '#6a1a8a', bg: '#f0e0ff' },
@@ -197,20 +196,7 @@ export default function Onboarding({ perfil, onCompletado, onSaltear }) {
                   </div>
                 )}
 
-                {estado === 'cursando' && (
-                  <div style={{marginTop:'8px',display:'flex',flexWrap:'wrap',gap:'12px'}}>
-                    {PARCIALES_CURSANDO.map(p => (
-                      <div key={p.key} style={{display:'flex',alignItems:'center',gap:'6px'}}>
-                        <label style={{fontSize:'0.78rem',color:'#555',whiteSpace:'nowrap'}}>{p.label}:</label>
-                        <input type="number" min="1" max="10" step="0.5"
-                          value={datos[p.key] || ''}
-                          onChange={e => setEstado(m.codigo, p.key, e.target.value)}
-                          placeholder="-"
-                          style={{width:'55px',padding:'4px 6px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem',textAlign:'center'}} />
-                      </div>
-                    ))}
-                  </div>
-                )}
+
               </div>
             );
           })}
