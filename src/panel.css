@@ -299,6 +299,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-2);
+  text-align: center;
+  white-space: nowrap;
 }
 .stat-value {
   font-family: var(--font-display);

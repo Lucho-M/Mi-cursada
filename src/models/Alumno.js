@@ -20,9 +20,7 @@ class Alumno extends Usuario {
 
   obtenerMateriasAprobadas() {
     return this.historialAcademico.filter(h =>
-      h.estado === 'equivalencia' ||
-      h.estado === 'aprobada_libre' ||
-      h.estado === 'aprobada' ||
+      ['equivalencia','aprobada','aprobada_libre','promocionado','regular_con_final','libre'].includes(h.estado) ||
       Number(h.nota) >= 4
     );
   }
