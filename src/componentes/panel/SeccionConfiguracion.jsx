@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -49,6 +49,41 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
   const carreraActual = carreras[0] || '';
   const carreraId = obtenerCarreraId(carreraActual);
   const materias = carreraId ? getMateriasPorCarrera(carreraId) : [];
+
+  useEffect(() => {
+    console.log('useEffect ejecutado, uid:', perfil?.uid);
+    if (!perfil?.uid) return;
+    const cargarHistorial = async () => {
+      try {
+        const snap = await getDocs(
+          query(collection(db, 'notas'),
+            where('alumnoUid', '==', perfil.uid),
+            where('tipo', '==', 'historial'))
+        );
+        const mapa = {};
+        snap.docs.forEach(d => {
+          const data = d.data();
+          const codigo = data.materiaId;
+          if (!mapa[codigo]) mapa[codigo] = { estado: 'sin_cursar' };
+          mapa[codigo].estado = data.estado || 'sin_cursar';
+          if (data.nota != null) mapa[codigo].nota = data.nota;
+          if (data.p1 != null) mapa[codigo].p1 = data.p1;
+          if (data.rec1 != null) mapa[codigo].rec1 = data.rec1;
+          if (data.p2 != null) mapa[codigo].p2 = data.p2;
+          if (data.rec2 != null) mapa[codigo].rec2 = data.rec2;
+          if (data.final != null) mapa[codigo].final = data.final;
+          if (data.definitiva != null) mapa[codigo].definitiva = data.definitiva;
+        });
+        console.log('historial cargado:', JSON.stringify(mapa));
+        setEstadoMaterias(mapa);
+      } catch (e) {
+        console.error('Error cargando historial:', e);
+      }
+    };
+    cargarHistorial();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [perfil?.uid]);
+
   const porAnio = agruparPorAnio(materias);
   const anios = Object.keys(porAnio).map(Number).sort((a, b) => a - b);
 
@@ -75,10 +110,13 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
           tipo: 'historial',
           estado: datos.estado,
         };
-        if (datos.estado === 'aprobada' || datos.estado === 'aprobada_libre') {
-          notaData.nota = datos.nota ? Number(datos.nota) : null;
-          notaData.parcial = 'final';
-        }
+        if (datos.p1 != null && datos.p1 !== '') notaData.p1 = Number(datos.p1);
+        if (datos.rec1 != null && datos.rec1 !== '') notaData.rec1 = Number(datos.rec1);
+        if (datos.p2 != null && datos.p2 !== '') notaData.p2 = Number(datos.p2);
+        if (datos.rec2 != null && datos.rec2 !== '') notaData.rec2 = Number(datos.rec2);
+        if (datos.final != null && datos.final !== '') notaData.final = Number(datos.final);
+        if (datos.definitiva != null && datos.definitiva !== '') notaData.definitiva = Number(datos.definitiva);
+        if (datos.nota != null && datos.nota !== '') notaData.nota = Number(datos.nota);
         batch.set(notaRef, notaData);
       }
       await batch.commit();
