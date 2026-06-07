@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import Alumno from '../../models/Alumno';
+import SeccionConfiguracion from './SeccionConfiguracion';
 
 const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
 const DIAS_SEMANA = ['Lun','Mar','Mié','Jue','Vie'];
@@ -574,14 +575,25 @@ function PanelAlumno({ perfil, seccion }) {
     );
   }
 
-  // ── FALLBACK ────────────────────────────────────────────────────
+
+  // CONFIG
+  if (seccion === 'config') {
+    return (
+      <>
+        <Topbar titulo="Configuracion" subtitulo="Gestion de tu cuenta y historial" />
+        <SeccionConfiguracion perfil={perfil} onBaja={() => window.location.reload()} />
+      </>
+    );
+  }
+
+  // FALLBACK
   return (
     <>
-      <Topbar titulo="Sección en construcción" />
+      <Topbar titulo="Seccion en construccion" />
       <div className="content">
         <div className="empty-state">
           <div className="icon">🚧</div>
-          <p>Esta sección estará disponible próximamente.</p>
+          <p>Esta seccion estara disponible proximamente.</p>
         </div>
       </div>
     </>
