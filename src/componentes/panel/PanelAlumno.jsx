@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import Alumno from '../../models/Alumno';
+import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
 
 const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
@@ -120,6 +121,9 @@ function PanelAlumno({ perfil, seccion }) {
     };
     cargar();
   }, [perfil]);
+
+  const carreras = Array.isArray(perfil?.carreras) && perfil.carreras.length > 0 ? perfil.carreras : (perfil?.carrera ? [perfil.carrera] : []);
+  const carreraActual = carreras[0] || '';
 
   // Modelo Alumno para stats
   const alumnoObj = new Alumno(perfil?.nombre, perfil?.dni, perfil?.email, '', perfil?.carrera);
@@ -312,6 +316,15 @@ function PanelAlumno({ perfil, seccion }) {
 
   // ── MATERIAS ────────────────────────────────────────────────────
   if (seccion === 'materias') {
+    return (
+      <>
+        <Topbar titulo="Mis materias" subtitulo={carreraActual} />
+        <SeccionMaterias perfil={perfil} notasHistorial={notas} />
+      </>
+    );
+  }
+
+  if (seccion === 'materias_VIEJO') {
     return (
       <>
         <Topbar
