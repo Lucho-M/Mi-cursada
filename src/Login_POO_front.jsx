@@ -3,6 +3,8 @@ import Usuario from "./Usuario_POO_modelo";
 import AuthService from "./AuthService_POO_logica_firebase";
 import { auth } from "./firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
+import logoMc from "./assets/logo-micursada.png";
+import logoUnab from "./assets/logo-unab.png";
 import "./login.css";
 
 function ocultarEmail(email) {
@@ -78,63 +80,70 @@ function LoginPOO({ onRegistro }) {
   return (
     <div className="auth-shell">
       <div className="form-panel">
-        <div className="brand">
-          <div className="brand-name">Mi Cursada</div>
-          <div className="brand-logo">
-            unab
-            <span>Universidad Nacional<br />Guillermo Brown</span>
-          </div>
+        <div className="form-inner">
+          {!recuperando && (
+            <>
+              <img src={logoMc} alt="Mi Cursada" className="logo-micursada" />
+              <h2>Iniciar Sesion</h2>
+              <p className="subtitle">Ingresa tus datos para continuar</p>
+              {error && (
+                <div style={{background:"rgba(255,82,82,0.12)",color:"#FF6B6B",border:"1px solid rgba(255,82,82,0.3)",borderRadius:"9px",padding:"11px 14px",marginBottom:"16px",fontSize:"0.88rem",fontWeight:500}}>
+                  {error}
+                </div>
+              )}
+              <div className="field">
+                <label>Email</label>
+                <input type="email" placeholder="tu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === "Enter" && login()} />
+              </div>
+              <div className="field">
+                <label>Contraseña</label>
+                <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === "Enter" && login()} />
+              </div>
+              <a className="forgot" onClick={() => { setRecuperando(true); setError(""); setEmailRecupero(email); }}>
+                Olvidaste tu contraseña?
+              </a>
+              <button className="btn-login" onClick={login}>Ingresar</button>
+            </>
+          )}
+
+          {recuperando && (
+            <>
+              <h2>Recuperar contraseña</h2>
+              <p className="subtitle">Te enviamos un link a tu email para que puedas crear una nueva contraseña.</p>
+              {mensajeRecupero && (
+                <div style={{
+                  background: mensajeRecupero.startsWith("ok:") ? "rgba(0,230,118,0.1)" : "rgba(255,82,82,0.12)",
+                  color: mensajeRecupero.startsWith("ok:") ? "#00E676" : "#FF6B6B",
+                  border: `1px solid ${mensajeRecupero.startsWith("ok:") ? "rgba(0,230,118,0.3)" : "rgba(255,82,82,0.3)"}`,
+                  borderRadius:"9px", padding:"11px 14px", marginBottom:"16px", fontSize:"0.88rem", fontWeight:500
+                }}>
+                  {mensajeRecupero.split(":")[1]}
+                </div>
+              )}
+              <div className="field">
+                <label>Email</label>
+                <input type="email" placeholder="tu@email.com" value={emailRecupero} onChange={(e) => setEmailRecupero(e.target.value)} onKeyDown={(e) => e.key === "Enter" && enviarRecupero()} />
+              </div>
+              <button className="btn-login" onClick={enviarRecupero}>Enviar email de recuperacion</button>
+              <a className="forgot" style={{marginTop:"16px",display:"block"}} onClick={() => { setRecuperando(false); setMensajeRecupero(""); }}>
+                ← Volver al login
+              </a>
+            </>
+          )}
         </div>
-
-        {!recuperando && (
-          <>
-            <h2>Iniciar Sesion</h2>
-            <p className="subtitle">Ingresa tus datos para continuar</p>
-            {error && (
-              <div style={{background:"#ffe0e0",color:"#c0392b",border:"1px solid #e74c3c",borderRadius:"8px",padding:"10px 14px",marginBottom:"12px",fontSize:"0.88rem",fontWeight:500}}>
-                {error}
-              </div>
-            )}
-            <div className="field">
-              <label>Email</label>
-              <input type="email" placeholder="Ingresa tu email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="field">
-              <label>Contraseña</label>
-              <input type="password" placeholder="Ingresa tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <a className="forgot" style={{cursor:"pointer"}} onClick={() => { setRecuperando(true); setError(""); setEmailRecupero(email); }}>
-              Olvidaste tu contraseña?
-            </a>
-            <button className="btn-login" onClick={login}>Ingresar</button>
-          </>
-        )}
-
-        {recuperando && (
-          <>
-            <h2>Recuperar contraseña</h2>
-            <p className="subtitle">Te enviamos un link a tu email para que puedas crear una nueva contraseña.</p>
-            {mensajeRecupero && (
-              <div style={{background:mensajeRecupero.startsWith("ok:")?"#e0ffe0":"#ffe0e0",color:mensajeRecupero.startsWith("ok:")?"#1a7a1a":"#c0392b",border:"1px solid "+(mensajeRecupero.startsWith("ok:")?"#2ecc71":"#e74c3c"),borderRadius:"8px",padding:"10px 14px",marginBottom:"12px",fontSize:"0.88rem",fontWeight:500}}>
-                {mensajeRecupero.split(":")[1]}
-              </div>
-            )}
-            <div className="field">
-              <label>Email</label>
-              <input type="email" placeholder="Ingresa tu email" value={emailRecupero} onChange={(e) => setEmailRecupero(e.target.value)} />
-            </div>
-            <button className="btn-login" onClick={enviarRecupero}>Enviar email de recuperacion</button>
-            <a className="forgot" style={{cursor:"pointer",marginTop:"12px",display:"block"}} onClick={() => { setRecuperando(false); setMensajeRecupero(""); }}>
-              Volver al login
-            </a>
-          </>
-        )}
       </div>
 
       <div className="green-panel">
-        <h3>Hola!</h3>
-        <p>No tenes cuenta? Registrate para acceder a todos los servicios</p>
-        <button className="btn-register" onClick={onRegistro}>Registrate</button>
+        <div className="unab-hero">
+          <img src={logoUnab} alt="UNAB" className="logo-unab" />
+          <div className="brand-divider" />
+          <div className="unab-sistema">Mi Cursada</div>
+          <p className="unab-desc">Sistema de Gestion Academica</p>
+        </div>
+        <div className="register-cta">
+          <p>No tenes cuenta?</p>
+          <button className="btn-register" onClick={onRegistro}>Registrate</button>
+        </div>
       </div>
     </div>
   );

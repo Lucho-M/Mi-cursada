@@ -27,3 +27,6 @@ package-lock.json
 # Claude Code
 CLAUDE.md
 .claude/
+
+# Credenciales sensibles - NUNCA subir
+serviceAccount.json
