@@ -5,7 +5,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail
 } from "firebase/auth";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { normalizarDni } from "./utils/normalizarDni";
 
 const actionCodeSettings = {
@@ -23,7 +23,7 @@ class AuthService {
 
     await sendEmailVerification(userCredential.user, actionCodeSettings);
 
-    await addDoc(collection(db, "usuarios"), {
+    await setDoc(doc(db, "usuarios", userCredential.user.uid), {
       uid: userCredential.user.uid,
       nombre: usuario.nombre,
       dni: normalizarDni(usuario.dni),

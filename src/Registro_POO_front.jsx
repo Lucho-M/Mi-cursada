@@ -2,6 +2,7 @@ import { useState } from "react";
 import Usuario from "./Usuario_POO_modelo";
 import AuthService from "./AuthService_POO_logica_firebase";
 import Carreras from "./Carreras";
+import logoUnab from "./assets/logo-unab.png";
 import "./registro_poo.css";
 
 function traducirError(codigo) {
@@ -239,11 +240,7 @@ function RegistroPOOFront({ onLogin, onRegistroExitoso }) {
       </div>
       <div className="welcome-panel">
         <div className="brand-welcome">
-          <div className="brand-name-welcome">Mi Cursada</div>
-          <div className="brand-logo-welcome">
-            unab
-            <span>UNIVERSIDAD NACIONAL<br />GUILLERMO BROWN</span>
-          </div>
+          <img src={logoUnab} alt="UNAB" className="logo-unab-registro" />
         </div>
 
         <h3>¡Bienvenido!</h3>

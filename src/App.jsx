@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Login from "./Login_POO_front";
 import Registro from "./Registro_POO_front";
 import Panel from "./Panel";
@@ -35,11 +35,9 @@ function App() {
       }
       setUser(usuario);
       try {
-        const snap = await getDocs(
-          query(collection(db, "usuarios"), where("uid", "==", usuario.uid))
-        );
-        if (!snap.empty) {
-          const datos = snap.docs[0].data();
+        const snap = await getDoc(doc(db, "usuarios", usuario.uid));
+        if (snap.exists()) {
+          const datos = snap.data();
           setPerfil({ uid: usuario.uid, ...datos });
           if (datos.rol === "alumno" && !datos.onboardingCompleto) {
             setMostrarOnboarding(true);
@@ -63,11 +61,8 @@ function App() {
     setMostrarOnboarding(false);
     if (perfil?.uid) {
       try {
-        const snap = await getDocs(query(collection(db, "usuarios"), where("uid", "==", perfil.uid)));
-        if (!snap.empty) {
-          await updateDoc(doc(db, "usuarios", snap.docs[0].id), { onboardingSalteado: true });
-          setPerfil(prev => ({ ...prev, onboardingSalteado: true }));
-        }
+        await updateDoc(doc(db, "usuarios", perfil.uid), { onboardingSalteado: true });
+        setPerfil(prev => ({ ...prev, onboardingSalteado: true }));
       } catch (e) {
         console.error(e);
       }
