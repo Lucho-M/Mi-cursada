@@ -81,7 +81,6 @@ function App() {
       ? <Login onRegistro={() => setPantalla("registro")} />
       : <Registro
           onLogin={() => setPantalla("login")}
-          onRegistroExitoso={(p) => setPerfil({ uid: user?.uid, ...p })}
         />;
   }
 

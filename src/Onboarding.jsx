@@ -7,18 +7,12 @@ import { getMateriasPorCarrera } from './data/materias';
 import carrerasData from './data/carreras.json';
 
 const ESTADOS = [
-  { key: 'sin_cursar',    label: 'Sin cursar',             color: '#999',    bg: '#f5f5f5' },
-  { key: 'aprobada',      label: 'Aprobada regular',       color: '#1a7a1a', bg: '#e0ffe0' },
-  { key: 'aprobada_libre',label: 'Aprobada libre',         color: '#1a5c8a', bg: '#e0f0ff' },
-  { key: 'equivalencia',  label: 'Equivalencia',           color: '#6a1a8a', bg: '#f0e0ff' },
-  { key: 'libre',         label: 'Libre',                  color: '#c0392b', bg: '#ffe0e0' },
-];
-
-const PARCIALES_CURSANDO = [
-  { key: 'p1',   label: 'Parcial 1' },
-  { key: 'rec1', label: 'Recup. P1' },
-  { key: 'p2',   label: 'Parcial 2' },
-  { key: 'rec2', label: 'Recup. P2' },
+  { key: 'sin_cursar',        label: 'Sin cursar',          color: '#999',    bg: '#f5f5f5' },
+  { key: 'promocionado',      label: 'Promocionado',        color: '#1a5c8a', bg: '#e0f0ff' },
+  { key: 'regular_sin_final', label: 'Regular sin final',   color: '#856404', bg: '#fff3cd' },
+  { key: 'regular_con_final', label: 'Regular con final',   color: '#1a7a1a', bg: '#e0ffe0' },
+  { key: 'equivalencia',      label: 'Equivalencia',        color: '#6a1a8a', bg: '#f0e0ff' },
+  { key: 'libre',             label: 'Libre',               color: '#c0392b', bg: '#ffe0e0' },
 ];
 
 function obtenerCarreraId(nombreCarrera) {
@@ -78,22 +72,16 @@ export default function Onboarding({ perfil, onCompletado, onSaltear }) {
           materiaId: codigo,
           tipo: 'historial',
           estado: datos.estado,
-          cuatrimestre: datos.cuatrimestre || '',
-          anio: datos.anio || '',
         };
-        if (datos.estado === 'aprobada' || datos.estado === 'aprobada_libre') {
-          notaData.nota = datos.nota ? Number(datos.nota) : null;
-          notaData.parcial = 'final';
-        }
-        if (datos.estado === 'cursando') {
-          if (datos.p1 != null) notaData.p1 = Number(datos.p1);
-          if (datos.rec1 != null) notaData.rec1 = Number(datos.rec1);
-          if (datos.p2 != null) notaData.p2 = Number(datos.p2);
-          if (datos.rec2 != null) notaData.rec2 = Number(datos.rec2);
-        }
+        if (datos.p1 != null && datos.p1 !== '') notaData.p1 = Number(datos.p1);
+        if (datos.rec1 != null && datos.rec1 !== '') notaData.rec1 = Number(datos.rec1);
+        if (datos.p2 != null && datos.p2 !== '') notaData.p2 = Number(datos.p2);
+        if (datos.rec2 != null && datos.rec2 !== '') notaData.rec2 = Number(datos.rec2);
+        if (datos.final != null && datos.final !== '') notaData.final = Number(datos.final);
+        if (datos.definitiva != null && datos.definitiva !== '') notaData.definitiva = Number(datos.definitiva);
+        if (datos.nota != null && datos.nota !== '') notaData.nota = Number(datos.nota);
         batch.set(notaRef, notaData);
       }
-
       await batch.commit();
       await updateDoc(doc(db, 'usuarios', userDocId), { onboardingCompleto: true });
       onCompletado();
@@ -192,18 +180,36 @@ export default function Onboarding({ perfil, onCompletado, onSaltear }) {
                   </select>
                 </div>
 
-                {(estado === 'aprobada' || estado === 'aprobada_libre') && (
-                  <div style={{marginTop:'8px',display:'flex',alignItems:'center',gap:'8px'}}>
-                    <label style={{fontSize:'0.82rem',color:'#555'}}>Nota:</label>
-                    <input type="number" min="4" max="10" step="0.5"
-                      value={datos.nota || ''}
-                      onChange={e => setEstado(m.codigo, 'nota', e.target.value)}
-                      placeholder="1-10"
-                      style={{width:'70px',padding:'5px 8px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem'}} />
+                {(estado === 'promocionado' || estado === 'regular_sin_final' || estado === 'regular_con_final') && (
+                  <div style={{marginTop:'8px',display:'flex',flexWrap:'wrap',gap:'10px'}}>
+                    {[
+                      {key:'p1',   label:'Parcial 1'},
+                      {key:'rec1', label:'Recup. P1'},
+                      {key:'p2',   label:'Parcial 2'},
+                      {key:'rec2', label:'Recup. P2'},
+                      ...(estado === 'regular_sin_final' || estado === 'regular_con_final' ? [{key:'final', label:'Final'}] : []),
+                      {key:'definitiva', label:'Nota definitiva'},
+                    ].map(campo => (
+                      <div key={campo.key} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'4px'}}>
+                        <label style={{fontSize:'0.72rem',color:'#555',whiteSpace:'nowrap'}}>{campo.label}</label>
+                        <input type="number" min="1" max="10" step="0.5"
+                          value={datos[campo.key] || ''}
+                          onChange={e => setEstado(m.codigo, campo.key, e.target.value)}
+                          style={{width:'52px',padding:'4px 6px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem',textAlign:'center'}} />
+                      </div>
+                    ))}
                   </div>
                 )}
 
-
+                {estado === 'libre' && (
+                  <div style={{marginTop:'8px',display:'flex',alignItems:'center',gap:'8px'}}>
+                    <label style={{fontSize:'0.82rem',color:'#555'}}>Nota:</label>
+                    <input type="number" min="1" max="10" step="0.5"
+                      value={datos.nota || ''}
+                      onChange={e => setEstado(m.codigo, 'nota', e.target.value)}
+                      style={{width:'70px',padding:'5px 8px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem'}} />
+                  </div>
+                )}
               </div>
             );
           })}
