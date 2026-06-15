@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { auth } from './firebase';
+import { signOut } from 'firebase/auth';
 import { db } from './firebase';
 import { doc, updateDoc, collection, query, where, getDocs, writeBatch } from 'firebase/firestore';
 import { getMateriasPorCarrera } from './data/materias';
@@ -133,6 +135,11 @@ export default function Onboarding({ perfil, onCompletado, onSaltear }) {
               Completar mas tarde
             </button>
           </div>
+          <button
+            onClick={() => signOut(auth)}
+            style={{background:'none',border:'none',color:'#999',fontSize:'0.82rem',cursor:'pointer',textDecoration:'underline',marginTop:'8px'}}>
+            Cerrar sesion
+          </button>
         </div>
       </div>
     );
