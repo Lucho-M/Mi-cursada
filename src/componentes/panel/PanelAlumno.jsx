@@ -14,9 +14,18 @@ const HORAS = [
 
 function parseHoraInicio(horario) {
   if (!horario) return null;
-  const match = String(horario).match(/^(\d{1,2}:\d{2})/);
-  return match ? match[1] : null;
+  const match = String(horario).match(/(\d{1,2})/);
+  return match ? `${match[1]}:00` : null;
 }
+
+const DIA_ABREV = {
+  lunes: 'Lun',
+  martes: 'Mar',
+  miércoles: 'Mié',
+  miercoles: 'Mié',
+  jueves: 'Jue',
+  viernes: 'Vie',
+};
 
 function NotaPill({ nota }) {
   if (nota == null || nota === '') return <span className="nota-pill nota-empty">—</span>;
@@ -399,15 +408,17 @@ function PanelAlumno({ perfil, seccion }) {
                 {DIAS_SEMANA.map(dia => (
                   <div key={dia} className="sch-day-col">
                     {HORAS.map(h => {
+
                       const ev = inscripciones.find(
-                        insc => insc.dia === dia && parseHoraInicio(insc.horario) === h
+                        insc => DIA_ABREV[String(insc.dia).toLowerCase()] === dia && parseHoraInicio(insc.horario) === h
                       );
                       return (
                         <div key={h} className="sch-cell">
                           {ev && (
                             <div className="abs-event ev-blue">
                               <div className="ev-name-sch">{ev.materiaNombre || ev.materiaId}</div>
-                              <div className="ev-room-sch">Aula {ev.aula || '—'}</div>
+                              <div className="ev-room-sch">Com. {ev.comisionId || '—'} · Aula {ev.aula || '—'}</div>
+                              <div className="ev-room-sch">{ev.sede || '—'}</div>
                             </div>
                           )}
                         </div>
