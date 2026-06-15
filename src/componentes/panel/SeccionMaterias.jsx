@@ -117,8 +117,7 @@ export default function SeccionMaterias({ perfil, notasHistorial }) {
         cuatrimestre: 1,
         anio: 2026,
       });
-      setInscripciones(prev => [...prev, { id: docRef.id, ...nuevaInscripcion, alumnoUid: perfil.uid }]);
-      setModalAbierto(false);
+     setInscripciones(prev => [...prev, { id: docRef.id, ...nuevaInscripcion, comisionId: nuevaInscripcion.comision, alumnoUid: perfil.uid }]);
       setNuevaInscripcion({ materiaNombre:'', comision:'', dia:'', horario:'', aula:'', docente:'', modalidad:'presencial', sede:'' });
       setMensaje('ok:Materia agregada correctamente.');
     } catch (e) {
