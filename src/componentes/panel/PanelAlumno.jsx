@@ -4,18 +4,29 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import Alumno from '../../models/Alumno';
 import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
+import SeccionNotas from './SeccionNotas';
 
 const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-const DIAS_SEMANA = ['Lun','Mar','Mié','Jue','Vie'];
+const DIAS_SEMANA = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
 const HORAS = [
   '7:00','8:00','9:00','10:00','11:00','12:00',
-  '13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'
+  '13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'
 ];
 
 function parseHoraInicio(horario) {
   if (!horario) return null;
-  const match = String(horario).match(/(\d{1,2})/);
+  const match = String(horario).match(/^(\d{1,2})/);
   return match ? `${match[1]}:00` : null;
+}
+
+function parseDuracion(horario) {
+  if (!horario) return 1;
+  const match = String(horario).match(/(\d{1,2}).*?(\d{1,2})/);
+  if (!match) return 1;
+  const inicio = Number(match[1]);
+  const fin = Number(match[2]);
+  const dur = fin - inicio;
+  return dur > 0 ? dur : 1;
 }
 
 const DIA_ABREV = {
@@ -25,6 +36,8 @@ const DIA_ABREV = {
   miercoles: 'Mié',
   jueves: 'Jue',
   viernes: 'Vie',
+  sábado: 'Sáb',
+  sabado: 'Sáb',
 };
 
 function NotaPill({ nota }) {
@@ -402,23 +415,24 @@ function PanelAlumno({ perfil, seccion }) {
                 ))}
               </div>
               <div className="sch-grid">
-                <div>
+                <div style={{ height: `${HORAS.length * 52}px` }}>
                   {HORAS.map(h => <div key={h} className="sch-time-cell">{h}</div>)}
                 </div>
                 {DIAS_SEMANA.map(dia => (
                   <div key={dia} className="sch-day-col">
                     {HORAS.map(h => {
-
                       const ev = inscripciones.find(
                         insc => DIA_ABREV[String(insc.dia).toLowerCase()] === dia && parseHoraInicio(insc.horario) === h
                       );
+                      const duracion = ev ? parseDuracion(ev.horario) : 1;
                       return (
                         <div key={h} className="sch-cell">
                           {ev && (
-                            <div className="abs-event ev-blue">
+                            <div className="abs-event ev-blue" style={{ height: `calc(${duracion} * 52px - 2px)` }}>
                               <div className="ev-name-sch">{ev.materiaNombre || ev.materiaId}</div>
                               <div className="ev-room-sch">Com. {ev.comisionId || '—'} · Aula {ev.aula || '—'}</div>
                               <div className="ev-room-sch">{ev.sede || '—'}</div>
+                              <div className="ev-room-sch" style={{ marginTop: 4, opacity: 0.6 }}>{ev.horario}hs</div>
                             </div>
                           )}
                         </div>
@@ -434,45 +448,13 @@ function PanelAlumno({ perfil, seccion }) {
     );
   }
 
-  // ── NOTAS ───────────────────────────────────────────────────────
+  // ── NOTAS
   if (seccion === 'notas') {
     return (
       <>
-        <Topbar
-          titulo="Mis notas"
-          subtitulo={promedio !== '—' ? `Promedio: ${promedio}` : 'Sin notas cargadas aún'}
-        />
+        <Topbar titulo="Mis notas" subtitulo="Carga y seguimiento de tus calificaciones" />
         <div className="content">
-          <div className="card">
-            <div className="table-head cols-notas">
-              <div>Materia</div>
-              <div>Parcial 1</div>
-              <div>Parcial 2</div>
-              <div>Final</div>
-              <div>Estado</div>
-            </div>
-            {cargando ? (
-              <div className="empty-state"><p>Cargando notas…</p></div>
-            ) : materiasConNotas.length === 0 ? (
-              <div className="empty-state">
-                <div className="icon">✎</div>
-                <p>Todavía no hay notas cargadas.</p>
-              </div>
-            ) : (
-              materiasConNotas.map(m => (
-                <div key={m.id} className="table-row cols-notas">
-                  <div>
-                    <div className="materia-name">{m.materiaNombre || m.materiaId}</div>
-                    <div className="materia-code">{m.docente || ''}</div>
-                  </div>
-                  <div style={{ textAlign: 'center' }}><NotaPill nota={m.parcial1} /></div>
-                  <div style={{ textAlign: 'center' }}><NotaPill nota={m.parcial2} /></div>
-                  <div style={{ textAlign: 'center' }}><NotaPill nota={m.final} /></div>
-                  <div><StatusBadge estado={m.estado} /></div>
-                </div>
-              ))
-            )}
-          </div>
+          <SeccionNotas perfil={perfil} />
         </div>
       </>
     );
