@@ -205,7 +205,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
 
       {tab === 'historial' && (
         <div>
-          <p style={{color:'#555',marginBottom:'16px',fontSize:'0.88rem'}}>
+          <p style={{color:'var(--text-2)',marginBottom:'16px',fontSize:'0.88rem'}}>
             Carga tus materias de cuatrimestres anteriores. Esto mejora el calculo de correlativas y avance de carrera.
           </p>
           <div style={{display:'flex',gap:'8px',flexWrap:'wrap',marginBottom:'20px'}}>
@@ -218,8 +218,8 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
               </button>
             ))}
           </div>
-          <div style={{background:'white',borderRadius:'12px',padding:'20px',border:'1px solid #eee'}}>
-            <h3 style={{marginBottom:'16px',color:'#222',fontWeight:700,fontSize:'1rem'}}>{anioActual}° año</h3>
+          <div style={{background:'var(--surface)',borderRadius:'12px',padding:'20px',border:'1px solid var(--border)'}}>
+            <h3 style={{marginBottom:'16px',color:'var(--text-1)',fontWeight:700,fontSize:'1rem'}}>{anioActual}° año</h3>
             {materiasAnio.map(m => {
               const datos = estadoMaterias[m.codigo] || { estado: 'sin_cursar' };
               const estado = datos.estado;
@@ -229,11 +229,11 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
                 <div key={m.codigo} style={{borderBottom:'1px solid #f0f0f0',paddingBottom:'10px',marginBottom:'10px'}}>
                   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
                     <div style={{flex:1,textAlign:'left'}}>
-                      <div style={{fontWeight:600,fontSize:'0.88rem',color:'#222',paddingLeft:sangriaNombre}}>{m.nombre}</div>
-                      <div style={{fontSize:'0.75rem',color:'#999',marginTop:'2px',paddingLeft:sangriaInfo}}>{m.cuatrimestre}° cuatrimestre</div>
+                      <div style={{fontWeight:600,fontSize:'0.88rem',color:'var(--text-1)',paddingLeft:sangriaNombre}}>{m.nombre}</div>
+                      <div style={{fontSize:'0.75rem',color:'var(--text-3)',marginTop:'2px',paddingLeft:sangriaInfo}}>{m.cuatrimestre}° cuatrimestre</div>
                     </div>
                     <select value={estado} onChange={e => setEstadoMateria(m.codigo, 'estado', e.target.value)}
-                      style={{marginLeft:'12px',padding:'5px 8px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.8rem',background:'white',color:'#333',fontWeight:600,cursor:'pointer',flexShrink:0}}>
+                      style={{marginLeft:'12px',padding:'5px 8px',borderRadius:'6px',border:'1px solid var(--border)',fontSize:'0.8rem',background:'var(--surface-2)',color:'var(--text-1)',fontWeight:600,cursor:'pointer',flexShrink:0}}>
                       {ESTADOS_HISTORIAL.map(e => <option key={e.key} value={e.key}>{e.label}</option>)}
                     </select>
                   </div>
@@ -248,7 +248,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
                         {key:'definitiva', label:'Nota definitiva'},
                       ].map(campo => (
                         <div key={campo.key} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'4px'}}>
-                          <label style={{fontSize:'0.72rem',color:'#555',whiteSpace:'nowrap'}}>{campo.label}</label>
+                          <label style={{fontSize:'0.72rem',color:'var(--text-2)',whiteSpace:'nowrap'}}>{campo.label}</label>
                           <input type="number" min="1" max="10" step="0.5"
                             value={datos[campo.key] || ''}
                             onChange={e => setEstadoMateria(m.codigo, campo.key, e.target.value)}
@@ -259,7 +259,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
                   )}
                   {estado === 'libre' && (
                     <div style={{marginTop:'6px',display:'flex',alignItems:'center',gap:'8px',paddingLeft:'8px'}}>
-                      <label style={{fontSize:'0.8rem',color:'#555'}}>Nota:</label>
+                      <label style={{fontSize:'0.8rem',color:'var(--text-2)'}}>Nota:</label>
                       <input type="number" min="1" max="10" step="0.5" value={datos.nota || ''}
                         onChange={e => setEstadoMateria(m.codigo, 'nota', e.target.value)}
                         style={{width:'65px',padding:'4px 8px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem'}} />
@@ -276,7 +276,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
           )}
           <div style={{display:'flex',justifyContent:'space-between',marginTop:'16px'}}>
             <button onClick={() => setAnioActual(prev => Math.max(anios[0], prev - 1))} disabled={anioActual === anios[0]}
-              style={{padding:'8px 18px',borderRadius:'8px',border:'1px solid #ddd',cursor:'pointer',background:'white',fontWeight:600,opacity:anioActual===anios[0]?0.4:1}}>
+              style={{padding:'8px 18px',borderRadius:'8px',border:'1px solid var(--border)',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)',fontWeight:600,opacity:anioActual===anios[0]?0.4:1}}>
               Año anterior
             </button>
             <button onClick={esUltimoAnio ? guardarHistorial : () => setAnioActual(prev => Math.min(anios[anios.length-1], prev+1))}
@@ -314,7 +314,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
       {tab === 'baja' && (
         <div style={{maxWidth:'420px'}}>
           <h3 style={{marginBottom:'8px',color:'#c0392b'}}>Dar de baja mi cuenta</h3>
-          <p style={{color:'#555',fontSize:'0.88rem',marginBottom:'16px'}}>
+          <p style={{color:'var(--text-2)',fontSize:'0.88rem',marginBottom:'16px'}}>
             Esta accion es irreversible. Se eliminaran todos tus datos de la aplicacion.
           </p>
           {!confirmBaja ? (
@@ -337,7 +337,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
               )}
               <div style={{display:'flex',gap:'10px'}}>
                 <button onClick={() => {setConfirmBaja(false);setPassBaja('');setMensajeBaja('');}}
-                  style={{padding:'8px 18px',background:'white',border:'1px solid #ddd',borderRadius:'8px',cursor:'pointer',fontWeight:600}}>
+                  style={{padding:'8px 18px',background:'var(--surface-2)',color:'var(--text-1)',border:'1px solid var(--border)',borderRadius:'8px',cursor:'pointer',fontWeight:600}}>
                   Cancelar
                 </button>
                 <button onClick={darDeBaja}

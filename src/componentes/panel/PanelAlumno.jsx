@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import Alumno from '../../models/Alumno';
+import { getMateriasPorCarrera } from '../../data/materias';
+import carrerasData from '../../data/carreras.json';
 import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
 import SeccionNotas from './SeccionNotas';
@@ -73,6 +75,11 @@ const DIA_ABREV = {
   sábado: 'Sáb',
   sabado: 'Sáb',
 };
+
+function obtenerCarreraId(nombreCarrera) {
+  const found = carrerasData.find(c => c.nombre === nombreCarrera);
+  return found ? found.id : null;
+}
 
 function NotaPill({ nota }) {
   if (nota == null || nota === '') return <span className="nota-pill nota-empty">—</span>;
@@ -208,13 +215,7 @@ function PanelAlumno({ perfil, seccion }) {
 
   // ── PANEL ──────────────────────────────────────────────────────
   if (seccion === 'panel') {
-    const proximoEvento = eventos[0];
-    let proximoLabel = '—';
-    if (proximoEvento) {
-      const d = new Date(proximoEvento.fecha + 'T00:00:00');
-      proximoLabel = `${DIAS_SEMANA[d.getDay() - 1] || ''} ${d.getDate()}`;
-    }
-
+    const proximaClase = calcularProximaClase(inscripciones);
     return (
       <>
         <Topbar
@@ -250,13 +251,15 @@ function PanelAlumno({ perfil, seccion }) {
               </div>
             </div>
             <div className="stat-card c-red">
-              <div className="stat-label">Próximo evento</div>
-              <div className={`stat-value${proximoLabel !== '—' ? ' small' : ''}`}>
-                {cargando ? '…' : proximoLabel}
+              <div className="stat-label">Próxima clase</div>
+              <div className={`stat-value${proximaClase ? ' small' : ''}`}>
+                {cargando ? '…' : (proximaClase ? `${proximaClase.diaAbrev} ${proximaClase.horaInicio}` : '—')}
               </div>
               <div className="stat-meta">
                 <span className="status-dot dot-red" />
-                {proximoEvento ? (proximoEvento.titulo || proximoEvento.tipo) : 'Sin eventos'}
+                {proximaClase
+                  ? `${proximaClase.materiaNombre || proximaClase.materiaId}${proximaClase.sede ? ' · ' + proximaClase.sede : ''}${proximaClase.aula ? ' · Aula ' + proximaClase.aula : ''}`
+                  : 'Sin clases programadas'}
               </div>
             </div>
           </div>
@@ -562,12 +565,14 @@ function PanelAlumno({ perfil, seccion }) {
     const aprobadosIds = new Set(
       notas.filter(n => n.parcial === 'final' && Number(n.nota) >= 4).map(n => n.materiaId)
     );
-    const materiasDelPlan = planInfo?.materias || [];
+    const carreraId = obtenerCarreraId(carreraActual);
+    const materiasDelPlan = carreraId ? getMateriasPorCarrera(carreraId) : [];
 
     const materiasConEstado = materiasDelPlan.map(m => {
       const aprobada = aprobadosIds.has(m.nombre) || aprobadosIds.has(m.codigo || '');
-      const correlativasOk = !m.correlativas?.length ||
-        m.correlativas.every(c => aprobadosIds.has(c));
+      const reqs = m.correlativas?.para_cursar || [];
+      const correlativasOk = !reqs.length ||
+        reqs.every(c => aprobadosIds.has(c));
       let estado = 'Bloqueada';
       if (aprobada) estado = 'Aprobada';
       else if (correlativasOk) estado = 'Disponible';
@@ -616,8 +621,8 @@ function PanelAlumno({ perfil, seccion }) {
                         {m.cuatrimestre}° cuatrimestre
                       </div>
                       <div style={{ fontSize: '0.76rem', color: 'var(--text-2)' }}>
-                        {m.correlativas?.length
-                          ? m.correlativas.join(', ')
+                        {m.correlativas?.para_cursar?.length
+                          ? m.correlativas.para_cursar.join(', ')
                           : <span style={{ opacity: 0.4 }}>Sin correlativas</span>
                         }
                       </div>
