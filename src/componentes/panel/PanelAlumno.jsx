@@ -29,6 +29,40 @@ function parseDuracion(horario) {
   return dur > 0 ? dur : 1;
 }
 
+const ORDEN_DIAS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+function calcularProximaClase(inscripciones) {
+  if (!inscripciones || inscripciones.length === 0) return null;
+  const ahora = new Date();
+  const diaActualIdx = ahora.getDay();
+  const horaActual = ahora.getHours() + ahora.getMinutes() / 60;
+
+  let mejor = null;
+  let mejorDistancia = Infinity;
+
+  inscripciones.forEach(insc => {
+    const diaAbrev = DIA_ABREV[String(insc.dia).toLowerCase()];
+    if (!diaAbrev) return;
+    const diaIdx = ORDEN_DIAS.indexOf(diaAbrev);
+    if (diaIdx === -1) return;
+    const horaInicioStr = parseHoraInicio(insc.horario);
+    if (!horaInicioStr) return;
+    const horaInicio = Number(horaInicioStr.split(':')[0]);
+
+    let distanciaDias = diaIdx - diaActualIdx;
+    if (distanciaDias < 0) distanciaDias += 7;
+    let distancia = distanciaDias * 24 + (horaInicio - horaActual);
+    if (distanciaDias === 0 && horaInicio < horaActual) distancia += 7 * 24;
+
+    if (distancia < mejorDistancia) {
+      mejorDistancia = distancia;
+      mejor = { ...insc, diaAbrev, horaInicio: horaInicioStr };
+    }
+  });
+
+  return mejor;
+}
+
 const DIA_ABREV = {
   lunes: 'Lun',
   martes: 'Mar',
@@ -248,7 +282,7 @@ function PanelAlumno({ perfil, seccion }) {
                   <div key={m.id} className="table-row cols-alumno">
                     <div>
                       <div className="materia-name">{m.materiaNombre || m.materiaId}</div>
-                      <div className="materia-code">{m.comisionId || ''}{m.horario ? ` · ${m.horario}` : ''}</div>
+                      <div className="materia-code">{m.comisionId || ''}{m.dia ? ` · ${m.dia}` : ''}{m.horario ? ` ${m.horario}` : ''}</div>
                     </div>
                     <div>
                       <input
