@@ -27,7 +27,7 @@ function carreraEnOferta(carreraRef, nombreCarrera) {
 }
 
 export default function SeccionMaterias({ perfil, notasHistorial }) {
-  const [tab, setTab] = useState('oferta');
+  const [tab, setTab] = useState('inscripciones');
   const [filtro, setFiltro] = useState('todas');
   const [inscripciones, setInscripciones] = useState([]);
   const [cargando, setCargando] = useState(false);
