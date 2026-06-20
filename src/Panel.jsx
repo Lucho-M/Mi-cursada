@@ -23,7 +23,7 @@ function Panel({ firebaseUser, perfil }) {
     <div className="shell">
       <Sidebar rol={rol} seccion={seccion} setSeccion={setSeccion} perfil={perfil} />
       <div className="main">
-        <PanelPorRol perfil={perfil} seccion={seccion} />
+        <PanelPorRol perfil={perfil} seccion={seccion} setSeccion={setSeccion} />
       </div>
     </div>
   );

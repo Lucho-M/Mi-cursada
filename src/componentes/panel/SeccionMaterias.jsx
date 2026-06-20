@@ -26,7 +26,7 @@ function carreraEnOferta(carreraRef, nombreCarrera) {
   return palabras.filter(p => ref.includes(p)).length >= 2;
 }
 
-export default function SeccionMaterias({ perfil, notasHistorial }) {
+export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) {
   const [tab, setTab] = useState('inscripciones');
   const [filtro, setFiltro] = useState('todas');
   const [inscripciones, setInscripciones] = useState([]);
@@ -142,8 +142,8 @@ export default function SeccionMaterias({ perfil, notasHistorial }) {
     <div className="content">
       <div style={{display:'flex',gap:'10px',marginBottom:'20px',borderBottom:'1px solid #eee',paddingBottom:'12px',flexWrap:'wrap'}}>
         {[
-          {key:'oferta', label:'Oferta del cuatrimestre'},
           {key:'inscripciones', label:'Mis inscripciones'},
+          {key:'oferta', label:'Oferta del cuatrimestre'},
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             style={{padding:'8px 18px',borderRadius:'8px',border:'none',cursor:'pointer',fontWeight:600,fontSize:'0.88rem',
@@ -188,7 +188,7 @@ export default function SeccionMaterias({ perfil, notasHistorial }) {
                     <div>
                       <div style={{fontWeight:700,fontSize:'0.9rem',color:'var(--text-1)',fontWeight:700}}>{nombre}</div>
                       <div style={{fontSize:'0.75rem',color:puede?'#4caf50':'#e74c3c',fontWeight:puede?400:700,marginTop:'2px'}}>
-                        {puede ? '✓ Podes inscribirte' : (<><span style={{color:'#f1c40f'}}>⚠</span> Verificar correlativas</>)}
+                        {puede ? '✓ Podes inscribirte' : (<span onClick={() => setSeccion && setSeccion('correlativas')} style={{cursor:'pointer',textDecoration:'underline'}}><span style={{color:'#f1c40f'}}>⚠</span> Verificar correlativas</span>)}
                       </div>
                     </div>
 

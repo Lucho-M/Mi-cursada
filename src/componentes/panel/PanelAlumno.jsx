@@ -147,7 +147,7 @@ function EventoItem({ ev }) {
   );
 }
 
-function PanelAlumno({ perfil, seccion }) {
+function PanelAlumno({ perfil, seccion, setSeccion }) {
   const [inscripciones, setInscripciones] = useState([]);
   const [notas, setNotas] = useState([]);
   const [eventos, setEventos] = useState([]);
@@ -396,7 +396,7 @@ function PanelAlumno({ perfil, seccion }) {
     return (
       <>
         <Topbar titulo="Mis materias" subtitulo={carreraActual} />
-        <SeccionMaterias perfil={perfil} notasHistorial={notas} />
+        <SeccionMaterias perfil={perfil} notasHistorial={notas} setSeccion={setSeccion} />
       </>
     );
   }
