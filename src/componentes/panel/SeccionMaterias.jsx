@@ -170,7 +170,7 @@ export default function SeccionMaterias({ perfil, notasHistorial }) {
               </button>
             ))}
           </div>
-          <p style={{fontSize:'0.85rem',color:'#555',marginBottom:'16px'}}>
+          <p style={{fontSize:'0.85rem',color:'var(--text-2)',marginBottom:'16px'}}>
             Materias disponibles para tu carrera este cuatrimestre. Las marcadas en verde cumplen las correlativas.
           </p>
           {ofertaKeys.length === 0 ? (
@@ -183,19 +183,19 @@ export default function SeccionMaterias({ perfil, notasHistorial }) {
               const grupo = ofertaAgrupada[nombre];
               const puede = puedeInscribirse(nombre);
               return (
-                <div key={nombre} style={{border:'1px solid '+(puede?'#c8e6c9':'#eee'),borderRadius:'10px',padding:'14px',marginBottom:'12px',background:puede?'#f9fff9':'white',textAlign:'left'}}>
+                <div key={nombre} style={{border:'1px solid '+(puede?'var(--green)':'var(--border)'),borderRadius:'10px',padding:'14px',marginBottom:'12px',background:'var(--surface)',textAlign:'left'}}>
                   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'8px'}}>
                     <div>
-                      <div style={{fontWeight:700,fontSize:'0.9rem',color:'#222'}}>{nombre}</div>
-                      <div style={{fontSize:'0.75rem',color:puede?'#2e7d32':'#999',marginTop:'2px'}}>
-                        {puede ? '✓ Podes inscribirte' : '⚠ Verificar correlativas'}
+                      <div style={{fontWeight:700,fontSize:'0.9rem',color:'var(--text-1)',fontWeight:700}}>{nombre}</div>
+                      <div style={{fontSize:'0.75rem',color:puede?'#4caf50':'#e74c3c',fontWeight:puede?400:700,marginTop:'2px'}}>
+                        {puede ? '✓ Podes inscribirte' : (<><span style={{color:'#f1c40f'}}>⚠</span> Verificar correlativas</>)}
                       </div>
                     </div>
 
                   </div>
                   <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
                     {grupo.comisiones.map((c, i) => (
-                      <div key={i} style={{fontSize:'0.75rem',background:'#f5f5f5',borderRadius:'6px',padding:'4px 8px',color:'#555'}}>
+                      <div key={i} style={{fontSize:'0.75rem',background:'var(--surface-2)',borderRadius:'6px',padding:'4px 8px',color:'var(--text-2)'}}>
                         Com. {c.comision} · {c.dia} {c.hora_rango}hs · {c.sede || c.modalidad}
                       </div>
                     ))}

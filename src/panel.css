@@ -403,7 +403,7 @@
 .table-row:hover { background: var(--surface-2); }
 
 /* Column presets */
-.cols-alumno   { grid-template-columns: 2fr 80px 1fr 80px 80px 100px; }
+.cols-alumno   { grid-template-columns: 2fr 1fr 70px 70px 70px 70px 70px 100px; }
 .cols-notas    { grid-template-columns: 2fr 100px 100px 100px 100px; }
 .cols-materias { grid-template-columns: 2fr 80px 1fr 80px 80px 80px 100px; }
 .cols-corr     { grid-template-columns: 2fr 120px 1fr 100px; }

@@ -161,13 +161,15 @@ function PanelAlumno({ perfil, seccion }) {
   // Inscripciones enriquecidas con notas
   const materiasConNotas = inscripciones.map(insc => {
     const parcial1 = notas.find(n => n.materiaId === insc.materiaId && n.parcial === '1')?.nota;
+    const recup1   = notas.find(n => n.materiaId === insc.materiaId && n.parcial === 'rec1')?.nota;
     const parcial2 = notas.find(n => n.materiaId === insc.materiaId && n.parcial === '2')?.nota;
+    const recup2   = notas.find(n => n.materiaId === insc.materiaId && n.parcial === 'rec2')?.nota;
     const final    = notas.find(n => n.materiaId === insc.materiaId && n.parcial === 'final')?.nota;
     let estado = 'Cursando';
     if (final != null && Number(final) >= 4) estado = 'Aprobada';
     else if (parcial1 != null && parcial2 != null && Number(parcial1) >= 4 && Number(parcial2) >= 4) estado = 'Regular';
     else if ((parcial1 != null && Number(parcial1) < 4) || (parcial2 != null && Number(parcial2) < 4)) estado = 'Libre';
-    return { ...insc, parcial1, parcial2, final, estado };
+    return { ...insc, parcial1, recup1, parcial2, recup2, final, estado };
   });
 
   // ── PANEL ──────────────────────────────────────────────────────
@@ -231,8 +233,8 @@ function PanelAlumno({ perfil, seccion }) {
             </div>
             <div className="card">
               <div className="table-head cols-alumno">
-                <div>Materia</div><div>Asistencia</div><div>Docente</div>
-                <div>Parcial 1</div><div>Parcial 2</div><div>Estado</div>
+                <div>Materia</div><div>Docente</div>
+                <div>P1</div><div>Rec P1</div><div>P2</div><div>Rec P2</div><div>Final</div><div>Estado</div>
               </div>
               {cargando ? (
                 <div className="empty-state"><p>Cargando materias…</p></div>
@@ -248,12 +250,28 @@ function PanelAlumno({ perfil, seccion }) {
                       <div className="materia-name">{m.materiaNombre || m.materiaId}</div>
                       <div className="materia-code">{m.comisionId || ''}{m.horario ? ` · ${m.horario}` : ''}</div>
                     </div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-1)' }}>
-                      {m.asistencia != null ? `${m.asistencia}%` : '—'}
+                    <div>
+                      <input
+                        type="text"
+                        defaultValue={m.docente || ''}
+                        placeholder="Agregar docente"
+                        onBlur={async e => {
+                          const val = e.target.value.trim();
+                          if (val === (m.docente || '')) return;
+                          try {
+                            const { doc, updateDoc } = await import('firebase/firestore');
+                            const { db } = await import('../../firebase');
+                            await updateDoc(doc(db, 'inscripciones', m.id), { docente: val });
+                          } catch(err) { console.error(err); }
+                        }}
+                        style={{width:'100%',background:'none',border:'none',borderBottom:'1px solid var(--border)',color:'var(--text-1)',fontSize:'0.82rem',padding:'2px 0',outline:'none',cursor:'text'}}
+                      />
                     </div>
-                    <div className="materia-prof">{m.docente || '—'}</div>
                     <div><NotaPill nota={m.parcial1} /></div>
+                    <div>{m.parcial1 != null && Number(m.parcial1) < 4 ? <NotaPill nota={m.recup1} /> : <span style={{color:'var(--text-3)'}}>—</span>}</div>
                     <div><NotaPill nota={m.parcial2} /></div>
+                    <div>{m.parcial2 != null && Number(m.parcial2) < 4 ? <NotaPill nota={m.recup2} /> : <span style={{color:'var(--text-3)'}}>—</span>}</div>
+                    <div><NotaPill nota={m.final} /></div>
                     <div><StatusBadge estado={m.estado} /></div>
                   </div>
                 ))
