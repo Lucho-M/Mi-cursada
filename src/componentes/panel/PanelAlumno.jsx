@@ -709,16 +709,29 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
 
   // ── CORRELATIVAS ────────────────────────────────────────────────
   if (seccion === 'correlativas') {
-    const aprobadosIds = new Set(
-      notas.filter(n => n.parcial === 'final' && Number(n.nota) >= 4).map(n => n.materiaId)
-    );
+    const ESTADOS_APROBADA = ['promocionado', 'equivalencia'];
+    const aprobadasIds = new Set();
+    const cursadasIds = new Set();
+    notas.forEach(n => {
+      const est = n.estado;
+      const notaFinal = n.definitiva != null ? Number(n.definitiva) : (n.nota != null ? Number(n.nota) : null);
+      const aprobada = ESTADOS_APROBADA.includes(est) ||
+        (est === 'regular_con_final' && notaFinal != null && notaFinal >= 4) ||
+        (est === 'libre' && notaFinal != null && notaFinal >= 4);
+      const cursada = aprobada || est === 'regular_sin_final';
+      if (aprobada) aprobadasIds.add(n.materiaId);
+      if (cursada) cursadasIds.add(n.materiaId);
+    });
+
     const materiasDelPlan = planInfo?.materias || [];
+    const nombrePorCodigo = {};
+    materiasDelPlan.forEach(m => { nombrePorCodigo[m.codigo] = m.nombre; });
 
     const materiasConEstado = materiasDelPlan.map(m => {
-      const aprobada = aprobadosIds.has(m.nombre) || aprobadosIds.has(m.codigo || '');
-      const reqs = m.correlativas?.para_cursar || [];
-      const correlativasOk = !reqs.length ||
-        reqs.every(c => aprobadosIds.has(c));
+      const aprobada = aprobadasIds.has(m.nombre) || aprobadasIds.has(m.codigo || '');
+      const reqsCursar = m.correlativas?.para_cursar || [];
+      const correlativasOk = !reqsCursar.length ||
+        reqsCursar.every(c => cursadasIds.has(c) || cursadasIds.has(nombrePorCodigo[c]));
       let estado = 'Bloqueada';
       if (aprobada) estado = 'Aprobada';
       else if (correlativasOk) estado = 'Disponible';
@@ -754,22 +767,28 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                   <div className="table-head cols-corr">
                     <div>Materia</div>
                     <div>Cuatrimestre</div>
-                    <div>Correlativas requeridas</div>
-                    <div>Estado</div>
+                    <div style={{textAlign:'center'}}>Cursado</div>
+                    <div style={{textAlign:'center'}}>Aprobado</div>
+                    <div style={{textAlign:'center'}}>Estado</div>
                   </div>
                   {byAnio[anio].map((m, i) => (
                     <div key={i} className="table-row cols-corr">
                       <div>
-                        <div className="materia-name">{m.nombre}</div>
-                        {m.creditos > 0 && <div className="materia-code">{m.creditos} créditos</div>}
+                        <div className="materia-name">{m.codigo} · {m.nombre}</div>
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-2)' }}>
                         {m.cuatrimestre}° cuatrimestre
                       </div>
-                      <div style={{ fontSize: '0.76rem', color: 'var(--text-2)' }}>
+                      <div style={{ fontSize: '0.76rem', color: 'var(--text-2)', textAlign: 'center' }}>
                         {m.correlativas?.para_cursar?.length
                           ? m.correlativas.para_cursar.join(', ')
-                          : <span style={{ opacity: 0.4 }}>Sin correlativas</span>
+                          : <span style={{ opacity: 0.4 }}>—</span>
+                        }
+                      </div>
+                      <div style={{ fontSize: '0.76rem', color: 'var(--text-2)', textAlign: 'center' }}>
+                        {m.correlativas?.para_aprobar?.length
+                          ? m.correlativas.para_aprobar.join(', ')
+                          : <span style={{ opacity: 0.4 }}>—</span>
                         }
                       </div>
                       <div><StatusBadge estado={m.estado} /></div>
