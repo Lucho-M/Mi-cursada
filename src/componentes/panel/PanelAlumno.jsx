@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, limit } from 'firebase/firestore';
 import Alumno from '../../models/Alumno';
 import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
@@ -111,9 +111,11 @@ function Topbar({ titulo, subtitulo, badge }) {
   );
 }
 
-function EventoItem({ ev }) {
+function EventoItem({ ev, diasAviso = 3 }) {
   const d = new Date(ev.fecha + 'T00:00:00');
   const esParcial = ev.tipo === 'Parcial';
+  const diasParaVencer = Math.ceil((d - new Date(new Date().toDateString())) / 86400000);
+  const proximoAVencer = diasParaVencer >= 0 && diasParaVencer <= diasAviso;
   return (
     <div className="prox-item">
       <div className="prox-date">
@@ -121,7 +123,10 @@ function EventoItem({ ev }) {
         <div className="mon">{MESES[d.getMonth()]}</div>
       </div>
       <div className="prox-info">
-        <div className="ev-title">{ev.titulo}</div>
+        <div className="ev-title">
+          {proximoAVencer && <span title={`Vence en ${diasParaVencer} dia(s)`} style={{marginRight:'6px'}}>⚠️</span>}
+          {ev.titulo}
+        </div>
         <div className="ev-sub">
           {ev.hora || ''}
           {ev.aula ? ` · Aula ${ev.aula}` : ''}
@@ -149,6 +154,9 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
   const [modalEventoAbierto, setModalEventoAbierto] = useState(false);
   const [nuevoEvento, setNuevoEvento] = useState({ materiaId: '', tipo: 'Parcial', fecha: '', hora: '', aula: '', descripcion: '' });
   const [guardandoEvento, setGuardandoEvento] = useState(false);
+  const [cronogramasPropios, setCronogramasPropios] = useState([]);
+  const [diasAviso, setDiasAviso] = useState(perfil?.diasAvisoEventos ?? 3);
+  const [guardandoDiasAviso, setGuardandoDiasAviso] = useState(false);
 
   useEffect(() => {
     if (!perfil?.uid) return;
@@ -181,6 +189,36 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
     cargar();
   }, [perfil]);
 
+  useEffect(() => {
+    if (inscripciones.length === 0) { setCronogramasPropios([]); return; }
+    const cargarCronogramas = async () => {
+      try {
+        const snaps = await Promise.all(
+          inscripciones
+            .filter(insc => insc.comisionId)
+            .map(insc => getDoc(doc(db, 'cronogramas', insc.comisionId)))
+        );
+        setCronogramasPropios(snaps.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() })));
+      } catch (e) {
+        console.error('Error cargando cronogramas:', e);
+      }
+    };
+    cargarCronogramas();
+  }, [inscripciones]);
+
+  const guardarDiasAviso = async (valor) => {
+    setDiasAviso(valor);
+    if (!perfil?.uid) return;
+    setGuardandoDiasAviso(true);
+    try {
+      await updateDoc(doc(db, 'usuarios', perfil.uid), { diasAvisoEventos: valor });
+    } catch (e) {
+      console.error('Error guardando dias de aviso:', e);
+    } finally {
+      setGuardandoDiasAviso(false);
+    }
+  };
+
   const carreras = Array.isArray(perfil?.carreras) && perfil.carreras.length > 0 ? perfil.carreras : (perfil?.carrera ? [perfil.carrera] : []);
   const carreraActual = carreras[0] || '';
 
@@ -194,6 +232,31 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
   const materiasAprobadas = alumnoObj.obtenerMateriasAprobadas().length;
   const promedio = notas.length ? alumnoObj.obtenerPromedio() : '—';
   const totalCarrera = (planInfo?.materias || []).length;
+
+  const inferirTipoEvento = (texto) => {
+    const t = (texto || '').toLowerCase();
+    if (t.includes('parcial') || t.includes('examen')) return 'Parcial';
+    if (t.includes('tp') || t.includes('entrega') || t.includes('trabajo')) return 'TP';
+    return 'Evento';
+  };
+
+  const hoyStr = new Date().toISOString().split('T')[0];
+  const eventosCronograma = cronogramasPropios.flatMap(c => {
+    const insc = inscripciones.find(i => i.comisionId === c.id);
+    return (c.clases || [])
+      .filter(cl => cl.fechaClave && cl.fecha >= hoyStr)
+      .map(cl => ({
+        id: `cron_${c.id}_${cl.fecha}`,
+        titulo: `${c.materiaNombre || insc?.materiaNombre || ''}: ${cl.fechaClave}`,
+        tipo: inferirTipoEvento(cl.fechaClave),
+        fecha: cl.fecha,
+        hora: '',
+        aula: insc?.aula || '',
+        materiaId: c.materiaId,
+      }));
+  });
+
+  const eventosTotales = [...eventos, ...eventosCronograma].sort((a, b) => a.fecha.localeCompare(b.fecha));
 
   // Inscripciones enriquecidas con notas
   const materiasConNotas = inscripciones.map(insc => {
@@ -320,7 +383,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                   <div key={m.id} className="table-row cols-alumno">
                     <div>
                       <div className="materia-name">{m.materiaNombre || m.materiaId}</div>
-                      <div className="materia-code">{m.comisionId || ''}{m.dia ? ` · ${m.dia}` : ''}{m.horario ? ` ${m.horario}` : ''}</div>
+                      <div className="materia-code">{m.comisionNumero ? 'Com. ' + m.comisionNumero : ''}{m.dia ? ` · ${m.dia}` : ''}{m.horario ? ` ${m.horario}` : ''}</div>
                     </div>
                     <div>
                       <input
@@ -363,13 +426,13 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
               <div className="side-card">
                 {cargando ? (
                   <div className="empty-state"><p>Cargando…</p></div>
-                ) : eventos.length === 0 ? (
+                ) : eventosTotales.length === 0 ? (
                   <div className="empty-state">
                     <div className="icon">📅</div>
                     <p>Sin eventos próximos</p>
                   </div>
                 ) : (
-                  eventos.slice(0, 4).map(ev => <EventoItem key={ev.id} ev={ev} />)
+                  eventosTotales.slice(0, 4).map(ev => <EventoItem key={ev.id} ev={ev} diasAviso={diasAviso} />)
                 )}
               </div>
             </div>
@@ -526,7 +589,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                           {ev && (
                             <div className="abs-event ev-blue" style={{ height: `calc(${duracion} * 52px - 2px)` }}>
                               <div className="ev-name-sch">{ev.materiaNombre || ev.materiaId}</div>
-                              <div className="ev-room-sch">Com. {ev.comisionId || '—'} · Aula {ev.aula || '—'}</div>
+                              <div className="ev-room-sch">Com. {ev.comisionNumero || '—'} · Aula {ev.aula || '—'}</div>
                               <div className="ev-room-sch">{ev.sede || '—'}</div>
                               <div className="ev-room-sch" style={{ marginTop: 4, opacity: 0.6 }}>{ev.horario}hs</div>
                             </div>
@@ -558,13 +621,21 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
 
   // ── PARCIALES ───────────────────────────────────────────────────
   if (seccion === 'parciales') {
-    const parciales = eventos.filter(ev => ev.tipo === 'Parcial');
-    const tps       = eventos.filter(ev => ev.tipo === 'TP');
+    const parciales = eventosTotales.filter(ev => ev.tipo === 'Parcial');
+    const tps       = eventosTotales.filter(ev => ev.tipo === 'TP');
     return (
       <>
         <Topbar titulo="Parciales y TPs" subtitulo="Próximas fechas de evaluación" />
         <div className="content">
-          <div style={{display:'flex',justifyContent:'flex-end',marginBottom:'14px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px',flexWrap:'wrap',gap:'10px'}}>
+            <label style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'0.85rem',color:'var(--text-2)'}}>
+              ⚠️ Avisarme
+              <input type="number" min="0" max="30" value={diasAviso}
+                onChange={e => guardarDiasAviso(Number(e.target.value))}
+                disabled={guardandoDiasAviso}
+                style={{width:'50px',padding:'4px 6px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',textAlign:'center'}} />
+              dias antes de la fecha
+            </label>
             <button onClick={() => setModalEventoAbierto(true)}
               style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'8px',cursor:'pointer',fontWeight:600}}>
               + Agregar evento
@@ -584,7 +655,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                 ) : (
                   parciales.map(ev => (
                     <div key={ev.id} style={{display:'flex',alignItems:'center',gap:'6px'}}>
-                      <div style={{flex:1}}><EventoItem ev={ev} /></div>
+                      <div style={{flex:1}}><EventoItem ev={ev} diasAviso={diasAviso} /></div>
                       {ev.alumnoUid === perfil.uid && (
                         <button onClick={() => eliminarEvento(ev.id)}
                           style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontSize:'0.85rem',fontWeight:700}}>
@@ -609,7 +680,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                 ) : (
                   tps.map(ev => (
                     <div key={ev.id} style={{display:'flex',alignItems:'center',gap:'6px'}}>
-                      <div style={{flex:1}}><EventoItem ev={ev} /></div>
+                      <div style={{flex:1}}><EventoItem ev={ev} diasAviso={diasAviso} /></div>
                       {ev.alumnoUid === perfil.uid && (
                         <button onClick={() => eliminarEvento(ev.id)}
                           style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontSize:'0.85rem',fontWeight:700}}>

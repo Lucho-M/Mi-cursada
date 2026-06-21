@@ -1,40 +1,10 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { normalizarTexto, carreraEnOferta } from '../../utils/matchCarrera';
+import { slugTexto } from '../../utils/slugTexto';
 
 const SIU_URL = 'https://inscripcion.unab.edu.ar/rectorado/acceso';
-
-function normalizarTexto(texto) {
-  return (texto || '').toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9 ]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-// La oferta usa nombres abreviados ("Tec. en X", "Lic. en X") mientras que el
-// nombre formal de la carrera dice "Tecnicatura en X" / "Licenciatura en X".
-// Se quita ese prefijo antes de comparar para no perder la palabra clave.
-const PREFIJOS_CARRERA = [
-  'tecnicatura universitaria en', 'tecnicatura en',
-  'licenciatura en', 'ccc licenciatura en ensenanza de',
-].sort((a, b) => b.length - a.length);
-
-function nucleoCarrera(texto) {
-  let t = normalizarTexto(texto);
-  for (const pre of PREFIJOS_CARRERA) {
-    if (t.startsWith(pre + ' ')) { t = t.slice(pre.length).trim(); break; }
-  }
-  return t;
-}
-
-function carreraEnOferta(carreraRef, nombreCarrera) {
-  const ref = normalizarTexto(carreraRef);
-  const nucleo = nucleoCarrera(nombreCarrera);
-  const palabras = nucleo.split(' ').filter(p => p.length > 3);
-  if (palabras.length === 0) return false;
-  return palabras.every(p => ref.includes(p));
-}
 
 export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) {
   const [tab, setTab] = useState('inscripciones');
@@ -45,9 +15,12 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
   const [planInfo, setPlanInfo] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [nuevaInscripcion, setNuevaInscripcion] = useState({
-    materiaNombre: '', comision: '', dia: '', horario: '', aula: '', docente: '', modalidad: 'presencial', sede: ''
+    materiaNombre: '', comision: '', dia: '', horario: '', aula: '', docente: '', modalidad: 'presencial', sede: '', codigoAsignatura: ''
   });
   const [mensaje, setMensaje] = useState('');
+  const [detalleInsc, setDetalleInsc] = useState(null);
+  const [cronogramaDetalle, setCronogramaDetalle] = useState(null);
+  const [cargandoDetalle, setCargandoDetalle] = useState(false);
 
   const carreras = Array.isArray(perfil?.carreras) && perfil.carreras.length > 0
     ? perfil.carreras : (perfil?.carrera ? [perfil.carrera] : []);
@@ -141,11 +114,17 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
       return;
     }
     try {
+      // El materiaId/comisionId deben coincidir con el esquema que usa el profesor
+      // al anotarse en una comision (codigo de asignatura + numero de comision),
+      // para poder cruzar inscripciones <-> comisiones/cronogramas.
+      const materiaIdKey = nuevaInscripcion.codigoAsignatura || slugTexto(nuevaInscripcion.materiaNombre);
+      const comisionDocId = slugTexto(materiaIdKey + '_' + nuevaInscripcion.comision);
       const docRef = await addDoc(collection(db, 'inscripciones'), {
         alumnoUid: perfil.uid,
-        materiaId: nuevaInscripcion.materiaNombre.toLowerCase().replace(/ /g, '_'),
+        materiaId: materiaIdKey,
         materiaNombre: nuevaInscripcion.materiaNombre,
-        comisionId: nuevaInscripcion.comision,
+        comisionId: comisionDocId,
+        comisionNumero: nuevaInscripcion.comision,
         dia: nuevaInscripcion.dia,
         horario: nuevaInscripcion.horario,
         aula: nuevaInscripcion.aula,
@@ -155,12 +134,30 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
         cuatrimestre: 1,
         anio: 2026,
       });
-     setInscripciones(prev => [...prev, { id: docRef.id, ...nuevaInscripcion, comisionId: nuevaInscripcion.comision, alumnoUid: perfil.uid }]);
-      setNuevaInscripcion({ materiaNombre:'', comision:'', dia:'', horario:'', aula:'', docente:'', modalidad:'presencial', sede:'' });
+      setInscripciones(prev => [...prev, {
+        id: docRef.id, ...nuevaInscripcion, materiaId: materiaIdKey,
+        comisionId: comisionDocId, comisionNumero: nuevaInscripcion.comision, alumnoUid: perfil.uid,
+      }]);
+      setNuevaInscripcion({ materiaNombre:'', comision:'', dia:'', horario:'', aula:'', docente:'', modalidad:'presencial', sede:'', codigoAsignatura:'' });
       setMensaje('ok:Materia agregada correctamente.');
     } catch (e) {
       setMensaje('error:Error al guardar. Intenta de nuevo.');
       console.error(e);
+    }
+  };
+
+  const abrirDetalleMateria = async (insc) => {
+    setDetalleInsc(insc);
+    setCronogramaDetalle(null);
+    if (!insc.comisionId) return;
+    setCargandoDetalle(true);
+    try {
+      const snap = await getDoc(doc(db, 'cronogramas', insc.comisionId));
+      setCronogramaDetalle(snap.exists() ? snap.data() : null);
+    } catch (e) {
+      console.error('Error cargando cronograma:', e);
+    } finally {
+      setCargandoDetalle(false);
     }
   };
 
@@ -268,7 +265,7 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
           ) : (
             <div className="card">
               <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr auto'}}>
-                <div>Materia</div><div>Dia</div><div>Horario</div><div>Comision</div><div>Modalidad</div><div></div>
+                <div>Materia</div><div>Dia</div><div>Horario</div><div>Aula</div><div>Comision</div><div></div>
               </div>
               {inscripciones.map(insc => (
                 <div key={insc.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr auto'}}>
@@ -278,9 +275,13 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                   </div>
                   <div style={{fontSize:'0.82rem',textTransform:'capitalize'}}>{insc.dia || '-'}</div>
                   <div style={{fontSize:'0.82rem'}}>{insc.horario || '-'}</div>
-                  <div style={{fontSize:'0.82rem'}}>{insc.comisionId ? 'Com. ' + insc.comisionId : '-'}</div>
-                  <div style={{fontSize:'0.82rem',textTransform:'capitalize'}}>{insc.modalidad || '-'}</div>
-                  <div>
+                  <div style={{fontSize:'0.82rem'}}>{insc.aula || '-'}</div>
+                  <div style={{fontSize:'0.82rem'}}>{insc.comisionNumero || insc.comisionId ? 'Com. ' + (insc.comisionNumero || insc.comisionId) : '-'}</div>
+                  <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
+                    <button onClick={() => abrirDetalleMateria(insc)}
+                      style={{background:'none',border:'none',cursor:'pointer',color:'#1565c0',fontSize:'0.78rem',fontWeight:600,whiteSpace:'nowrap'}}>
+                      📍 Ver detalles
+                    </button>
                     <button onClick={() => eliminarInscripcion(insc.id)}
                       style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontSize:'0.85rem',fontWeight:700}}>
                       x
@@ -331,6 +332,7 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                         aula: com.aula || '',
                         modalidad: com.modalidad || 'presencial',
                         sede: com.sede || '',
+                        codigoAsignatura: com.codigo_asignatura || '',
                       }));
                     }
                   }}
@@ -372,6 +374,58 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                 disabled={!nuevaInscripcion.materiaNombre || !nuevaInscripcion.comision}
                 style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontWeight:600,opacity:(!nuevaInscripcion.materiaNombre || !nuevaInscripcion.comision)?0.5:1}}>
                 Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {detalleInsc && (
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}
+          onClick={() => setDetalleInsc(null)}>
+          <div style={{background:'var(--surface)',borderRadius:'12px',padding:'28px',width:'520px',maxWidth:'90vw',maxHeight:'85vh',overflowY:'auto'}}
+            onClick={e => e.stopPropagation()}>
+            <h3 style={{marginBottom:'4px',color:'var(--text-1)'}}>{detalleInsc.materiaNombre}</h3>
+            <p style={{fontSize:'0.8rem',color:'var(--text-2)',marginBottom:'18px'}}>
+              Comision {detalleInsc.comisionNumero || detalleInsc.comisionId || '-'}
+            </p>
+
+            <div className="section-head" style={{marginBottom:'10px'}}><h2>📍 Donde curso</h2></div>
+            <div style={{background:'var(--surface-2)',borderRadius:'8px',padding:'14px',marginBottom:'22px',fontSize:'0.85rem',color:'var(--text-1)',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
+              <div><strong>Dia:</strong> {detalleInsc.dia || '-'}</div>
+              <div><strong>Horario:</strong> {detalleInsc.horario ? detalleInsc.horario + 'hs' : '-'}</div>
+              <div><strong>Sede:</strong> {detalleInsc.sede || '-'}</div>
+              <div><strong>Aula:</strong> {detalleInsc.aula || '-'}</div>
+              <div><strong>Modalidad:</strong> {detalleInsc.modalidad || '-'}</div>
+              <div><strong>Docente:</strong> {detalleInsc.docente || '-'}</div>
+            </div>
+
+            <div className="section-head" style={{marginBottom:'10px'}}><h2>🗓 Cronograma de la materia</h2></div>
+            {cargandoDetalle ? (
+              <p style={{fontSize:'0.85rem',color:'var(--text-2)'}}>Cargando...</p>
+            ) : !cronogramaDetalle || (cronogramaDetalle.clases || []).length === 0 ? (
+              <div className="empty-state">
+                <div className="icon">🗓</div>
+                <p>El profesor todavia no cargo el cronograma de esta comision.</p>
+              </div>
+            ) : (
+              <div style={{display:'flex',flexDirection:'column',gap:'6px'}}>
+                {[...cronogramaDetalle.clases].sort((a, b) => a.fecha.localeCompare(b.fecha)).map((c, i) => (
+                  <div key={i} style={{background:'var(--surface-2)',borderRadius:'6px',padding:'8px 12px',fontSize:'0.82rem',color:'var(--text-1)'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',gap:'8px'}}>
+                      <strong>{new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' })}</strong>
+                      {c.fechaClave && <span style={{color:'#f1c40f',fontWeight:600}}>⚠ {c.fechaClave}</span>}
+                    </div>
+                    <div style={{color:'var(--text-2)'}}>{c.tema}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{display:'flex',justifyContent:'flex-end',marginTop:'20px'}}>
+              <button onClick={() => setDetalleInsc(null)}
+                style={{padding:'8px 18px',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)'}}>
+                Cerrar
               </button>
             </div>
           </div>

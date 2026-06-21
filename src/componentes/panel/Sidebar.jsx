@@ -22,7 +22,8 @@ const NAV_PROFESOR = [
   { seccion: 'alumnos',    label: 'Alumnos',        icon: '👥' },
   { seccion: 'notas',      label: 'Cargar notas',   icon: '✎' },
   { grupo: 'Planificación' },
-  { seccion: 'calendario', label: 'Calendario',     icon: '📅' },
+  { seccion: 'calendario',  label: 'Calendario',     icon: '📅' },
+  { seccion: 'cronograma',  label: 'Cronograma',     icon: '🗓' },
   { grupo: 'Cuenta' },
   { seccion: 'config',     label: 'Configuración',  icon: '⚙' },
 ];
@@ -34,6 +35,7 @@ const NAV_ADMIN = [
   { seccion: 'planes',   label: 'Planes de estudio', icon: '📋' },
   { seccion: 'materias', label: 'Materias',          icon: '≡' },
   { grupo: 'Usuarios' },
+  { seccion: 'usuarios', label: 'Usuarios y roles',  icon: '🛡' },
   { seccion: 'docentes', label: 'Docentes',          icon: '👩‍🏫' },
   { seccion: 'alumnos',  label: 'Alumnos',           icon: '👥' },
   { seccion: 'carreras', label: 'Carreras',          icon: '🏫' },

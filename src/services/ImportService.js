@@ -1,8 +1,9 @@
 import { db } from '../firebase';
-import { collection, writeBatch, doc, getDocs } from 'firebase/firestore';
+import { collection, writeBatch, doc, getDoc, setDoc, getDocs } from 'firebase/firestore';
 import Materia from '../models/Materia';
 import PlanEstudio from '../models/PlanEstudio';
 import ComisionOferta from '../models/ComisionOferta';
+import Cronograma from '../models/Cronograma';
 
 function normalizarHeader(h) {
   return h.trim().toLowerCase()
@@ -83,6 +84,15 @@ class ImportService {
     const match = String(rango || '').match(/(\d+)\s*a\s*(\d+)/i);
     if (!match) return ['', ''];
     return [match[1], match[2]];
+  }
+
+  // Convierte DD/MM/AAAA (o DD-MM-AAAA) a YYYY-MM-DD. Devuelve '' si no matchea.
+  _parsearFechaDDMMAAAA(texto) {
+    const match = String(texto || '').trim().match(/^(\d{1,2})[/\-](\d{1,2})[/\-](\d{2,4})$/);
+    if (!match) return '';
+    let [, d, m, y] = match;
+    if (y.length === 2) y = '20' + y;
+    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
   }
 
   async _borrarColeccion(nombreColeccion) {
@@ -168,7 +178,7 @@ class ImportService {
     if (reemplazarTodo) await this._borrarColeccion('planesEstudio');
     const colRef = collection(db, 'planesEstudio');
 
-    let ultimaCarrera = '', ultimoAnioVigencia = '';
+    let ultimaCarrera = '', ultimoAnioVigencia = '', ultimoAnio = '', ultimoCuatrimestre = '';
     const planesPorClave = new Map();
 
     for (const item of datos) {
@@ -188,6 +198,11 @@ class ImportService {
       const cursadoCelda = String(buscarCampo(item, 'cursado')).trim();
       const aprobadoCelda = String(buscarCampo(item, 'aprobado')).trim();
 
+      // AÑO y CUATRIMESTRE tambien vienen con celdas combinadas en la planilla real
+      // (un solo valor que abarca todas las materias de ese año/cuatrimestre).
+      if (anioCelda) ultimoAnio = anioCelda;
+      if (cuatrimestreCelda) ultimoCuatrimestre = cuatrimestreCelda;
+
       const clave = ultimaCarrera + '|' + ultimoAnioVigencia;
       if (!planesPorClave.has(clave)) {
         planesPorClave.set(clave, {
@@ -199,8 +214,8 @@ class ImportService {
       planesPorClave.get(clave).materias.push({
         codigo: codigoCelda,
         nombre: materiaCelda,
-        anio: parseInt(anioCelda) || 1,
-        cuatrimestre: parseInt(cuatrimestreCelda) || 1,
+        anio: parseInt(ultimoAnio) || 1,
+        cuatrimestre: parseInt(ultimoCuatrimestre) || 1,
         horas: parseInt(horasCelda) || 0,
         correlativas: {
           para_cursar: cursadoCelda ? cursadoCelda.split(',').map(c => c.trim()).filter(Boolean) : [],
@@ -218,6 +233,50 @@ class ImportService {
     }
     await batch.commit();
     return cantidadMaterias;
+  }
+
+  // Importa el cronograma de clases de una comision: una fila = una clase
+  // (Fecha, Unidad/Tema, Modalidad, Fecha clave o Entrega). reemplazarTodo
+  // sobreescribe todo el cronograma anterior de la comision; si no, las
+  // clases nuevas se combinan con las existentes (se actualiza por fecha).
+  async importarCronograma(archivo, comisionInfo, reemplazarTodo = false) {
+    const datos = await this.leerArchivo(archivo);
+    const clasesNuevas = [];
+
+    for (const item of datos) {
+      const fechaCelda = String(buscarCampo(item, 'fecha')).trim();
+      const temaCelda = String(buscarCampo(item, 'unidad/tema', 'unidad tema', 'tema', 'unidad')).trim();
+      if (!fechaCelda || !temaCelda) continue;
+
+      const fecha = this._parsearFechaDDMMAAAA(fechaCelda);
+      if (!fecha) continue;
+
+      const modalidadCelda = String(buscarCampo(item, 'modalidad')).trim();
+      const fechaClaveCelda = String(buscarCampo(item, 'fechas clave', 'fecha clave', 'entregas', 'entrega')).trim();
+
+      clasesNuevas.push({ fecha, tema: temaCelda, modalidad: modalidadCelda, fechaClave: fechaClaveCelda });
+    }
+
+    const ref = doc(db, 'cronogramas', comisionInfo.comisionId);
+    let clasesFinal = clasesNuevas;
+    if (!reemplazarTodo) {
+      const snap = await getDoc(ref);
+      const existentes = snap.exists() ? (snap.data().clases || []) : [];
+      const mapa = new Map(existentes.map(c => [c.fecha, c]));
+      clasesNuevas.forEach(c => mapa.set(c.fecha, c));
+      clasesFinal = [...mapa.values()];
+    }
+    clasesFinal.sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+    const cronograma = new Cronograma({
+      comisionId: comisionInfo.comisionId,
+      materiaId: comisionInfo.materiaId,
+      materiaNombre: comisionInfo.materiaNombre,
+      profesorUid: comisionInfo.profesorUid,
+      clases: clasesFinal,
+    });
+    await setDoc(ref, cronograma.toFirestore());
+    return clasesNuevas.length;
   }
 
   async importarMaterias(archivo) {

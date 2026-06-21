@@ -9,7 +9,42 @@ import SeccionConfiguracion from './SeccionConfiguracion';
 
 const importService = new ImportService();
 
-function DropZoneImport({ titulo, descripcion, formatoEjemplo, onImportar, permiteReemplazar = false }) {
+const PLANTILLA_OFERTA_CSV =
+  'CARRERA,ASIGNATURA,COD. ASIG,COMISIÓN,TURNO,DIA,HORA,MODALIDAD,SEDE,Aulas\n' +
+  'Tec. en Automatizacion y Control y Tec. en Protesis Dental,"Herramientas computacionales para la Ing. Y la Ciencia",4,1,noche,martes,19 a 22,presencial,Escuela N° 5,4\n' +
+  ',,,2,noche,miércoles,19 a 22,presencial,Escuela N° 5,1\n' +
+  'Tec. en Comunicación Digital,"Taller de Ciencia, Tecnología y Sociedad/Ciencia, tecnología e Innovación",1/269,1,mañana,martes,8 a 12,virtual,virtual,---------------------\n' +
+  'Tec. en Diseño y Desarrollo de Producto,,,2,tarde,jueves,14 a 18,virtual,virtual,---------------------\n' +
+  'Lic. en Administración,,,3,mañana,martes,10 a 14,presencial,Campus Unab - Aula Magna,8\n';
+
+const PLANTILLA_PLAN_ESTUDIO_CSV =
+  'CARRERA,AÑO VIGENCIA,AÑO,CUATRIMESTRE,COD.,ESPACIO CURRICULAR,HS,CURSADO (Cód.),APROBADO (Cód.)\n' +
+  'Tecnicatura en Programación,2026,1,1,269,"Ciencia, Tecnología e Innovación",64,,\n' +
+  ',,1,1,2,Matemática General,96,,\n' +
+  ',,1,1,184,Algoritmos y Estructuras de Datos,96,,\n' +
+  ',,1,2,270,Organización de Computadoras,64,,\n' +
+  ',,1,2,177,Álgebra,96,2,\n' +
+  ',,1,2,271,Estructuras de Datos,64,184,\n' +
+  ',,1,2,5,Inglés,48,,\n' +
+  ',,2,1,189,Programación Avanzada,96,184,\n' +
+  ',,2,1,180,Probabilidad y Estadística,96,177,2\n' +
+  ',,2,1,273,Desarrollo de Software,64,184,\n' +
+  ',,2,1,274,Inglés Comunicacional,48,,5\n' +
+  ',,2,2,186,Gestión de Datos,96,271,184\n' +
+  ',,2,2,183,"Inferencia Estadística y Reconocimiento de Patrones",96,"271, 180",184\n' +
+  ',,2,2,188,Visualización de la Información,64,"271, 189",184\n';
+
+function descargarPlantilla(contenido, nombreArchivo) {
+  const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombreArchivo;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function DropZoneImport({ titulo, descripcion, onImportar, permiteReemplazar = false, plantilla = null, nombrePlantilla = 'plantilla.csv' }) {
   const [dragOver, setDragOver] = useState(false);
   const [estado, setEstado] = useState(null);
   const [cargando, setCargando] = useState(false);
@@ -56,6 +91,12 @@ function DropZoneImport({ titulo, descripcion, formatoEjemplo, onImportar, permi
         <div className="drop-sub">Formatos admitidos: CSV · JSON</div>
       </div>
       {estado && <div className={"import-result " + estado.tipo}>{estado.msg}</div>}
+      {plantilla && (
+        <button onClick={() => descargarPlantilla(plantilla, nombrePlantilla)}
+          style={{marginTop:'12px',padding:'8px 14px',background:'none',border:'1px solid var(--border)',borderRadius:'8px',cursor:'pointer',fontWeight:600,fontSize:'0.82rem',color:'var(--text-1)'}}>
+          ⬇ Descargar plantilla CSV
+        </button>
+      )}
     </div>
   );
 }
@@ -189,6 +230,29 @@ function PanelAdmin({ perfil, seccion }) {
   const [cargandoCarreras, setCargandoCarreras] = useState(false);
   const [carreraEditando, setCarreraEditando] = useState(null);
   const [modalCarreraAbierto, setModalCarreraAbierto] = useState(false);
+  const [usuariosTodos, setUsuariosTodos] = useState([]);
+  const [cargandoUsuarios, setCargandoUsuarios] = useState(false);
+  const [busquedaUsuario, setBusquedaUsuario] = useState('');
+  const [guardandoRolUid, setGuardandoRolUid] = useState(null);
+
+  const [ofertaLista, setOfertaLista] = useState([]);
+  const [cargandoOfertaLista, setCargandoOfertaLista] = useState(false);
+  const [busquedaOferta, setBusquedaOferta] = useState('');
+  const [editandoOfertaId, setEditandoOfertaId] = useState(null);
+  const [edicionOferta, setEdicionOferta] = useState({});
+
+  const [planesLista, setPlanesLista] = useState([]);
+  const [cargandoPlanes, setCargandoPlanes] = useState(false);
+  const [planSeleccionadoId, setPlanSeleccionadoId] = useState('');
+  const [materiasPlanEdit, setMateriasPlanEdit] = useState([]);
+  const [guardandoPlan, setGuardandoPlan] = useState(false);
+  const [busquedaPlanMateria, setBusquedaPlanMateria] = useState('');
+
+  const [materiasLista, setMateriasLista] = useState([]);
+  const [cargandoMateriasLista, setCargandoMateriasLista] = useState(false);
+  const [busquedaMateria, setBusquedaMateria] = useState('');
+  const [editandoMateriaId, setEditandoMateriaId] = useState(null);
+  const [edicionMateria, setEdicionMateria] = useState({});
 
   const admin = new AdminCentro(perfil?.nombre, perfil?.dni, perfil?.email, '');
 
@@ -255,6 +319,188 @@ function PanelAdmin({ perfil, seccion }) {
     };
     cargarAlumnos();
   }, [seccion]);
+
+  useEffect(() => {
+    if (seccion !== 'usuarios') return;
+    const cargarUsuarios = async () => {
+      setCargandoUsuarios(true);
+      try {
+        const snap = await getDocs(collection(db, 'usuarios'));
+        setUsuariosTodos(snap.docs.map(d => ({ docId: d.id, ...d.data() })));
+      } catch (e) {
+        console.error('Error cargando usuarios:', e);
+      } finally {
+        setCargandoUsuarios(false);
+      }
+    };
+    cargarUsuarios();
+  }, [seccion]);
+
+  const cambiarRolUsuario = async (usuario, nuevoRol) => {
+    setGuardandoRolUid(usuario.docId);
+    try {
+      await updateDoc(doc(db, 'usuarios', usuario.docId), { rol: nuevoRol });
+      setUsuariosTodos(prev => prev.map(u => u.docId === usuario.docId ? { ...u, rol: nuevoRol } : u));
+    } catch (e) {
+      console.error('Error actualizando rol:', e);
+      alert('No se pudo actualizar el rol. Intenta de nuevo.');
+    } finally {
+      setGuardandoRolUid(null);
+    }
+  };
+
+  useEffect(() => {
+    if (seccion !== 'oferta') return;
+    const cargarOferta = async () => {
+      setCargandoOfertaLista(true);
+      try {
+        const snap = await getDocs(collection(db, 'comisionesOferta'));
+        setOfertaLista(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch (e) {
+        console.error('Error cargando oferta:', e);
+      } finally {
+        setCargandoOfertaLista(false);
+      }
+    };
+    cargarOferta();
+  }, [seccion]);
+
+  const iniciarEdicionOferta = (item) => {
+    setEditandoOfertaId(item.id);
+    setEdicionOferta({ ...item });
+  };
+
+  const guardarEdicionOferta = async () => {
+    try {
+      const { id, ...campos } = edicionOferta;
+      await updateDoc(doc(db, 'comisionesOferta', id), campos);
+      setOfertaLista(prev => prev.map(o => o.id === id ? { ...o, ...campos } : o));
+      setEditandoOfertaId(null);
+    } catch (e) {
+      console.error('Error guardando comision:', e);
+      alert('No se pudo guardar. Intenta de nuevo.');
+    }
+  };
+
+  const eliminarOferta = async (id) => {
+    if (!window.confirm('Eliminar esta comision de la oferta? Esta accion no se puede deshacer.')) return;
+    try {
+      await deleteDoc(doc(db, 'comisionesOferta', id));
+      setOfertaLista(prev => prev.filter(o => o.id !== id));
+    } catch (e) {
+      console.error('Error eliminando comision:', e);
+    }
+  };
+
+  useEffect(() => {
+    if (seccion !== 'planes') return;
+    const cargarPlanes = async () => {
+      setCargandoPlanes(true);
+      try {
+        const snap = await getDocs(collection(db, 'planesEstudio'));
+        setPlanesLista(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch (e) {
+        console.error('Error cargando planes de estudio:', e);
+      } finally {
+        setCargandoPlanes(false);
+      }
+    };
+    cargarPlanes();
+  }, [seccion]);
+
+  const seleccionarPlan = (planId) => {
+    setPlanSeleccionadoId(planId);
+    const plan = planesLista.find(p => p.id === planId);
+    setMateriasPlanEdit(plan ? plan.materias.map(m => ({ ...m })) : []);
+  };
+
+  const actualizarMateriaPlan = (idx, campo, valor) => {
+    setMateriasPlanEdit(prev => prev.map((m, i) => {
+      if (i !== idx) return m;
+      if (campo === 'para_cursar' || campo === 'para_aprobar') {
+        return { ...m, correlativas: { ...m.correlativas, [campo]: valor.split(',').map(c => c.trim()).filter(Boolean) } };
+      }
+      return { ...m, [campo]: valor };
+    }));
+  };
+
+  const agregarMateriaPlan = () => {
+    setMateriasPlanEdit(prev => [...prev, { codigo: '', nombre: '', anio: 1, cuatrimestre: 1, horas: 0, correlativas: { para_cursar: [], para_aprobar: [] } }]);
+  };
+
+  const eliminarMateriaPlan = (idx) => {
+    setMateriasPlanEdit(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const guardarPlan = async () => {
+    if (!planSeleccionadoId) return;
+    setGuardandoPlan(true);
+    try {
+      const materiasLimpias = materiasPlanEdit.map(m => ({
+        ...m, anio: Number(m.anio) || 1, cuatrimestre: Number(m.cuatrimestre) || 1, horas: Number(m.horas) || 0,
+      }));
+      await updateDoc(doc(db, 'planesEstudio', planSeleccionadoId), { materias: materiasLimpias });
+      setPlanesLista(prev => prev.map(p => p.id === planSeleccionadoId ? { ...p, materias: materiasLimpias } : p));
+      setMateriasPlanEdit(materiasLimpias.map(m => ({ ...m })));
+    } catch (e) {
+      console.error('Error guardando plan de estudio:', e);
+      alert('No se pudo guardar el plan. Intenta de nuevo.');
+    } finally {
+      setGuardandoPlan(false);
+    }
+  };
+
+  useEffect(() => {
+    if (seccion !== 'materias') return;
+    const cargarMaterias = async () => {
+      setCargandoMateriasLista(true);
+      try {
+        const snap = await getDocs(collection(db, 'materias'));
+        setMateriasLista(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch (e) {
+        console.error('Error cargando materias:', e);
+      } finally {
+        setCargandoMateriasLista(false);
+      }
+    };
+    cargarMaterias();
+  }, [seccion]);
+
+  const iniciarEdicionMateria = (item) => {
+    setEditandoMateriaId(item.id);
+    setEdicionMateria({ ...item, correlativas: (item.correlativas || []).join(', ') });
+  };
+
+  const guardarEdicionMateria = async () => {
+    try {
+      const { id, ...campos } = edicionMateria;
+      const datos = {
+        ...campos,
+        anio: Number(campos.anio) || 1,
+        cuatrimestre: Number(campos.cuatrimestre) || 1,
+        creditos: Number(campos.creditos) || 0,
+        correlativas: typeof campos.correlativas === 'string'
+          ? campos.correlativas.split(',').map(c => c.trim()).filter(Boolean)
+          : (campos.correlativas || []),
+      };
+      await updateDoc(doc(db, 'materias', id), datos);
+      setMateriasLista(prev => prev.map(m => m.id === id ? { ...m, ...datos } : m));
+      setEditandoMateriaId(null);
+    } catch (e) {
+      console.error('Error guardando materia:', e);
+      alert('No se pudo guardar. Intenta de nuevo.');
+    }
+  };
+
+  const eliminarMateria = async (id) => {
+    if (!window.confirm('Eliminar esta materia del catalogo? Esta accion no se puede deshacer.')) return;
+    try {
+      await deleteDoc(doc(db, 'materias', id));
+      setMateriasLista(prev => prev.filter(m => m.id !== id));
+    } catch (e) {
+      console.error('Error eliminando materia:', e);
+    }
+  };
 
   useEffect(() => {
     if (seccion !== 'carreras') return;
@@ -350,6 +596,68 @@ function PanelAdmin({ perfil, seccion }) {
     </div>
   );
 
+  if (seccion === 'usuarios') {
+    const busq = busquedaUsuario.toLowerCase();
+    const usuariosFiltrados = usuariosTodos.filter(u =>
+      (u.nombre || '').toLowerCase().includes(busq) ||
+      (u.email || '').toLowerCase().includes(busq)
+    );
+    const ROLES = [
+      { value: 'alumno', label: 'Alumno' },
+      { value: 'profesor', label: 'Profesor' },
+      { value: 'admin_centro', label: 'Administrador' },
+    ];
+    return (
+      <>
+        {topbar}
+        <div className="content">
+          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <h2>Usuarios y roles</h2>
+            <input type="text" placeholder="Buscar por nombre o correo..." value={busquedaUsuario}
+              onChange={e => setBusquedaUsuario(e.target.value)}
+              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'260px'}} />
+          </div>
+          <p style={{fontSize:'0.82rem',color:'var(--text-2)',marginBottom:'16px'}}>
+            Todo usuario nuevo se registra como Alumno por defecto. Desde aqui podes asignarle el rol de Profesor o Administrador.
+          </p>
+          <div className="card">
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr'}}>
+              <div>Usuario</div><div>DNI</div><div>Carrera</div><div>Rol</div>
+            </div>
+            {cargandoUsuarios ? (
+              <div className="empty-state"><p>Cargando usuarios...</p></div>
+            ) : usuariosFiltrados.length === 0 ? (
+              <div className="empty-state">
+                <div className="icon">🛡</div>
+                <p>No hay usuarios que coincidan con la busqueda.</p>
+              </div>
+            ) : (
+              usuariosFiltrados.map(u => (
+                <div key={u.docId} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr'}}>
+                  <div>
+                    <div className="materia-name">{u.nombre || '(sin nombre)'}</div>
+                    <div className="materia-code">{u.email}</div>
+                  </div>
+                  <div style={{fontSize:'0.85rem'}}>{u.dni || '-'}</div>
+                  <div style={{fontSize:'0.85rem'}}>{u.carrera || '-'}</div>
+                  <div>
+                    <select
+                      value={ROLES.some(r => r.value === u.rol) ? u.rol : 'alumno'}
+                      disabled={guardandoRolUid === u.docId}
+                      onChange={e => cambiarRolUsuario(u, e.target.value)}
+                      style={{padding:'6px 10px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem',cursor:'pointer'}}>
+                      {ROLES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   if (seccion === 'docentes') {
     return (
       <>
@@ -405,7 +713,7 @@ function PanelAdmin({ perfil, seccion }) {
     );
   }
 
-  if (seccion === 'oferta' || seccion === 'planes' || seccion === 'materias' || seccion === 'panel') {
+  if (seccion === 'panel') {
     return (
       <>
         {topbar}
@@ -432,33 +740,358 @@ function PanelAdmin({ perfil, seccion }) {
               <span className="stat-badge badge-blue">En el sistema</span>
             </div>
           </div>
+        </div>
+      </>
+    );
+  }
 
+  if (seccion === 'oferta') {
+    const busq = busquedaOferta.toLowerCase();
+    const ofertaFiltrada = ofertaLista.filter(o =>
+      !busq ||
+      (o.carrera_ref || '').toLowerCase().includes(busq) ||
+      (o.materia_nombre || '').toLowerCase().includes(busq) ||
+      (o.codigo_asignatura || '').toLowerCase().includes(busq) ||
+      String(o.comision || '').toLowerCase().includes(busq)
+    );
+    const ofertaAMostrar = busq ? ofertaFiltrada : ofertaFiltrada.slice(0, 50);
+    const camposOferta = [
+      { key: 'carrera_ref', label: 'Carrera' },
+      { key: 'materia_nombre', label: 'Materia' },
+      { key: 'codigo_asignatura', label: 'Cod.' },
+      { key: 'comision', label: 'Com.' },
+      { key: 'turno', label: 'Turno' },
+      { key: 'dia', label: 'Dia' },
+      { key: 'hora_rango', label: 'Horario' },
+      { key: 'modalidad', label: 'Modalidad' },
+      { key: 'sede', label: 'Sede' },
+      { key: 'aula', label: 'Aula' },
+    ];
+    return (
+      <>
+        {topbar}
+        <div className="content">
           {admin.tienePermiso('importar_oferta') && (
-            <>
-              <div className="section-head" style={{marginBottom:'14px'}}>
-                <h2>Importar datos academicos</h2>
-              </div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px',marginBottom:'28px'}}>
-                <DropZoneImport
-                  titulo="Oferta Academica"
-                  descripcion="Importa la oferta del cuatrimestre: materias, comisiones, horarios y docentes."
-                  permiteReemplazar
-                  onImportar={(archivo, reemplazarTodo) => importService.importarOfertaAcademica(archivo, reemplazarTodo)}
-                />
-                <DropZoneImport
-                  titulo="Plan de Estudio"
-                  descripcion="Importa el plan de estudio de una carrera con sus materias y correlativas."
-                  permiteReemplazar
-                  onImportar={(archivo, reemplazarTodo) => importService.importarPlanEstudio(archivo, reemplazarTodo)}
-                />
-              </div>
+            <div style={{marginBottom:'28px',maxWidth:'520px'}}>
               <DropZoneImport
-                titulo="Catalogo de Materias"
-                descripcion="Importa el listado completo de materias con codigo, anio, cuatrimestre y correlativas."
-                onImportar={archivo => importService.importarMaterias(archivo)}
+                titulo="Importar Oferta Academica"
+                descripcion="Importa la oferta del cuatrimestre: materias, comisiones, horarios y docentes."
+                permiteReemplazar
+                onImportar={(archivo, reemplazarTodo) => importService.importarOfertaAcademica(archivo, reemplazarTodo).then(c => { setOfertaLista([]); return c; })}
+                plantilla={PLANTILLA_OFERTA_CSV}
+                nombrePlantilla="plantilla_oferta_academica.csv"
               />
+            </div>
+          )}
+
+          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <h2>Oferta academica ({ofertaLista.length} comisiones)</h2>
+            <input type="text" placeholder="Buscar por carrera, materia o codigo..." value={busquedaOferta}
+              onChange={e => setBusquedaOferta(e.target.value)}
+              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'300px'}} />
+          </div>
+          {!busq && ofertaLista.length > 50 && (
+            <p style={{fontSize:'0.8rem',color:'var(--text-2)',marginBottom:'12px'}}>
+              Mostrando 50 de {ofertaLista.length}. Usa el buscador para encontrar otras comisiones.
+            </p>
+          )}
+          <div className="card" style={{overflowX:'auto'}}>
+            <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
+              <thead>
+                <tr style={{background:'#f5f5f5'}}>
+                  {camposOferta.map(c => (
+                    <th key={c.key} style={{padding:'8px 10px',textAlign:'left',fontWeight:600,whiteSpace:'nowrap'}}>{c.label}</th>
+                  ))}
+                  <th style={{padding:'8px 10px'}}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {cargandoOfertaLista ? (
+                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'#999'}}>Cargando...</td></tr>
+                ) : ofertaAMostrar.length === 0 ? (
+                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'#999'}}>No hay comisiones que coincidan.</td></tr>
+                ) : (
+                  ofertaAMostrar.map(item => {
+                    const editando = editandoOfertaId === item.id;
+                    return (
+                      <tr key={item.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                        {camposOferta.map(c => (
+                          <td key={c.key} style={{padding:'6px 8px'}}>
+                            {editando ? (
+                              <input type="text" value={edicionOferta[c.key] || ''}
+                                onChange={e => setEdicionOferta(prev => ({ ...prev, [c.key]: e.target.value }))}
+                                style={{width:'100px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd',fontSize:'0.78rem'}} />
+                            ) : (
+                              <span>{item[c.key] || '-'}</span>
+                            )}
+                          </td>
+                        ))}
+                        <td style={{padding:'6px 8px',whiteSpace:'nowrap'}}>
+                          {editando ? (
+                            <>
+                              <button onClick={guardarEdicionOferta}
+                                style={{padding:'4px 10px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>
+                                Guardar
+                              </button>
+                              <button onClick={() => setEditandoOfertaId(null)}
+                                style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>
+                                Cancelar
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button onClick={() => iniciarEdicionOferta(item)}
+                                style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>
+                                Editar
+                              </button>
+                              <button onClick={() => eliminarOferta(item.id)}
+                                style={{padding:'4px 10px',background:'#fff0f0',border:'1px solid #f5c6c6',color:'#c0392b',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>
+                                Eliminar
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (seccion === 'planes') {
+    const materiasPlanFiltradas = materiasPlanEdit.filter(m =>
+      !busquedaPlanMateria ||
+      (m.nombre || '').toLowerCase().includes(busquedaPlanMateria.toLowerCase()) ||
+      String(m.codigo || '').toLowerCase().includes(busquedaPlanMateria.toLowerCase())
+    );
+    return (
+      <>
+        {topbar}
+        <div className="content">
+          {admin.tienePermiso('importar_oferta') && (
+            <div style={{marginBottom:'28px',maxWidth:'520px'}}>
+              <DropZoneImport
+                titulo="Importar Plan de Estudio"
+                descripcion="Importa el plan de estudio de una carrera con sus materias y correlativas."
+                permiteReemplazar
+                onImportar={(archivo, reemplazarTodo) => importService.importarPlanEstudio(archivo, reemplazarTodo).then(c => { setPlanesLista([]); setPlanSeleccionadoId(''); setMateriasPlanEdit([]); return c; })}
+                plantilla={PLANTILLA_PLAN_ESTUDIO_CSV}
+                nombrePlantilla="plantilla_plan_estudio.csv"
+              />
+            </div>
+          )}
+
+          <div className="section-head" style={{marginBottom:'14px'}}>
+            <h2>Plan de estudio por carrera</h2>
+          </div>
+          <div style={{display:'flex',gap:'12px',flexWrap:'wrap',marginBottom:'20px',alignItems:'flex-end'}}>
+            <div>
+              <label style={{display:'block',fontSize:'0.8rem',fontWeight:600,marginBottom:'6px'}}>Carrera</label>
+              <select value={planSeleccionadoId} onChange={e => seleccionarPlan(e.target.value)}
+                style={{padding:'8px',borderRadius:'6px',border:'1px solid #ddd',minWidth:'300px'}}>
+                <option value="">Selecciona un plan de estudio</option>
+                {planesLista.map(p => (
+                  <option key={p.id} value={p.id}>{p.carrera} ({p.anioVigencia}) · {p.materias.length} materias</option>
+                ))}
+              </select>
+            </div>
+            {planSeleccionadoId && (
+              <div>
+                <input type="text" placeholder="Buscar materia..." value={busquedaPlanMateria}
+                  onChange={e => setBusquedaPlanMateria(e.target.value)}
+                  style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'220px'}} />
+              </div>
+            )}
+          </div>
+
+          {cargandoPlanes ? (
+            <div className="empty-state"><p>Cargando planes...</p></div>
+          ) : !planSeleccionadoId ? (
+            <div className="empty-state">
+              <div className="icon">📋</div>
+              <p>Elegi una carrera para ver y editar su plan de estudio.</p>
+            </div>
+          ) : (
+            <>
+              <div className="card" style={{overflowX:'auto'}}>
+                <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
+                  <thead>
+                    <tr style={{background:'#f5f5f5'}}>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Cod.</th>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Materia</th>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Año</th>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Cuatrim.</th>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Horas</th>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Correlativas (cursar)</th>
+                      <th style={{padding:'8px 10px',textAlign:'left'}}>Correlativas (aprobar)</th>
+                      <th style={{padding:'8px 10px'}}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {materiasPlanFiltradas.map((m) => {
+                      const idx = materiasPlanEdit.indexOf(m);
+                      return (
+                        <tr key={idx} style={{borderBottom:'1px solid #f0f0f0'}}>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="text" value={m.codigo || ''} onChange={e => actualizarMateriaPlan(idx, 'codigo', e.target.value)}
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="text" value={m.nombre || ''} onChange={e => actualizarMateriaPlan(idx, 'nombre', e.target.value)}
+                              style={{width:'220px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="number" min="1" value={m.anio || 1} onChange={e => actualizarMateriaPlan(idx, 'anio', e.target.value)}
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="number" min="1" max="2" value={m.cuatrimestre || 1} onChange={e => actualizarMateriaPlan(idx, 'cuatrimestre', e.target.value)}
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="number" min="0" value={m.horas || 0} onChange={e => actualizarMateriaPlan(idx, 'horas', e.target.value)}
+                              style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="text" value={(m.correlativas?.para_cursar || []).join(', ')}
+                              onChange={e => actualizarMateriaPlan(idx, 'para_cursar', e.target.value)}
+                              placeholder="codigos separados por coma"
+                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <input type="text" value={(m.correlativas?.para_aprobar || []).join(', ')}
+                              onChange={e => actualizarMateriaPlan(idx, 'para_aprobar', e.target.value)}
+                              placeholder="codigos separados por coma"
+                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                          </td>
+                          <td style={{padding:'6px 8px'}}>
+                            <button onClick={() => eliminarMateriaPlan(idx)}
+                              style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontWeight:700}}>
+                              x
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{display:'flex',justifyContent:'space-between',marginTop:'16px'}}>
+                <button onClick={agregarMateriaPlan}
+                  style={{padding:'8px 18px',borderRadius:'8px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',cursor:'pointer',fontWeight:600}}>
+                  + Agregar materia
+                </button>
+                <button onClick={guardarPlan} disabled={guardandoPlan}
+                  style={{padding:'10px 24px',background:'#2e7d32',color:'white',border:'none',borderRadius:'8px',cursor:'pointer',fontWeight:600}}>
+                  {guardandoPlan ? 'Guardando...' : 'Guardar plan de estudio'}
+                </button>
+              </div>
             </>
           )}
+        </div>
+      </>
+    );
+  }
+
+  if (seccion === 'materias') {
+    const busqM = busquedaMateria.toLowerCase();
+    const materiasFiltradas = materiasLista.filter(m =>
+      (m.nombre || '').toLowerCase().includes(busqM) ||
+      (m.codigo || '').toLowerCase().includes(busqM) ||
+      (m.carrera || '').toLowerCase().includes(busqM)
+    );
+    return (
+      <>
+        {topbar}
+        <div className="content">
+          {admin.tienePermiso('importar_oferta') && (
+            <div style={{marginBottom:'28px',maxWidth:'520px'}}>
+              <DropZoneImport
+                titulo="Importar Catalogo de Materias"
+                descripcion="Importa el listado completo de materias con codigo, anio, cuatrimestre y correlativas."
+                onImportar={archivo => importService.importarMaterias(archivo).then(c => { setMateriasLista([]); return c; })}
+              />
+            </div>
+          )}
+
+          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <h2>Catalogo de materias ({materiasLista.length})</h2>
+            <input type="text" placeholder="Buscar por nombre, codigo o carrera..." value={busquedaMateria}
+              onChange={e => setBusquedaMateria(e.target.value)}
+              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'300px'}} />
+          </div>
+          <div className="card" style={{overflowX:'auto'}}>
+            <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
+              <thead>
+                <tr style={{background:'#f5f5f5'}}>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Codigo</th>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Nombre</th>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Carrera</th>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Año</th>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Cuatrim.</th>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Creditos</th>
+                  <th style={{padding:'8px 10px',textAlign:'left'}}>Correlativas</th>
+                  <th style={{padding:'8px 10px'}}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {cargandoMateriasLista ? (
+                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'#999'}}>Cargando...</td></tr>
+                ) : materiasFiltradas.length === 0 ? (
+                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'#999'}}>No hay materias que coincidan.</td></tr>
+                ) : (
+                  materiasFiltradas.map(item => {
+                    const editando = editandoMateriaId === item.id;
+                    return (
+                      <tr key={item.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando ? <input type="text" value={edicionMateria.codigo || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, codigo: e.target.value }))} style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.codigo}
+                        </td>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando ? <input type="text" value={edicionMateria.nombre || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, nombre: e.target.value }))} style={{width:'200px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.nombre}
+                        </td>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando ? <input type="text" value={edicionMateria.carrera || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, carrera: e.target.value }))} style={{width:'160px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.carrera}
+                        </td>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando ? <input type="number" value={edicionMateria.anio || 1} onChange={e => setEdicionMateria(prev => ({ ...prev, anio: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.anio}
+                        </td>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando ? <input type="number" value={edicionMateria.cuatrimestre || 1} onChange={e => setEdicionMateria(prev => ({ ...prev, cuatrimestre: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.cuatrimestre}
+                        </td>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando ? <input type="number" value={edicionMateria.creditos || 0} onChange={e => setEdicionMateria(prev => ({ ...prev, creditos: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.creditos}
+                        </td>
+                        <td style={{padding:'6px 8px'}}>
+                          {editando
+                            ? <input type="text" value={edicionMateria.correlativas || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, correlativas: e.target.value }))} placeholder="codigos separados por coma" style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                            : (item.correlativas || []).join(', ') || '-'}
+                        </td>
+                        <td style={{padding:'6px 8px',whiteSpace:'nowrap'}}>
+                          {editando ? (
+                            <>
+                              <button onClick={guardarEdicionMateria} style={{padding:'4px 10px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Guardar</button>
+                              <button onClick={() => setEditandoMateriaId(null)} style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Cancelar</button>
+                            </>
+                          ) : (
+                            <>
+                              <button onClick={() => iniciarEdicionMateria(item)} style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Editar</button>
+                              <button onClick={() => eliminarMateria(item.id)} style={{padding:'4px 10px',background:'#fff0f0',border:'1px solid #f5c6c6',color:'#c0392b',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Eliminar</button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </>
     );
