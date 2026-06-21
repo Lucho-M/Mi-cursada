@@ -153,6 +153,9 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
   const [eventos, setEventos] = useState([]);
   const [planInfo, setPlanInfo] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const [modalEventoAbierto, setModalEventoAbierto] = useState(false);
+  const [nuevoEvento, setNuevoEvento] = useState({ materiaId: '', tipo: 'Parcial', fecha: '', hora: '', aula: '', descripcion: '' });
+  const [guardandoEvento, setGuardandoEvento] = useState(false);
 
   useEffect(() => {
     if (!perfil?.uid) return;
@@ -197,7 +200,9 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
   );
   const materiasAprobadas = alumnoObj.obtenerMateriasAprobadas().length;
   const promedio = notas.length ? alumnoObj.obtenerPromedio() : '—';
-  const totalCarrera = planInfo?.materias?.length || 0;
+  const carreraIdPanel = obtenerCarreraId(carreraActual);
+  const materiasDelPlanPanel = carreraIdPanel ? getMateriasPorCarrera(carreraIdPanel) : [];
+  const totalCarrera = materiasDelPlanPanel.length;
 
   // Inscripciones enriquecidas con notas
   const materiasConNotas = inscripciones.map(insc => {
@@ -212,6 +217,45 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
     else if ((parcial1 != null && Number(parcial1) < 4) || (parcial2 != null && Number(parcial2) < 4)) estado = 'Libre';
     return { ...insc, parcial1, recup1, parcial2, recup2, final, estado };
   });
+
+  const guardarEvento = async () => {
+    setGuardandoEvento(true);
+    try {
+      const { addDoc, collection: col } = await import('firebase/firestore');
+      const esManual = nuevoEvento.materiaId === 'otro';
+      const materiaSeleccionada = inscripciones.find(i => i.materiaId === nuevoEvento.materiaId);
+      const nombreMateria = esManual ? nuevoEvento.materiaManual : (materiaSeleccionada?.materiaNombre || nuevoEvento.materiaId);
+      await addDoc(col(db, 'eventos'), {
+        alumnoUid: perfil.uid,
+        materiaId: esManual ? null : nuevoEvento.materiaId,
+        titulo: nombreMateria,
+        tipo: nuevoEvento.tipo,
+        fecha: nuevoEvento.fecha,
+        hora: nuevoEvento.hora || '',
+        aula: nuevoEvento.aula || '',
+        descripcion: nuevoEvento.descripcion || '',
+      });
+      const hoy = new Date().toISOString().split('T')[0];
+      const evSnap = await getDocs(query(collection(db, 'eventos'), where('fecha', '>=', hoy), limit(10)));
+      setEventos(evSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setNuevoEvento({ materiaId: '', tipo: 'Parcial', fecha: '', hora: '', aula: '', descripcion: '' });
+      setModalEventoAbierto(false);
+    } catch (e) {
+      console.error('Error al guardar evento:', e);
+    } finally {
+      setGuardandoEvento(false);
+    }
+  };
+
+  const eliminarEvento = async (id) => {
+    try {
+      const { deleteDoc, doc: docRef } = await import('firebase/firestore');
+      await deleteDoc(docRef(db, 'eventos', id));
+      setEventos(prev => prev.filter(ev => ev.id !== id));
+    } catch (e) {
+      console.error('Error al eliminar evento:', e);
+    }
+  };
 
   // ── PANEL ──────────────────────────────────────────────────────
   if (seccion === 'panel') {
@@ -318,7 +362,13 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
 
           <div className="grid-2">
             <div>
-              <div className="section-head"><h2>Próximos eventos</h2></div>
+              <div className="section-head" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <h2>Próximos eventos</h2>
+                <button onClick={() => { setSeccion && setSeccion('parciales'); setModalEventoAbierto(true); }}
+                  style={{padding:'4px 12px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontWeight:600,fontSize:'0.8rem'}}>
+                  + Agregar
+                </button>
+              </div>
               <div className="side-card">
                 {cargando ? (
                   <div className="empty-state"><p>Cargando…</p></div>
@@ -336,7 +386,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
             <div>
               <div className="section-head"><h2>Avance de carrera</h2></div>
               <div className="side-card">
-                {planInfo ? (
+                {totalCarrera > 0 ? (
                   <div className="progress-block">
                     <div className="progress-item">
                       <div className="progress-label">
@@ -523,6 +573,12 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
       <>
         <Topbar titulo="Parciales y TPs" subtitulo="Próximas fechas de evaluación" />
         <div className="content">
+          <div style={{display:'flex',justifyContent:'flex-end',marginBottom:'14px'}}>
+            <button onClick={() => setModalEventoAbierto(true)}
+              style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'8px',cursor:'pointer',fontWeight:600}}>
+              + Agregar evento
+            </button>
+          </div>
           <div className="grid-2">
             <div>
               <div className="section-head"><h2>Parciales</h2></div>
@@ -535,7 +591,17 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                     <p>Sin parciales próximos</p>
                   </div>
                 ) : (
-                  parciales.map(ev => <EventoItem key={ev.id} ev={ev} />)
+                  parciales.map(ev => (
+                    <div key={ev.id} style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                      <div style={{flex:1}}><EventoItem ev={ev} /></div>
+                      {ev.alumnoUid === perfil.uid && (
+                        <button onClick={() => eliminarEvento(ev.id)}
+                          style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontSize:'0.85rem',fontWeight:700}}>
+                          x
+                        </button>
+                      )}
+                    </div>
+                  ))
                 )}
               </div>
             </div>
@@ -550,12 +616,102 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                     <p>Sin TPs próximos</p>
                   </div>
                 ) : (
-                  tps.map(ev => <EventoItem key={ev.id} ev={ev} />)
+                  tps.map(ev => (
+                    <div key={ev.id} style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                      <div style={{flex:1}}><EventoItem ev={ev} /></div>
+                      {ev.alumnoUid === perfil.uid && (
+                        <button onClick={() => eliminarEvento(ev.id)}
+                          style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontSize:'0.85rem',fontWeight:700}}>
+                          x
+                        </button>
+                      )}
+                    </div>
+                  ))
                 )}
               </div>
             </div>
           </div>
         </div>
+
+        {modalEventoAbierto && (
+          <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
+            <div style={{background:'var(--surface)',borderRadius:'12px',padding:'28px',width:'440px',maxWidth:'90vw'}}>
+              <h3 style={{marginBottom:'16px',color:'var(--text-1)'}}>Agregar evento</h3>
+
+              <div style={{marginBottom:'12px'}}>
+                <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'var(--text-1)'}}>Materia *</label>
+                <select value={nuevoEvento.materiaId}
+                  onChange={e => setNuevoEvento(prev => ({...prev, materiaId: e.target.value, materiaManual: e.target.value === 'otro' ? prev.materiaManual : ''}))}
+                  style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)'}}>
+                  <option value="">Seleccionar materia</option>
+                  {inscripciones.map(i => (
+                    <option key={i.id} value={i.materiaId}>{i.materiaNombre || i.materiaId}</option>
+                  ))}
+                  <option value="otro">Otra (cargar a mano)</option>
+                </select>
+                {nuevoEvento.materiaId === 'otro' && (
+                  <input type="text" value={nuevoEvento.materiaManual || ''}
+                    onChange={e => setNuevoEvento(prev => ({...prev, materiaManual: e.target.value}))}
+                    placeholder="Nombre de la materia"
+                    style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)',boxSizing:'border-box',marginTop:'8px'}} />
+                )}
+              </div>
+
+              <div style={{marginBottom:'12px'}}>
+                <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'var(--text-1)'}}>Tipo *</label>
+                <select value={nuevoEvento.tipo}
+                  onChange={e => setNuevoEvento(prev => ({...prev, tipo: e.target.value}))}
+                  style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)'}}>
+                  <option value="Parcial">Parcial</option>
+                  <option value="TP">Trabajo Práctico</option>
+                  <option value="Final">Final</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+
+              <div style={{marginBottom:'12px'}}>
+                <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'var(--text-1)'}}>Fecha *</label>
+                <input type="date" value={nuevoEvento.fecha}
+                  onChange={e => setNuevoEvento(prev => ({...prev, fecha: e.target.value}))}
+                  style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)',boxSizing:'border-box'}} />
+              </div>
+
+              <div style={{marginBottom:'12px'}}>
+                <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'var(--text-1)'}}>Hora (opcional)</label>
+                <input type="time" value={nuevoEvento.hora}
+                  onChange={e => setNuevoEvento(prev => ({...prev, hora: e.target.value}))}
+                  style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)',boxSizing:'border-box'}} />
+              </div>
+
+              <div style={{marginBottom:'12px'}}>
+                <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'var(--text-1)'}}>Aula (opcional)</label>
+                <input type="text" value={nuevoEvento.aula}
+                  onChange={e => setNuevoEvento(prev => ({...prev, aula: e.target.value}))}
+                  placeholder="Ej: 4"
+                  style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)',boxSizing:'border-box'}} />
+              </div>
+
+              <div style={{marginBottom:'20px'}}>
+                <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'var(--text-1)'}}>Descripción (opcional)</label>
+                <input type="text" value={nuevoEvento.descripcion}
+                  onChange={e => setNuevoEvento(prev => ({...prev, descripcion: e.target.value}))}
+                  placeholder="Ej: Clase virtual de repaso"
+                  style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',color:'var(--text-1)',background:'var(--surface-2)',boxSizing:'border-box'}} />
+              </div>
+
+              <div style={{display:'flex',justifyContent:'flex-end',gap:'10px'}}>
+                <button onClick={() => setModalEventoAbierto(false)}
+                  style={{padding:'8px 18px',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)'}}>
+                  Cancelar
+                </button>
+                <button onClick={guardarEvento} disabled={guardandoEvento || nuevoEvento.materiaId === '' || nuevoEvento.fecha === ''}
+                  style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontWeight:600}}>
+                  {guardandoEvento ? 'Guardando...' : 'Agregar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </>
     );
   }
