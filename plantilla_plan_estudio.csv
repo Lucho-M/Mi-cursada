@@ -1,0 +1,15 @@
+CARRERA,AÑO VIGENCIA,AÑO,CUATRIMESTRE,COD.,ESPACIO CURRICULAR,HS,CURSADO (Cód.),APROBADO (Cód.)
+Tecnicatura en Programación,2026,1,1,269,"Ciencia, Tecnología e Innovación",64,,
+,,1,1,2,Matemática General,96,,
+,,1,1,184,Algoritmos y Estructuras de Datos,96,,
+,,1,2,270,Organización de Computadoras,64,,
+,,1,2,177,Álgebra,96,2,
+,,1,2,271,Estructuras de Datos,64,184,
+,,1,2,5,Inglés,48,,
+,,2,1,189,Programación Avanzada,96,184,
+,,2,1,180,Probabilidad y Estadística,96,177,2
+,,2,1,273,Desarrollo de Software,64,184,
+,,2,1,274,Inglés Comunicacional,48,,5
+,,2,2,186,Gestión de Datos,96,271,184
+,,2,2,183,"Inferencia Estadística y Reconocimiento de Patrones",96,"271, 180",184
+,,2,2,188,Visualización de la Información,64,"271, 189",184

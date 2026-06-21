@@ -6,7 +6,7 @@ class PlanEstudio {
     this.id = id;
     this.carrera = carrera;
     this.anioVigencia = anioVigencia;
-    this.materias = materias; // [{ nombre, anio, cuatrimestre, creditos, correlativas }]
+    this.materias = materias; // [{ codigo, nombre, anio, cuatrimestre, horas, correlativas:{para_cursar,para_aprobar} }]
   }
 
   obtenerMateriasPorAnio(anio) {
@@ -19,7 +19,7 @@ class PlanEstudio {
   }
 
   obtenerTotalCreditos() {
-    return this.materias.reduce((total, m) => total + Number(m.creditos || 0), 0);
+    return this.materias.reduce((total, m) => total + Number(m.horas || 0), 0);
   }
 
   toFirestore() {

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Usuario from "./Usuario_POO_modelo";
 import AuthService from "./AuthService_POO_logica_firebase";
-import Carreras from "./Carreras";
+import { db } from "./firebase";
+import { collection, getDocs } from "firebase/firestore";
+import CARRERAS_DISPONIBLES from "./carrerasData";
 import logoUnab from "./assets/logo-unab.png";
 import "./registro_poo.css";
 
@@ -31,9 +33,25 @@ function RegistroPOOFront({ onLogin, onRegistroExitoso }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [carreras, setCarreras] = useState(
+    CARRERAS_DISPONIBLES.map(c => ({ nombre: c.nombre, tipo: c.tipo }))
+  );
 
-  const carrerasService = new Carreras();
-  const carreras = carrerasService.obtenerTodas();
+  useEffect(() => {
+    const cargarCarreras = async () => {
+      try {
+        const snap = await getDocs(collection(db, "carreras"));
+        const activas = snap.docs
+          .map(d => d.data())
+          .filter(c => c.activa !== false);
+        if (activas.length > 0) setCarreras(activas);
+      } catch (e) {
+        console.error("Error cargando carreras, se usa el listado local:", e);
+      }
+    };
+    cargarCarreras();
+  }, []);
+
   const authService = new AuthService();
 
   const toggleCarrera = (nombreCarrera) => {
@@ -155,7 +173,7 @@ function RegistroPOOFront({ onLogin, onRegistroExitoso }) {
               <div style={{maxHeight:"180px",overflowY:"auto",border:"1.5px solid rgba(255,255,255,0.4)",borderRadius:"8px",padding:"8px",background:"rgba(255,255,255,0.95)"}}>
                 {carreras.map((carr) => (
                   <label
-                    key={carr.id}
+                    key={carr.nombre}
                     style={{display:"flex",alignItems:"center",gap:"8px",padding:"6px 4px",cursor:"pointer",fontSize:"0.85rem",borderBottom:"1px solid #e8e8e8",color:"#1a3a2a"}}
                   >
                     <input

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 import Profesor from '../../models/Profesor';
+import SeccionConfiguracion from './SeccionConfiguracion';
 
 const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
 
@@ -378,6 +379,64 @@ function PanelProfesor({ perfil, seccion }) {
             </>
           )}
         </div>
+      </>
+    );
+  }
+
+  if (seccion === 'calendario') {
+    const materiaIds = new Set(comisiones.map(c => c.materiaId));
+    const eventosPropios = eventos
+      .filter(ev => materiaIds.has(ev.materiaId))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+    return (
+      <>
+        {topbar('Calendario', 'Parciales, TPs y eventos de tus comisiones')}
+        <div className="content">
+          <div className="card">
+            <div className="table-head" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr'}}>
+              <div>Fecha</div><div>Materia</div><div>Tipo</div><div>Hora</div><div>Aula</div>
+            </div>
+            {cargando ? (
+              <div className="empty-state"><p>Cargando...</p></div>
+            ) : eventosPropios.length === 0 ? (
+              <div className="empty-state">
+                <div className="icon">📅</div>
+                <p>No hay eventos proximos en tus comisiones.</p>
+              </div>
+            ) : (
+              eventosPropios.map(ev => {
+                const d = new Date(ev.fecha + 'T00:00:00');
+                return (
+                  <div key={ev.id} className="table-row" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                      <div className="prox-date" style={{width:'42px'}}>
+                        <div className="day">{d.getDate()}</div>
+                        <div className="mon">{MESES[d.getMonth()]}</div>
+                      </div>
+                    </div>
+                    <div className="materia-name">{ev.titulo}</div>
+                    <div>
+                      <span className="status-badge" style={{background: ev.tipo==='Parcial'?'var(--red-soft)':'var(--yellow-soft)',color:ev.tipo==='Parcial'?'var(--red)':'var(--yellow)'}}>
+                        {ev.tipo || 'Evento'}
+                      </span>
+                    </div>
+                    <div style={{fontSize:'0.85rem'}}>{ev.hora || '-'}</div>
+                    <div style={{fontSize:'0.85rem'}}>{ev.aula || '-'}</div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (seccion === 'config') {
+    return (
+      <>
+        {topbar('Configuracion', 'Gestion de tu cuenta')}
+        <SeccionConfiguracion perfil={perfil} onBaja={() => window.location.reload()} />
       </>
     );
   }

@@ -1,10 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
 import { db } from './firebase';
 import { doc, updateDoc, collection, query, where, getDocs, writeBatch } from 'firebase/firestore';
-import { getMateriasPorCarrera } from './data/materias';
-import carrerasData from './data/carreras.json';
 
 const ESTADOS = [
   { key: 'sin_cursar',        label: 'Sin cursar',          color: '#999',    bg: '#f5f5f5' },
@@ -14,11 +12,6 @@ const ESTADOS = [
   { key: 'equivalencia',      label: 'Equivalencia',        color: '#6a1a8a', bg: '#f0e0ff' },
   { key: 'libre',             label: 'Libre',               color: '#c0392b', bg: '#ffe0e0' },
 ];
-
-function obtenerCarreraId(nombreCarrera) {
-  const found = carrerasData.find(c => c.nombre === nombreCarrera);
-  return found ? found.id : null;
-}
 
 function agruparPorAnio(materias) {
   return materias.reduce((acc, m) => {
@@ -35,13 +28,27 @@ export default function Onboarding({ perfil, onCompletado, onSaltear }) {
   const [estadoMaterias, setEstadoMaterias] = useState({});
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
+  const [planInfo, setPlanInfo] = useState(null);
 
   const carreras = Array.isArray(perfil?.carreras) ? perfil.carreras : [perfil?.carrera].filter(Boolean);
   const carreraActual = carreras[0] || '';
-  const carreraId = obtenerCarreraId(carreraActual);
-  console.log('perfil completo:', JSON.stringify(perfil));
-  console.log('carreraActual:', carreraActual, 'carreraId:', carreraId);
-  const materias = carreraId ? getMateriasPorCarrera(carreraId) : [];
+
+  useEffect(() => {
+    if (!carreraActual) return;
+    const cargarPlan = async () => {
+      try {
+        const snap = await getDocs(
+          query(collection(db, 'planesEstudio'), where('carrera', '==', carreraActual))
+        );
+        if (!snap.empty) setPlanInfo({ id: snap.docs[0].id, ...snap.docs[0].data() });
+      } catch (e) {
+        console.error('Error cargando plan de estudio:', e);
+      }
+    };
+    cargarPlan();
+  }, [carreraActual]);
+
+  const materias = planInfo?.materias || [];
   const porAnio = agruparPorAnio(materias);
   const anios = Object.keys(porAnio).map(Number).sort((a, b) => a - b);
   const totalAnios = anios.length;

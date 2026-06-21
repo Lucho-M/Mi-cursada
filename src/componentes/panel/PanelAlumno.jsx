@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import Alumno from '../../models/Alumno';
-import { getMateriasPorCarrera } from '../../data/materias';
-import carrerasData from '../../data/carreras.json';
 import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
 import SeccionNotas from './SeccionNotas';
@@ -75,11 +73,6 @@ const DIA_ABREV = {
   sábado: 'Sáb',
   sabado: 'Sáb',
 };
-
-function obtenerCarreraId(nombreCarrera) {
-  const found = carrerasData.find(c => c.nombre === nombreCarrera);
-  return found ? found.id : null;
-}
 
 function NotaPill({ nota }) {
   if (nota == null || nota === '') return <span className="nota-pill nota-empty">—</span>;
@@ -200,9 +193,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
   );
   const materiasAprobadas = alumnoObj.obtenerMateriasAprobadas().length;
   const promedio = notas.length ? alumnoObj.obtenerPromedio() : '—';
-  const carreraIdPanel = obtenerCarreraId(carreraActual);
-  const materiasDelPlanPanel = carreraIdPanel ? getMateriasPorCarrera(carreraIdPanel) : [];
-  const totalCarrera = materiasDelPlanPanel.length;
+  const totalCarrera = (planInfo?.materias || []).length;
 
   // Inscripciones enriquecidas con notas
   const materiasConNotas = inscripciones.map(insc => {
@@ -721,8 +712,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
     const aprobadosIds = new Set(
       notas.filter(n => n.parcial === 'final' && Number(n.nota) >= 4).map(n => n.materiaId)
     );
-    const carreraId = obtenerCarreraId(carreraActual);
-    const materiasDelPlan = carreraId ? getMateriasPorCarrera(carreraId) : [];
+    const materiasDelPlan = planInfo?.materias || [];
 
     const materiasConEstado = materiasDelPlan.map(m => {
       const aprobada = aprobadosIds.has(m.nombre) || aprobadosIds.has(m.codigo || '');

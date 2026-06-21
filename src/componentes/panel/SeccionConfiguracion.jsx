@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { getMateriasPorCarrera } from '../../data/materias';
-import carrerasData from '../../data/carreras.json';
 
 const ESTADOS_HISTORIAL = [
   { key: 'sin_cursar',        label: 'Sin cursar',          color: '#999',    bg: '#f5f5f5' },
@@ -13,11 +11,6 @@ const ESTADOS_HISTORIAL = [
   { key: 'equivalencia',      label: 'Equivalencia',        color: '#6a1a8a', bg: '#f0e0ff' },
   { key: 'libre',             label: 'Libre',               color: '#c0392b', bg: '#ffe0e0' },
 ];
-
-function obtenerCarreraId(nombreCarrera) {
-  const found = carrerasData.find(c => c.nombre === nombreCarrera);
-  return found ? found.id : null;
-}
 
 function agruparPorAnio(materias) {
   return materias.reduce((acc, m) => {
@@ -29,7 +22,8 @@ function agruparPorAnio(materias) {
 }
 
 export default function SeccionConfiguracion({ perfil, onBaja }) {
-  const [tab, setTab] = useState('historial');
+  const esAlumno = perfil?.rol === 'alumno';
+  const [tab, setTab] = useState(esAlumno ? 'historial' : 'password');
   const [anioActual, setAnioActual] = useState(1);
   const [estadoMaterias, setEstadoMaterias] = useState({});
   const [guardandoHistorial, setGuardandoHistorial] = useState(false);
@@ -42,17 +36,31 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
   const [confirmBaja, setConfirmBaja] = useState(false);
   const [passBaja, setPassBaja] = useState('');
   const [mensajeBaja, setMensajeBaja] = useState('');
+  const [planInfo, setPlanInfo] = useState(null);
 
   const carreras = Array.isArray(perfil?.carreras) && perfil.carreras.length > 0
     ? perfil.carreras
     : (perfil?.carrera ? [perfil.carrera] : []);
   const carreraActual = carreras[0] || '';
-  const carreraId = obtenerCarreraId(carreraActual);
-  const materias = carreraId ? getMateriasPorCarrera(carreraId) : [];
+  const materias = planInfo?.materias || [];
 
   useEffect(() => {
-    console.log('useEffect ejecutado, uid:', perfil?.uid);
-    if (!perfil?.uid) return;
+    if (!carreraActual || !esAlumno) return;
+    const cargarPlan = async () => {
+      try {
+        const snap = await getDocs(
+          query(collection(db, 'planesEstudio'), where('carrera', '==', carreraActual))
+        );
+        if (!snap.empty) setPlanInfo({ id: snap.docs[0].id, ...snap.docs[0].data() });
+      } catch (e) {
+        console.error('Error cargando plan de estudio:', e);
+      }
+    };
+    cargarPlan();
+  }, [carreraActual, esAlumno]);
+
+  useEffect(() => {
+    if (!perfil?.uid || !esAlumno) return;
     const cargarHistorial = async () => {
       try {
         const snap = await getDocs(
@@ -74,7 +82,6 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
           if (data.final != null) mapa[codigo].final = data.final;
           if (data.definitiva != null) mapa[codigo].definitiva = data.definitiva;
         });
-        console.log('historial cargado:', JSON.stringify(mapa));
         setEstadoMaterias(mapa);
       } catch (e) {
         console.error('Error cargando historial:', e);
@@ -82,7 +89,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
     };
     cargarHistorial();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [perfil?.uid]);
+  }, [perfil?.uid, esAlumno]);
 
   const porAnio = agruparPorAnio(materias);
   const anios = Object.keys(porAnio).map(Number).sort((a, b) => a - b);
@@ -193,7 +200,11 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
   return (
     <div className="content">
       <div style={{display:'flex',gap:'10px',marginBottom:'24px',borderBottom:'1px solid #eee',paddingBottom:'12px'}}>
-        {[{key:'historial',label:'Mi historial'},{key:'password',label:'Cambiar contraseña'},{key:'baja',label:'Dar de baja'}].map(t => (
+        {[
+          ...(esAlumno ? [{key:'historial',label:'Mi historial'}] : []),
+          {key:'password',label:'Cambiar contraseña'},
+          {key:'baja',label:'Dar de baja'},
+        ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             style={{padding:'8px 18px',borderRadius:'8px',border:'none',cursor:'pointer',fontWeight:600,fontSize:'0.88rem',
               background: tab === t.key ? '#2e7d32' : '#f5f5f5',

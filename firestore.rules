@@ -31,5 +31,16 @@ service cloud.firestore {
     match /ofertaAcademica/{docId} {
       allow read, write: if request.auth != null;
     }
+
+    // Lectura publica para mostrar las carreras en el formulario de registro
+    match /carreras/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Oferta academica por comision (fuente real que ven los alumnos en Mis materias)
+    match /comisionesOferta/{docId} {
+      allow read, write: if request.auth != null;
+    }
   }
 }

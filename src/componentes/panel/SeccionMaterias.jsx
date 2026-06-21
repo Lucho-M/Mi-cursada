@@ -1,29 +1,39 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
-import ofertaData from '../../data/oferta_comisiones_2026_1.json';
-import { getMateriasPorCarrera } from '../../data/materias';
-import carrerasData from '../../data/carreras.json';
 
 const SIU_URL = 'https://inscripcion.unab.edu.ar/rectorado/acceso';
-
-function obtenerCarreraId(nombreCarrera) {
-  const found = carrerasData.find(c => c.nombre === nombreCarrera);
-  return found ? found.id : null;
-}
 
 function normalizarTexto(texto) {
   return (texto || '').toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
+}
+
+// La oferta usa nombres abreviados ("Tec. en X", "Lic. en X") mientras que el
+// nombre formal de la carrera dice "Tecnicatura en X" / "Licenciatura en X".
+// Se quita ese prefijo antes de comparar para no perder la palabra clave.
+const PREFIJOS_CARRERA = [
+  'tecnicatura universitaria en', 'tecnicatura en',
+  'licenciatura en', 'ccc licenciatura en ensenanza de',
+].sort((a, b) => b.length - a.length);
+
+function nucleoCarrera(texto) {
+  let t = normalizarTexto(texto);
+  for (const pre of PREFIJOS_CARRERA) {
+    if (t.startsWith(pre + ' ')) { t = t.slice(pre.length).trim(); break; }
+  }
+  return t;
 }
 
 function carreraEnOferta(carreraRef, nombreCarrera) {
   const ref = normalizarTexto(carreraRef);
-  const nombre = normalizarTexto(nombreCarrera);
-  const palabras = nombre.split(' ').filter(p => p.length > 3);
-  return palabras.filter(p => ref.includes(p)).length >= 2;
+  const nucleo = nucleoCarrera(nombreCarrera);
+  const palabras = nucleo.split(' ').filter(p => p.length > 3);
+  if (palabras.length === 0) return false;
+  return palabras.every(p => ref.includes(p));
 }
 
 export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) {
@@ -31,6 +41,8 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
   const [filtro, setFiltro] = useState('todas');
   const [inscripciones, setInscripciones] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [ofertaData, setOfertaData] = useState([]);
+  const [planInfo, setPlanInfo] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [nuevaInscripcion, setNuevaInscripcion] = useState({
     materiaNombre: '', comision: '', dia: '', horario: '', aula: '', docente: '', modalidad: 'presencial', sede: ''
@@ -40,8 +52,7 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
   const carreras = Array.isArray(perfil?.carreras) && perfil.carreras.length > 0
     ? perfil.carreras : (perfil?.carrera ? [perfil.carrera] : []);
   const carreraActual = carreras[0] || '';
-  const carreraId = obtenerCarreraId(carreraActual);
-  const materiasCarrera = carreraId ? getMateriasPorCarrera(carreraId) : [];
+  const materiasCarrera = planInfo?.materias || [];
 
   // Materias cursadas y aprobadas del historial
   const cursadas = new Set(
@@ -96,6 +107,33 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
     };
     cargar();
   }, [perfil?.uid]);
+
+  useEffect(() => {
+    const cargarOferta = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'comisionesOferta'));
+        setOfertaData(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch (e) {
+        console.error('Error cargando oferta academica:', e);
+      }
+    };
+    cargarOferta();
+  }, []);
+
+  useEffect(() => {
+    if (!carreraActual) return;
+    const cargarPlan = async () => {
+      try {
+        const snap = await getDocs(
+          query(collection(db, 'planesEstudio'), where('carrera', '==', carreraActual))
+        );
+        if (!snap.empty) setPlanInfo({ id: snap.docs[0].id, ...snap.docs[0].data() });
+      } catch (e) {
+        console.error('Error cargando plan de estudio:', e);
+      }
+    };
+    cargarPlan();
+  }, [carreraActual]);
 
   const agregarInscripcion = async () => {
     if (!nuevaInscripcion.materiaNombre.trim()) {
