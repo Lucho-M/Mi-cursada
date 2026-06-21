@@ -260,15 +260,17 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
 
   // Inscripciones enriquecidas con notas
   const materiasConNotas = inscripciones.map(insc => {
-    const parcial1 = notas.find(n => n.materiaId === insc.materiaId && n.parcial === '1')?.nota;
-    const recup1   = notas.find(n => n.materiaId === insc.materiaId && n.parcial === 'rec1')?.nota;
-    const parcial2 = notas.find(n => n.materiaId === insc.materiaId && n.parcial === '2')?.nota;
-    const recup2   = notas.find(n => n.materiaId === insc.materiaId && n.parcial === 'rec2')?.nota;
-    const final    = notas.find(n => n.materiaId === insc.materiaId && n.parcial === 'final')?.nota;
+    const histo = notas.find(n => n.materiaId === insc.materiaId && n.tipo === 'historial');
+    const parcial1 = histo?.p1;
+    const recup1   = histo?.rec1;
+    const parcial2 = histo?.p2;
+    const recup2   = histo?.rec2;
+    const final    = histo?.final;
     let estado = 'Cursando';
-    if (final != null && Number(final) >= 4) estado = 'Aprobada';
-    else if (parcial1 != null && parcial2 != null && Number(parcial1) >= 4 && Number(parcial2) >= 4) estado = 'Regular';
-    else if ((parcial1 != null && Number(parcial1) < 4) || (parcial2 != null && Number(parcial2) < 4)) estado = 'Libre';
+    if (histo?.estado === 'promocionado' || histo?.estado === 'equivalencia') estado = 'Aprobada';
+    else if (histo?.estado === 'regular_con_final') estado = (histo?.definitiva != null && Number(histo.definitiva) >= 4) ? 'Aprobada' : 'Regular';
+    else if (histo?.estado === 'regular_sin_final') estado = 'Regular';
+    else if (histo?.estado === 'libre') estado = 'Libre';
     return { ...insc, parcial1, recup1, parcial2, recup2, final, estado };
   });
 
