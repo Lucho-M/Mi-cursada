@@ -145,7 +145,7 @@ function ModalDocente({ docente, onGuardar, onCerrar }) {
           <div style={{display:'flex',gap:'8px',marginBottom:'8px'}}>
             <input type="text" value={nuevoAux} onChange={e => setNuevoAux(e.target.value)}
               placeholder="Nombre del auxiliar"
-              style={{flex:1,padding:'8px',borderRadius:'6px',border:'1px solid #ddd'}} />
+              style={{flex:1,padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
             <button onClick={agregarAux}
               style={{padding:'8px 14px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer'}}>
               Agregar
@@ -622,7 +622,7 @@ function PanelAdmin({ perfil, seccion }) {
           </p>
           <div className="card">
             <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr'}}>
-              <div>Usuario</div><div>DNI</div><div>Carrera</div><div>Rol</div>
+              <div>Usuario</div><div style={{textAlign:'center'}}>DNI</div><div style={{textAlign:'center'}}>Carrera</div><div style={{textAlign:'center'}}>Rol</div>
             </div>
             {cargandoUsuarios ? (
               <div className="empty-state"><p>Cargando usuarios...</p></div>
@@ -638,9 +638,9 @@ function PanelAdmin({ perfil, seccion }) {
                     <div className="materia-name">{u.nombre || '(sin nombre)'}</div>
                     <div className="materia-code">{u.email}</div>
                   </div>
-                  <div style={{fontSize:'0.85rem'}}>{u.dni || '-'}</div>
-                  <div style={{fontSize:'0.85rem'}}>{u.carrera || '-'}</div>
-                  <div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{u.dni || '-'}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{u.carrera || '-'}</div>
+                  <div style={{textAlign:'center'}}>
                     <select
                       value={ROLES.some(r => r.value === u.rol) ? u.rol : 'alumno'}
                       disabled={guardandoRolUid === u.docId}
@@ -894,7 +894,7 @@ function PanelAdmin({ perfil, seccion }) {
             <div>
               <label style={{display:'block',fontSize:'0.8rem',fontWeight:600,marginBottom:'6px'}}>Carrera</label>
               <select value={planSeleccionadoId} onChange={e => seleccionarPlan(e.target.value)}
-                style={{padding:'8px',borderRadius:'6px',border:'1px solid #ddd',minWidth:'300px'}}>
+                style={{padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',minWidth:'300px',background:'var(--surface-2)',color:'var(--text-1)'}}>
                 <option value="">Selecciona un plan de estudio</option>
                 {planesLista.map(p => (
                   <option key={p.id} value={p.id}>{p.carrera} ({p.anioVigencia}) · {p.materias.length} materias</option>
@@ -905,7 +905,7 @@ function PanelAdmin({ perfil, seccion }) {
               <div>
                 <input type="text" placeholder="Buscar materia..." value={busquedaPlanMateria}
                   onChange={e => setBusquedaPlanMateria(e.target.value)}
-                  style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'220px'}} />
+                  style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',width:'220px',background:'var(--surface-2)',color:'var(--text-1)'}} />
               </div>
             )}
           </div>
@@ -940,35 +940,35 @@ function PanelAdmin({ perfil, seccion }) {
                         <tr key={idx} style={{borderBottom:'1px solid var(--border)'}}>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={m.codigo || ''} onChange={e => actualizarMateriaPlan(idx, 'codigo', e.target.value)}
-                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={m.nombre || ''} onChange={e => actualizarMateriaPlan(idx, 'nombre', e.target.value)}
-                              style={{width:'220px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'220px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="number" min="1" value={m.anio || 1} onChange={e => actualizarMateriaPlan(idx, 'anio', e.target.value)}
-                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="number" min="1" max="2" value={m.cuatrimestre || 1} onChange={e => actualizarMateriaPlan(idx, 'cuatrimestre', e.target.value)}
-                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="number" min="0" value={m.horas || 0} onChange={e => actualizarMateriaPlan(idx, 'horas', e.target.value)}
-                              style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={(m.correlativas?.para_cursar || []).join(', ')}
                               onChange={e => actualizarMateriaPlan(idx, 'para_cursar', e.target.value)}
                               placeholder="codigos separados por coma"
-                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={(m.correlativas?.para_aprobar || []).join(', ')}
                               onChange={e => actualizarMateriaPlan(idx, 'para_aprobar', e.target.value)}
                               placeholder="codigos separados por coma"
-                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <button onClick={() => eliminarMateriaPlan(idx)}
@@ -999,105 +999,6 @@ function PanelAdmin({ perfil, seccion }) {
     );
   }
 
-  if (seccion === 'materias') {
-    const busqM = busquedaMateria.toLowerCase();
-    const materiasFiltradas = materiasLista.filter(m =>
-      (m.nombre || '').toLowerCase().includes(busqM) ||
-      (m.codigo || '').toLowerCase().includes(busqM) ||
-      (m.carrera || '').toLowerCase().includes(busqM)
-    );
-    return (
-      <>
-        {topbar}
-        <div className="content">
-          {admin.tienePermiso('importar_oferta') && (
-            <div style={{marginBottom:'28px',maxWidth:'520px'}}>
-              <DropZoneImport
-                titulo="Importar Catalogo de Materias"
-                descripcion="Importa el listado completo de materias con codigo, anio, cuatrimestre y correlativas."
-                onImportar={archivo => importService.importarMaterias(archivo).then(c => { setMateriasLista([]); return c; })}
-              />
-            </div>
-          )}
-
-          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <h2>Catalogo de materias ({materiasLista.length})</h2>
-            <input type="text" placeholder="Buscar por nombre, codigo o carrera..." value={busquedaMateria}
-              onChange={e => setBusquedaMateria(e.target.value)}
-              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'300px'}} />
-          </div>
-          <div className="card" style={{overflowX:'auto'}}>
-            <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
-              <thead>
-                <tr style={{background:'var(--surface-2)'}}>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Codigo</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Nombre</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Carrera</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Año</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Cuatrim.</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Creditos</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Correlativas</th>
-                  <th style={{padding:'8px 10px'}}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {cargandoMateriasLista ? (
-                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>Cargando...</td></tr>
-                ) : materiasFiltradas.length === 0 ? (
-                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>No hay materias que coincidan.</td></tr>
-                ) : (
-                  materiasFiltradas.map(item => {
-                    const editando = editandoMateriaId === item.id;
-                    return (
-                      <tr key={item.id} style={{borderBottom:'1px solid var(--border)'}}>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="text" value={edicionMateria.codigo || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, codigo: e.target.value }))} style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.codigo}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="text" value={edicionMateria.nombre || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, nombre: e.target.value }))} style={{width:'200px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.nombre}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="text" value={edicionMateria.carrera || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, carrera: e.target.value }))} style={{width:'160px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.carrera}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="number" value={edicionMateria.anio || 1} onChange={e => setEdicionMateria(prev => ({ ...prev, anio: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.anio}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="number" value={edicionMateria.cuatrimestre || 1} onChange={e => setEdicionMateria(prev => ({ ...prev, cuatrimestre: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.cuatrimestre}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="number" value={edicionMateria.creditos || 0} onChange={e => setEdicionMateria(prev => ({ ...prev, creditos: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.creditos}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando
-                            ? <input type="text" value={edicionMateria.correlativas || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, correlativas: e.target.value }))} placeholder="codigos separados por coma" style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
-                            : (item.correlativas || []).join(', ') || '-'}
-                        </td>
-                        <td style={{padding:'6px 8px',whiteSpace:'nowrap'}}>
-                          {editando ? (
-                            <>
-                              <button onClick={guardarEdicionMateria} style={{padding:'4px 10px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Guardar</button>
-                              <button onClick={() => setEditandoMateriaId(null)} style={{padding:'4px 10px',background:'var(--surface-2)',color:'var(--text-1)',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Cancelar</button>
-                            </>
-                          ) : (
-                            <>
-                              <button onClick={() => iniciarEdicionMateria(item)} style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Editar</button>
-                              <button onClick={() => eliminarMateria(item.id)} style={{padding:'4px 10px',background:'#fff0f0',border:'1px solid #f5c6c6',color:'#c0392b',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Eliminar</button>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </>
-    );
-  }
-
   if (seccion === 'alumnos') {
     const alumnosFiltrados = alumnos.filter(a =>
       (a.nombre || '').toLowerCase().includes(busquedaAlumno.toLowerCase()) ||
@@ -1115,7 +1016,7 @@ function PanelAdmin({ perfil, seccion }) {
           </div>
           <div className="card">
             <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 2fr'}}>
-              <div>Alumno</div><div>DNI</div><div>Carrera</div><div></div>
+              <div>Alumno</div><div style={{textAlign:'center'}}>DNI</div><div style={{textAlign:'center'}}>Carrera</div><div></div>
             </div>
             {cargandoAlumnos ? (
               <div className="empty-state"><p>Cargando alumnos...</p></div>
@@ -1131,8 +1032,8 @@ function PanelAdmin({ perfil, seccion }) {
                     <div className="materia-name">{a.nombre}</div>
                     <div className="materia-code">{a.email}</div>
                   </div>
-                  <div style={{fontSize:'0.85rem'}}>{a.dni || '-'}</div>
-                  <div style={{fontSize:'0.85rem'}}>{a.carrera || '-'}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{a.dni || '-'}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{a.carrera || '-'}</div>
                   <div style={{fontSize:'0.78rem',color:'#999'}}>
                     {Array.isArray(a.carreras) && a.carreras.length > 1 ? `+${a.carreras.length - 1} carrera(s) mas` : ''}
                   </div>

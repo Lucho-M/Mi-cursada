@@ -33,7 +33,7 @@ const NAV_ADMIN = [
   { seccion: 'panel',    label: 'Panel',             icon: '⊞' },
   { seccion: 'oferta',   label: 'Oferta académica',  icon: '📚' },
   { seccion: 'planes',   label: 'Planes de estudio', icon: '📋' },
-  { seccion: 'materias', label: 'Materias',          icon: '≡' },
+
   { grupo: 'Usuarios' },
   { seccion: 'usuarios', label: 'Usuarios y roles',  icon: '🛡' },
   { seccion: 'docentes', label: 'Docentes',          icon: '👩‍🏫' },
