@@ -667,7 +667,7 @@ function PanelAdmin({ perfil, seccion }) {
             <h2>Gestion de docentes</h2>
           </div>
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 130px'}}>
               <div>Docente</div><div>Comisiones</div><div>Modalidad</div><div>Link virtual</div><div></div>
             </div>
             {cargandoDocentes ? (
@@ -679,7 +679,7 @@ function PanelAdmin({ perfil, seccion }) {
               </div>
             ) : (
               docentes.map(d => (
-                <div key={d.uid} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
+                <div key={d.uid} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 130px'}}>
                   <div>
                     <div className="materia-name">{d.nombre}</div>
                     <div className="materia-code">{d.email}</div>
@@ -1059,8 +1059,8 @@ function PanelAdmin({ perfil, seccion }) {
             </button>
           </div>
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
-              <div>Nombre</div><div>Tipo</div><div>Duracion</div><div>Estado</div><div></div>
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 130px'}}>
+              <div>Nombre</div><div style={{textAlign:'center'}}>Tipo</div><div style={{textAlign:'center'}}>Duración</div><div style={{textAlign:'center'}}>Estado</div><div></div>
             </div>
             {cargandoCarreras ? (
               <div className="empty-state"><p>Cargando carreras...</p></div>
@@ -1071,23 +1071,23 @@ function PanelAdmin({ perfil, seccion }) {
               </div>
             ) : (
               carrerasList.map(c => (
-                <div key={c.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
+                <div key={c.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 130px'}}>
                   <div className="materia-name">{c.nombre}</div>
-                  <div style={{fontSize:'0.85rem'}}>{c.tipo}</div>
-                  <div style={{fontSize:'0.85rem'}}>{c.duracionAnios} anios</div>
-                  <div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{c.tipo}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{c.duracionAnios} años</div>
+                  <div style={{textAlign:'center'}}>
                     <span className={'status-badge ' + (c.activa ? 'badge-green' : 'badge-red')}
                       style={{cursor:'pointer'}} onClick={() => toggleActivaCarrera(c)}>
                       {c.activa ? 'Activa' : 'Inactiva'}
                     </span>
                   </div>
-                  <div style={{display:'flex',gap:'6px'}}>
+                  <div style={{display:'flex',gap:'6px',justifyContent:'center'}}>
                     <button onClick={() => { setCarreraEditando(c); setModalCarreraAbierto(true); }}
-                      style={{padding:'5px 12px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
+                      style={{padding:'5px 12px',background:'var(--surface-2)',border:'1px solid var(--border)',color:'var(--text-1)',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
                       Editar
                     </button>
                     <button onClick={() => eliminarCarrera(c.id)}
-                      style={{padding:'5px 12px',background:'#fff0f0',border:'1px solid #f5c6c6',color:'#c0392b',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
+                      style={{padding:'5px 12px',background:'var(--red-dim)',border:'1px solid var(--red)',color:'var(--red)',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
                       Eliminar
                     </button>
                   </div>
