@@ -118,7 +118,7 @@ function ModalDocente({ docente, onGuardar, onCerrar }) {
 
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-      <div style={{background:'white',borderRadius:'12px',padding:'28px',width:'480px',maxWidth:'90vw'}}>
+      <div style={{background:'var(--surface)',borderRadius:'12px',padding:'28px',width:'480px',maxWidth:'90vw'}}>
         <h3 style={{marginBottom:'16px'}}>{docente.nombre}</h3>
 
         <div style={{marginBottom:'14px'}}>
@@ -160,7 +160,7 @@ function ModalDocente({ docente, onGuardar, onCerrar }) {
         </div>
 
         <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginTop:'20px'}}>
-          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',background:'white'}}>Cancelar</button>
+          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)'}}>Cancelar</button>
           <button onClick={() => onGuardar({ modalidad, linkVirtual, auxiliares })}
             style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer'}}>
             Guardar
@@ -178,7 +178,7 @@ function ModalCarrera({ carrera, onGuardar, onCerrar }) {
 
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-      <div style={{background:'white',borderRadius:'12px',padding:'28px',width:'440px',maxWidth:'90vw'}}>
+      <div style={{background:'var(--surface)',borderRadius:'12px',padding:'28px',width:'440px',maxWidth:'90vw'}}>
         <h3 style={{marginBottom:'16px'}}>{carrera ? 'Editar carrera' : 'Nueva carrera'}</h3>
 
         <div style={{marginBottom:'14px'}}>
@@ -205,7 +205,7 @@ function ModalCarrera({ carrera, onGuardar, onCerrar }) {
         </div>
 
         <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginTop:'20px'}}>
-          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',background:'white'}}>Cancelar</button>
+          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)'}}>Cancelar</button>
           <button onClick={() => onGuardar({ nombre: nombre.trim(), tipo, duracionAnios })}
             disabled={!nombre.trim()}
             style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',opacity:nombre.trim()?1:0.5}}>
@@ -746,13 +746,14 @@ function PanelAdmin({ perfil, seccion }) {
   }
 
   if (seccion === 'oferta') {
-    const busq = busquedaOferta.toLowerCase();
+    const norm = t => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const busq = norm(busquedaOferta);
     const ofertaFiltrada = ofertaLista.filter(o =>
       !busq ||
-      (o.carrera_ref || '').toLowerCase().includes(busq) ||
-      (o.materia_nombre || '').toLowerCase().includes(busq) ||
-      (o.codigo_asignatura || '').toLowerCase().includes(busq) ||
-      String(o.comision || '').toLowerCase().includes(busq)
+      norm(o.carrera_ref).includes(busq) ||
+      norm(o.materia_nombre).includes(busq) ||
+      norm(o.codigo_asignatura).includes(busq) ||
+      norm(String(o.comision || '')).includes(busq)
     );
     const ofertaAMostrar = busq ? ofertaFiltrada : ofertaFiltrada.slice(0, 50);
     const camposOferta = [
@@ -798,29 +799,29 @@ function PanelAdmin({ perfil, seccion }) {
           <div className="card" style={{overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
               <thead>
-                <tr style={{background:'#f5f5f5'}}>
+                <tr style={{background:'var(--surface-2)'}}>
                   {camposOferta.map(c => (
-                    <th key={c.key} style={{padding:'8px 10px',textAlign:'left',fontWeight:600,whiteSpace:'nowrap'}}>{c.label}</th>
+                    <th key={c.key} style={{padding:'8px 10px',textAlign:'left',fontWeight:600,whiteSpace:'nowrap',color:'var(--text-2)'}}>{c.label}</th>
                   ))}
                   <th style={{padding:'8px 10px'}}></th>
                 </tr>
               </thead>
               <tbody>
                 {cargandoOfertaLista ? (
-                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'#999'}}>Cargando...</td></tr>
+                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>Cargando...</td></tr>
                 ) : ofertaAMostrar.length === 0 ? (
-                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'#999'}}>No hay comisiones que coincidan.</td></tr>
+                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>No hay comisiones que coincidan.</td></tr>
                 ) : (
                   ofertaAMostrar.map(item => {
                     const editando = editandoOfertaId === item.id;
                     return (
-                      <tr key={item.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                      <tr key={item.id} style={{borderBottom:'1px solid var(--border)'}}>
                         {camposOferta.map(c => (
                           <td key={c.key} style={{padding:'6px 8px'}}>
                             {editando ? (
                               <input type="text" value={edicionOferta[c.key] || ''}
                                 onChange={e => setEdicionOferta(prev => ({ ...prev, [c.key]: e.target.value }))}
-                                style={{width:'100px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd',fontSize:'0.78rem'}} />
+                                style={{width:'100px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',fontSize:'0.78rem',background:'var(--surface-2)',color:'var(--text-1)'}} />
                             ) : (
                               <span>{item[c.key] || '-'}</span>
                             )}
@@ -834,7 +835,7 @@ function PanelAdmin({ perfil, seccion }) {
                                 Guardar
                               </button>
                               <button onClick={() => setEditandoOfertaId(null)}
-                                style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>
+                                style={{padding:'4px 10px',background:'var(--surface-2)',color:'var(--text-1)',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>
                                 Cancelar
                               </button>
                             </>
@@ -921,7 +922,7 @@ function PanelAdmin({ perfil, seccion }) {
               <div className="card" style={{overflowX:'auto'}}>
                 <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
                   <thead>
-                    <tr style={{background:'#f5f5f5'}}>
+                    <tr style={{background:'var(--surface-2)'}}>
                       <th style={{padding:'8px 10px',textAlign:'left'}}>Cod.</th>
                       <th style={{padding:'8px 10px',textAlign:'left'}}>Materia</th>
                       <th style={{padding:'8px 10px',textAlign:'left'}}>Año</th>
@@ -936,7 +937,7 @@ function PanelAdmin({ perfil, seccion }) {
                     {materiasPlanFiltradas.map((m) => {
                       const idx = materiasPlanEdit.indexOf(m);
                       return (
-                        <tr key={idx} style={{borderBottom:'1px solid #f0f0f0'}}>
+                        <tr key={idx} style={{borderBottom:'1px solid var(--border)'}}>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={m.codigo || ''} onChange={e => actualizarMateriaPlan(idx, 'codigo', e.target.value)}
                               style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
@@ -1028,7 +1029,7 @@ function PanelAdmin({ perfil, seccion }) {
           <div className="card" style={{overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
               <thead>
-                <tr style={{background:'#f5f5f5'}}>
+                <tr style={{background:'var(--surface-2)'}}>
                   <th style={{padding:'8px 10px',textAlign:'left'}}>Codigo</th>
                   <th style={{padding:'8px 10px',textAlign:'left'}}>Nombre</th>
                   <th style={{padding:'8px 10px',textAlign:'left'}}>Carrera</th>
@@ -1041,14 +1042,14 @@ function PanelAdmin({ perfil, seccion }) {
               </thead>
               <tbody>
                 {cargandoMateriasLista ? (
-                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'#999'}}>Cargando...</td></tr>
+                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>Cargando...</td></tr>
                 ) : materiasFiltradas.length === 0 ? (
-                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'#999'}}>No hay materias que coincidan.</td></tr>
+                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>No hay materias que coincidan.</td></tr>
                 ) : (
                   materiasFiltradas.map(item => {
                     const editando = editandoMateriaId === item.id;
                     return (
-                      <tr key={item.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                      <tr key={item.id} style={{borderBottom:'1px solid var(--border)'}}>
                         <td style={{padding:'6px 8px'}}>
                           {editando ? <input type="text" value={edicionMateria.codigo || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, codigo: e.target.value }))} style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.codigo}
                         </td>
@@ -1076,7 +1077,7 @@ function PanelAdmin({ perfil, seccion }) {
                           {editando ? (
                             <>
                               <button onClick={guardarEdicionMateria} style={{padding:'4px 10px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Guardar</button>
-                              <button onClick={() => setEditandoMateriaId(null)} style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Cancelar</button>
+                              <button onClick={() => setEditandoMateriaId(null)} style={{padding:'4px 10px',background:'var(--surface-2)',color:'var(--text-1)',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Cancelar</button>
                             </>
                           ) : (
                             <>

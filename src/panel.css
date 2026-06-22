@@ -314,6 +314,7 @@
   letter-spacing: -0.03em;
 }
 .stat-value.small { font-size: 1.4rem; }
+.stat-badge { display: block; text-align: center; font-size: 0.71rem; padding: 2px 8px; border-radius: 20px; margin: 0 auto; }
 .stat-meta {
   font-size: 0.71rem;
   color: var(--text-2);
