@@ -278,6 +278,7 @@ function PanelAdmin({ perfil, seccion }) {
   const [alumnos, setAlumnos] = useState([]);
   const [cargandoAlumnos, setCargandoAlumnos] = useState(false);
   const [busquedaAlumno, setBusquedaAlumno] = useState('');
+  const [busquedaCarreraAlumno, setBusquedaCarreraAlumno] = useState('');
   const [carrerasList, setCarrerasList] = useState([]);
   const [cargandoCarreras, setCargandoCarreras] = useState(false);
   const [carreraEditando, setCarreraEditando] = useState(null);
@@ -290,6 +291,7 @@ function PanelAdmin({ perfil, seccion }) {
   const [ofertaLista, setOfertaLista] = useState([]);
   const [cargandoOfertaLista, setCargandoOfertaLista] = useState(false);
   const [busquedaOferta, setBusquedaOferta] = useState('');
+  const [paginaOferta, setPaginaOferta] = useState(1);
   const [editandoOfertaId, setEditandoOfertaId] = useState(null);
   const [edicionOferta, setEdicionOferta] = useState({});
 
@@ -314,14 +316,14 @@ function PanelAdmin({ perfil, seccion }) {
       try {
         const [usuariosSnap, materiasSnap, carrerasSnap] = await Promise.all([
           getDocs(collection(db, 'usuarios')),
-          getDocs(collection(db, 'materias')),
+          getDocs(collection(db, 'comisionesOferta')),
           getDocs(collection(db, 'planesEstudio')),
         ]);
         const usuarios = usuariosSnap.docs.map(d => d.data());
         setStats({
           alumnos:  usuarios.filter(u => u.rol === 'alumno').length,
           docentes: usuarios.filter(u => u.rol === 'profesor').length,
-          materias: materiasSnap.size,
+          materias: new Set(materiasSnap.docs.map(d => d.data().materia_nombre).filter(Boolean)).size,
           carreras: new Set(carrerasSnap.docs.map(d => d.data().carrera)).size,
         });
       } catch (e) {
@@ -346,7 +348,7 @@ function PanelAdmin({ perfil, seccion }) {
           ...doc,
           comisiones: comisiones.filter(c => c.profesorUid === doc.uid),
         }));
-        setDocentes(docentesConCom);
+        setDocentes(docentesConCom.sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es")));
       } catch (e) {
         console.error('Error cargando docentes:', e);
       } finally {
@@ -783,7 +785,11 @@ function PanelAdmin({ perfil, seccion }) {
       norm(o.codigo_asignatura).includes(busq) ||
       norm(String(o.comision || '')).includes(busq)
     );
-    const ofertaAMostrar = busq ? ofertaFiltrada : ofertaFiltrada.slice(0, 50);
+    const normCarrera = s => (s || '').replace(/\.$/,'').trim().toLowerCase();
+    const ofertaOrdenada = [...ofertaFiltrada].sort((a, b) => normCarrera(a.carrera_ref).localeCompare(normCarrera(b.carrera_ref), 'es'));
+    const PAGINA_SIZE = 50;
+    const totalPaginas = Math.ceil(ofertaOrdenada.length / PAGINA_SIZE);
+    const ofertaAMostrar = ofertaOrdenada.slice((paginaOferta - 1) * PAGINA_SIZE, paginaOferta * PAGINA_SIZE);
     const camposOferta = [
       { key: 'carrera_ref', label: 'Carrera' },
       { key: 'materia_nombre', label: 'Materia' },
@@ -816,14 +822,23 @@ function PanelAdmin({ perfil, seccion }) {
           <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <h2>Oferta academica ({ofertaLista.length} comisiones)</h2>
             <input type="text" placeholder="Buscar por carrera, materia o codigo..." value={busquedaOferta}
-              onChange={e => setBusquedaOferta(e.target.value)}
+              onChange={e => { setBusquedaOferta(e.target.value); setPaginaOferta(1); }}
               style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'300px'}} />
           </div>
-          {!busq && ofertaLista.length > 50 && (
-            <p style={{fontSize:'0.8rem',color:'var(--text-2)',marginBottom:'12px'}}>
-              Mostrando 50 de {ofertaLista.length}. Usa el buscador para encontrar otras comisiones.
-            </p>
-          )}
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'12px',fontSize:'0.82rem',color:'var(--text-2)'}}>
+            <span>Mostrando {((paginaOferta - 1) * 50) + 1}-{Math.min(paginaOferta * 50, ofertaOrdenada.length)} de {ofertaOrdenada.length} comisiones</span>
+            <div style={{display:'flex',gap:'6px',alignItems:'center'}}>
+              <button onClick={() => setPaginaOferta(p => Math.max(1, p - 1))} disabled={paginaOferta === 1}
+                style={{padding:'4px 12px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',cursor:'pointer',opacity:paginaOferta===1?0.4:1}}>
+                Anterior
+              </button>
+              <span>Pagina {paginaOferta} de {totalPaginas}</span>
+              <button onClick={() => setPaginaOferta(p => Math.min(totalPaginas, p + 1))} disabled={paginaOferta === totalPaginas}
+                style={{padding:'4px 12px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',cursor:'pointer',opacity:paginaOferta===totalPaginas?0.4:1}}>
+                Siguiente
+              </button>
+            </div>
+          </div>
           <div className="card" style={{overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
               <thead>
@@ -1028,19 +1043,30 @@ function PanelAdmin({ perfil, seccion }) {
   }
 
   if (seccion === 'alumnos') {
-    const alumnosFiltrados = alumnos.filter(a =>
-      (a.nombre || '').toLowerCase().includes(busquedaAlumno.toLowerCase()) ||
-      (a.email || '').toLowerCase().includes(busquedaAlumno.toLowerCase())
-    );
+    const carrerasUnicas = [...new Set(alumnos.map(a => a.carrera || '').filter(Boolean))].sort();
+    const alumnosFiltrados = alumnos
+      .filter(a =>
+        ((a.nombre || '').toLowerCase().includes(busquedaAlumno.toLowerCase()) ||
+        (a.email || '').toLowerCase().includes(busquedaAlumno.toLowerCase())) &&
+        (!busquedaCarreraAlumno || (a.carrera || '') === busquedaCarreraAlumno)
+      )
+      .sort((a, b) => (a.nombre || '').localeCompare(b.nombre || '', 'es'));
     return (
       <>
         {topbar}
         <div className="content">
-          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'8px'}}>
             <h2>Alumnos registrados</h2>
-            <input type="text" placeholder="Buscar por nombre o email..." value={busquedaAlumno}
-              onChange={e => setBusquedaAlumno(e.target.value)}
-              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'260px'}} />
+            <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
+              <select value={busquedaCarreraAlumno} onChange={e => setBusquedaCarreraAlumno(e.target.value)}
+                style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',background:'var(--surface-2)',color:'var(--text-1)'}}>
+                <option value="">Todas las carreras</option>
+                {carrerasUnicas.map(car => <option key={car} value={car}>{car}</option>)}
+              </select>
+              <input type="text" placeholder="Buscar por nombre o email..." value={busquedaAlumno}
+                onChange={e => setBusquedaAlumno(e.target.value)}
+                style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',width:'260px',background:'var(--surface-2)',color:'var(--text-1)'}} />
+            </div>
           </div>
           <div className="card">
             <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 2fr'}}>
@@ -1062,7 +1088,7 @@ function PanelAdmin({ perfil, seccion }) {
                   </div>
                   <div style={{fontSize:'0.85rem',textAlign:'center'}}>{a.dni || '-'}</div>
                   <div style={{fontSize:'0.85rem',textAlign:'center'}}>{a.carrera || '-'}</div>
-                  <div style={{fontSize:'0.78rem',color:'#999'}}>
+                  <div style={{fontSize:'0.78rem',color:'var(--text-3)'}}>
                     {Array.isArray(a.carreras) && a.carreras.length > 1 ? `+${a.carreras.length - 1} carrera(s) mas` : ''}
                   </div>
                 </div>
