@@ -217,6 +217,58 @@ function ModalCarrera({ carrera, onGuardar, onCerrar }) {
   );
 }
 
+
+function DocenteRow({ d }) {
+  const [expandido, setExpandido] = useState(false);
+  return (
+    <div>
+      <div className="table-row" style={{gridTemplateColumns:'2fr 1fr 60px',cursor:'pointer'}} onClick={() => setExpandido(prev => !prev)}>
+        <div>
+          <div className="materia-name">{d.nombre}</div>
+          <div className="materia-code">{d.email}</div>
+        </div>
+        <div style={{fontSize:'0.85rem',textAlign:'center'}}>{d.comisiones.length} materia(s)</div>
+        <div style={{textAlign:'center',fontSize:'1rem'}}>{expandido ? '▲' : '▼'}</div>
+      </div>
+      {expandido && (
+        <div style={{background:'var(--surface-2)',padding:'12px 20px',borderBottom:'1px solid var(--border)'}}>
+          {d.comisiones.length === 0 ? (
+            <p style={{fontSize:'0.82rem',color:'var(--text-3)'}}>Sin comisiones asignadas.</p>
+          ) : (
+            <>
+              <div style={{display:'grid',gridTemplateColumns:'2fr 80px 1fr 1fr 1fr 1fr',gap:'8px',padding:'4px 0 8px',borderBottom:'1px solid var(--border)',fontSize:'0.7rem',color:'var(--text-3)',fontWeight:700,textTransform:'uppercase'}}>
+                <div>Materia</div><div style={{textAlign:'center'}}>Comision</div><div style={{textAlign:'center'}}>Modalidad</div><div style={{textAlign:'center'}}>Horario</div><div style={{textAlign:'center'}}>Aula</div><div style={{textAlign:'center'}}>Link</div>
+              </div>
+              {d.comisiones.map((com, i) => (
+              <div key={com.id || i} style={{
+                display:'grid',
+                gridTemplateColumns:'2fr 80px 1fr 1fr 1fr 1fr',
+                gap:'8px',
+                padding:'8px 0',
+                borderBottom: i < d.comisiones.length - 1 ? '1px solid var(--border)' : 'none',
+                fontSize:'0.82rem',
+                alignItems:'center'
+              }}>
+                <div style={{fontWeight:600,color:'var(--text-1)'}}>{com.materiaNombre || com.materiaId || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center'}}>Com. {com.numero || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center',textTransform:'capitalize'}}>{com.modalidad || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center'}}>{com.horario || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center'}}>{com.aula || '-'}</div>
+                <div style={{textAlign:'center'}}>
+                  {com.linkVirtual
+                    ? <a href={com.linkVirtual} target="_blank" rel="noreferrer" style={{color:'var(--accent)',fontSize:'0.78rem'}}>Ver link</a>
+                    : <span style={{opacity:0.4,color:'var(--text-3)'}}>Sin link</span>}
+                </div>
+              </div>
+            ))}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PanelAdmin({ perfil, seccion }) {
   const [stats, setStats] = useState({ carreras: 0, alumnos: 0, docentes: 0, materias: 0 });
   const [cargando, setCargando] = useState(true);
@@ -667,8 +719,8 @@ function PanelAdmin({ perfil, seccion }) {
             <h2>Gestion de docentes</h2>
           </div>
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 130px'}}>
-              <div>Docente</div><div>Comisiones</div><div>Modalidad</div><div>Link virtual</div><div></div>
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 60px'}}>
+              <div>Docente</div><div style={{textAlign:'center'}}>Materias</div><div></div>
             </div>
             {cargandoDocentes ? (
               <div className="empty-state"><p>Cargando docentes...</p></div>
@@ -679,36 +731,12 @@ function PanelAdmin({ perfil, seccion }) {
               </div>
             ) : (
               docentes.map(d => (
-                <div key={d.uid} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 130px'}}>
-                  <div>
-                    <div className="materia-name">{d.nombre}</div>
-                    <div className="materia-code">{d.email}</div>
-                  </div>
-                  <div style={{fontSize:'0.85rem'}}>{d.comisiones.length} asignadas</div>
-                  <div style={{fontSize:'0.85rem',textTransform:'capitalize'}}>{d.modalidad || 'Presencial'}</div>
-                  <div style={{fontSize:'0.8rem'}}>
-                    {d.linkVirtual
-                      ? <a href={d.linkVirtual} target="_blank" rel="noreferrer" style={{color:'#2e7d32'}}>Ver link</a>
-                      : <span style={{opacity:0.4}}>Sin link</span>}
-                  </div>
-                  <div>
-                    <button onClick={() => setDocenteEditando(d)}
-                      style={{padding:'5px 12px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
-                      Editar
-                    </button>
-                  </div>
-                </div>
+                <DocenteRow key={d.uid} d={d} />
               ))
             )}
           </div>
         </div>
-        {docenteEditando && (
-          <ModalDocente
-            docente={docenteEditando}
-            onGuardar={guardarDocente}
-            onCerrar={() => setDocenteEditando(null)}
-          />
-        )}
+
       </>
     );
   }
