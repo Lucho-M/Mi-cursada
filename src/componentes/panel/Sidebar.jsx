@@ -11,6 +11,8 @@ const NAV_ALUMNO = [
   { grupo: 'Planificación' },
   { seccion: 'parciales',    label: 'Parciales',     icon: '📝' },
   { seccion: 'correlativas', label: 'Correlativas',  icon: '🔗' },
+  { seccion: 'tareas',       label: 'Tareas',        icon: '🗂' },
+  { seccion: 'chat',         label: 'Chat',          icon: '💬' },
   { grupo: 'Cuenta' },
   { seccion: 'config',       label: 'Configuración', icon: '⚙' },
 ];
@@ -24,6 +26,8 @@ const NAV_PROFESOR = [
   { grupo: 'Planificación' },
   { seccion: 'calendario',  label: 'Calendario',     icon: '📅' },
   { seccion: 'cronograma',  label: 'Cronograma',     icon: '🗓' },
+  { seccion: 'tareas',      label: 'Tareas',         icon: '🗂' },
+  { seccion: 'chat',        label: 'Chat',           icon: '💬' },
   { grupo: 'Cuenta' },
   { seccion: 'config',     label: 'Configuración',  icon: '⚙' },
 ];
@@ -39,6 +43,8 @@ const NAV_ADMIN = [
   { seccion: 'docentes', label: 'Docentes',          icon: '👩‍🏫' },
   { seccion: 'alumnos',  label: 'Alumnos',           icon: '👥' },
   { seccion: 'carreras', label: 'Carreras',          icon: '🏫' },
+  { grupo: 'Planificación' },
+  { seccion: 'tareas',   label: 'Tareas',            icon: '🗂' },
   { grupo: 'Cuenta' },
   { seccion: 'config',   label: 'Configuración',     icon: '⚙' },
 ];

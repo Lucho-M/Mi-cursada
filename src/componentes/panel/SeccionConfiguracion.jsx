@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import AuthService from '../../AuthService_POO_logica_firebase';
+import CARRERAS_DISPONIBLES from '../../carrerasData';
+import { normalizarDni } from '../../utils/normalizarDni';
+
+const authService = new AuthService();
 
 const ESTADOS_HISTORIAL = [
   { key: 'sin_cursar',        label: 'Sin cursar',          color: '#999',    bg: '#f5f5f5' },
@@ -23,7 +28,7 @@ function agruparPorAnio(materias) {
 
 export default function SeccionConfiguracion({ perfil, onBaja }) {
   const esAlumno = perfil?.rol === 'alumno';
-  const [tab, setTab] = useState(esAlumno ? 'historial' : 'password');
+  const [tab, setTab] = useState('datos');
   const [anioActual, setAnioActual] = useState(1);
   const [estadoMaterias, setEstadoMaterias] = useState({});
   const [guardandoHistorial, setGuardandoHistorial] = useState(false);
@@ -43,6 +48,115 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
     : (perfil?.carrera ? [perfil.carrera] : []);
   const carreraActual = carreras[0] || '';
   const materias = planInfo?.materias || [];
+
+  const valoresOriginales = { nombre: perfil?.nombre || '', email: perfil?.email || '', dni: perfil?.dni || '', carreras };
+  const [datosForm, setDatosForm] = useState(valoresOriginales);
+  const [confirmDatos, setConfirmDatos] = useState(false);
+  const [passDatos, setPassDatos] = useState('');
+  const [mensajeDatos, setMensajeDatos] = useState('');
+  const [guardandoDatos, setGuardandoDatos] = useState(false);
+
+  useEffect(() => {
+    setDatosForm({ nombre: perfil?.nombre || '', email: perfil?.email || '', dni: perfil?.dni || '', carreras });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [perfil?.uid, perfil?.nombre, perfil?.email, perfil?.dni]);
+
+  // Si el usuario ya confirmo el link de verificacion del email nuevo (en
+  // otra pestaña/sesion), Firebase Auth ya tiene el email actualizado pero
+  // Firestore todavia tiene el viejo. Lo sincronizamos para que coincidan.
+  useEffect(() => {
+    if (!perfil?.uid || !auth.currentUser) return;
+    if (auth.currentUser.email && auth.currentUser.email !== perfil.email) {
+      updateDoc(doc(db, 'usuarios', perfil.uid), { email: auth.currentUser.email })
+        .then(() => setDatosForm(prev => ({ ...prev, email: auth.currentUser.email })))
+        .catch(e => console.error('Error sincronizando email verificado:', e));
+    }
+  }, [perfil?.uid, perfil?.email]);
+
+  const hayCambiosDatos =
+    datosForm.nombre !== valoresOriginales.nombre ||
+    datosForm.email !== valoresOriginales.email ||
+    datosForm.dni !== valoresOriginales.dni ||
+    datosForm.carreras.length !== valoresOriginales.carreras.length ||
+    datosForm.carreras.some(c => !valoresOriginales.carreras.includes(c));
+
+  const toggleCarreraDatos = (nombreCarrera) => {
+    setDatosForm(prev => ({
+      ...prev,
+      carreras: prev.carreras.includes(nombreCarrera)
+        ? prev.carreras.filter(c => c !== nombreCarrera)
+        : [...prev.carreras, nombreCarrera],
+    }));
+  };
+
+  const guardarDatos = async () => {
+    setMensajeDatos('');
+    if (!datosForm.nombre.trim() || !datosForm.email.trim() || !datosForm.dni.trim()) {
+      setMensajeDatos('error:Completa nombre, correo y DNI.');
+      return;
+    }
+    if (esAlumno && datosForm.carreras.length === 0) {
+      setMensajeDatos('error:Selecciona al menos una carrera.');
+      return;
+    }
+    if (!passDatos) {
+      setMensajeDatos('error:Ingresa tu contraseña para confirmar.');
+      return;
+    }
+    setGuardandoDatos(true);
+    try {
+      await authService.reautenticar(passDatos);
+
+      const dniNuevo = normalizarDni(datosForm.dni);
+      const cambioEmail = datosForm.email !== valoresOriginales.email;
+      const cambioDatosFirestore =
+        datosForm.nombre !== valoresOriginales.nombre ||
+        dniNuevo !== valoresOriginales.dni ||
+        datosForm.carreras.length !== valoresOriginales.carreras.length ||
+        datosForm.carreras.some(c => !valoresOriginales.carreras.includes(c));
+
+      if (cambioDatosFirestore) {
+        if (dniNuevo !== valoresOriginales.dni) {
+          const snapDni = await getDocs(query(collection(db, 'usuarios'), where('dni', '==', dniNuevo)));
+          const otroUsuario = snapDni.docs.some(d => d.id !== perfil.uid);
+          if (otroUsuario) {
+            setMensajeDatos('error:Ese DNI ya esta registrado por otro usuario.');
+            setGuardandoDatos(false);
+            return;
+          }
+        }
+        await updateDoc(doc(db, 'usuarios', perfil.uid), {
+          nombre: datosForm.nombre.trim(),
+          dni: dniNuevo,
+          carreras: datosForm.carreras,
+          carrera: datosForm.carreras[0] || '',
+        });
+        setDatosForm(prev => ({ ...prev, dni: dniNuevo }));
+      }
+
+      if (cambioEmail) {
+        await authService.actualizarEmail(datosForm.email.trim());
+        setMensajeDatos(`ok:Datos guardados. Te enviamos un link de verificacion a ${datosForm.email.trim()}; el correo de acceso cambia recien cuando lo confirmes.`);
+        setDatosForm(prev => ({ ...prev, email: valoresOriginales.email }));
+      } else {
+        setMensajeDatos('ok:Datos guardados correctamente.');
+      }
+
+      setConfirmDatos(false);
+      setPassDatos('');
+    } catch (e) {
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        setMensajeDatos('error:La contraseña actual es incorrecta.');
+      } else if (e.code === 'auth/email-already-in-use') {
+        setMensajeDatos('error:Ese correo ya esta en uso por otra cuenta.');
+      } else {
+        setMensajeDatos('error:Error al guardar. Intenta de nuevo.');
+      }
+      console.error(e);
+    } finally {
+      setGuardandoDatos(false);
+    }
+  };
 
   useEffect(() => {
     if (!carreraActual || !esAlumno) return;
@@ -201,6 +315,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
     <div className="content">
       <div style={{display:'flex',gap:'10px',marginBottom:'24px',borderBottom:'1px solid #eee',paddingBottom:'12px'}}>
         {[
+          {key:'datos',label:'Mis datos'},
           ...(esAlumno ? [{key:'historial',label:'Mi historial'}] : []),
           {key:'password',label:'Cambiar contraseña'},
           {key:'baja',label:'Dar de baja'},
@@ -213,6 +328,79 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
           </button>
         ))}
       </div>
+
+      {tab === 'datos' && (
+        <div style={{maxWidth:'460px'}}>
+          <h3 style={{marginBottom:'16px',color:'var(--text-1)'}}>Mis datos</h3>
+
+          <div className="form-group">
+            <label>Nombre</label>
+            <input type="text" value={datosForm.nombre}
+              onChange={e => setDatosForm(prev => ({...prev, nombre: e.target.value}))} />
+          </div>
+
+          <div className="form-group">
+            <label>Correo electronico</label>
+            <input type="email" value={datosForm.email}
+              onChange={e => setDatosForm(prev => ({...prev, email: e.target.value}))} />
+            <p style={{fontSize:'0.72rem',color:'var(--text-3)',marginTop:'4px'}}>
+              Si lo cambias, te mandamos un link de verificacion al correo nuevo. El acceso sigue siendo con el actual hasta que lo confirmes.
+            </p>
+          </div>
+
+          <div className="form-group">
+            <label>DNI</label>
+            <input type="text" value={datosForm.dni}
+              onChange={e => setDatosForm(prev => ({...prev, dni: e.target.value}))} />
+          </div>
+
+          {esAlumno && (
+            <div className="form-group">
+              <label>Carreras</label>
+              <div style={{display:'flex',flexDirection:'column',gap:'6px',background:'var(--surface-2)',borderRadius:'8px',padding:'10px 12px',border:'1px solid var(--border-2)'}}>
+                {CARRERAS_DISPONIBLES.map(c => (
+                  <label key={c.nombre} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'0.82rem',color:'var(--text-1)',cursor:'pointer'}}>
+                    <input type="checkbox" checked={datosForm.carreras.includes(c.nombre)}
+                      onChange={() => toggleCarreraDatos(c.nombre)} />
+                    {c.nombre}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {mensajeDatos && (
+            <div style={{background:mensajeDatos.startsWith('ok:')?'#e0ffe0':'#ffe0e0',color:mensajeDatos.startsWith('ok:')?'#1a7a1a':'#c0392b',border:'1px solid '+(mensajeDatos.startsWith('ok:')?'#2ecc71':'#e74c3c'),borderRadius:'8px',padding:'10px 14px',marginBottom:'12px',fontSize:'0.85rem'}}>
+              {mensajeDatos.split(':').slice(1).join(':')}
+            </div>
+          )}
+
+          {!confirmDatos ? (
+            <button className="btn btn-primary" disabled={!hayCambiosDatos}
+              style={{opacity: hayCambiosDatos ? 1 : 0.5}}
+              onClick={() => setConfirmDatos(true)}>
+              Guardar cambios
+            </button>
+          ) : (
+            <div style={{background:'var(--surface-2)',borderRadius:'8px',padding:'14px',border:'1px solid var(--border-2)'}}>
+              <p style={{fontSize:'0.82rem',color:'var(--text-1)',marginBottom:'10px',fontWeight:600}}>
+                Ingresa tu contraseña actual para confirmar los cambios:
+              </p>
+              <input type="password" value={passDatos} onChange={e => setPassDatos(e.target.value)}
+                placeholder="Tu contraseña actual"
+                style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid var(--border-2)',marginBottom:'12px',boxSizing:'border-box',background:'var(--surface)',color:'var(--text-1)'}} />
+              <div style={{display:'flex',gap:'10px'}}>
+                <button className="btn btn-outline" onClick={() => {setConfirmDatos(false);setPassDatos('');setMensajeDatos('');}}>
+                  Cancelar
+                </button>
+                <button className="btn btn-primary" onClick={guardarDatos} disabled={guardandoDatos}>
+                  {guardandoDatos ? 'Guardando...' : 'Confirmar y guardar'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {tab === 'historial' && (
         <div>
@@ -285,16 +473,23 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
               {mensajeHistorial.split(':')[1]}
             </div>
           )}
-          <div style={{display:'flex',justifyContent:'space-between',marginTop:'16px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',marginTop:'16px',flexWrap:'wrap',gap:'10px'}}>
             <button onClick={() => setAnioActual(prev => Math.max(anios[0], prev - 1))} disabled={anioActual === anios[0]}
               style={{padding:'8px 18px',borderRadius:'8px',border:'1px solid var(--border)',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)',fontWeight:600,opacity:anioActual===anios[0]?0.4:1}}>
               Año anterior
             </button>
-            <button onClick={esUltimoAnio ? guardarHistorial : () => setAnioActual(prev => Math.min(anios[anios.length-1], prev+1))}
-              disabled={guardandoHistorial}
-              style={{padding:'8px 20px',borderRadius:'8px',border:'none',background:'#2e7d32',color:'white',cursor:'pointer',fontWeight:600}}>
-              {esUltimoAnio ? (guardandoHistorial ? 'Guardando...' : 'Guardar historial') : 'Siguiente año'}
-            </button>
+            <div style={{display:'flex',gap:'10px'}}>
+              <button onClick={guardarHistorial} disabled={guardandoHistorial}
+                style={{padding:'8px 20px',borderRadius:'8px',border:'none',background:'#2e7d32',color:'white',cursor:'pointer',fontWeight:600,opacity:guardandoHistorial?0.7:1}}>
+                {guardandoHistorial ? 'Guardando...' : '💾 Guardar materias aprobadas'}
+              </button>
+              {!esUltimoAnio && (
+                <button onClick={() => setAnioActual(prev => Math.min(anios[anios.length-1], prev+1))}
+                  style={{padding:'8px 20px',borderRadius:'8px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',cursor:'pointer',fontWeight:600}}>
+                  Siguiente año
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

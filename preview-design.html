@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi Cursada — Preview Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+
+/* ── TOKENS ─────────────────────────────────────────────────── */
+:root {
+  --accent:      #00E676;
+  --accent-dim:  rgba(0,230,118,0.1);
+  --accent-glow: rgba(0,230,118,0.25);
+  --red:         #FF5252;
+  --red-dim:     rgba(255,82,82,0.1);
+  --yellow:      #FFB300;
+  --yellow-dim:  rgba(255,179,0,0.1);
+  --blue:        #448AFF;
+  --blue-dim:    rgba(68,138,255,0.1);
+  --radius:      10px;
+  --radius-sm:   6px;
+  --shadow:      0 4px 24px rgba(0,0,0,0.4);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.2);
+  --font-display:'Space Grotesk', sans-serif;
+  --font-body:   'Inter', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+  --transition:  0.18s ease;
+}
+
+[data-theme="dark"] {
+  --bg:        #0D1117;
+  --surface:   #161C27;
+  --surface-2: #1E2736;
+  --surface-3: #232D40;
+  --border:    rgba(255,255,255,0.07);
+  --border-2:  rgba(255,255,255,0.12);
+  --text-1:    #FFFFFF;
+  --text-2:    #8896AB;
+  --text-3:    #4A5A70;
+  --sidebar-bg:#0A0F18;
+}
+
+[data-theme="light"] {
+  --bg:        #F0F4F8;
+  --surface:   #FFFFFF;
+  --surface-2: #EEF2F7;
+  --surface-3: #E2E8F0;
+  --border:    rgba(0,0,0,0.08);
+  --border-2:  rgba(0,0,0,0.14);
+  --text-1:    #0D1117;
+  --text-2:    #4A5568;
+  --text-3:    #A0AEC0;
+  --sidebar-bg:#0D1117;
+  --accent:    #00C864;
+  --accent-dim:rgba(0,200,100,0.1);
+}
+
+/* ── RESET ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-1);
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ── SHELL ───────────────────────────────────────────────────── */
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────────── */
+.sidebar {
+  width: 230px;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  padding: 28px 24px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #0D1117;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+}
+.logo-text span { color: var(--accent); }
+
+.nav { padding: 16px 0; flex: 1; overflow-y: auto; }
+
+.nav-group {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0 20px;
+  margin: 18px 0 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  margin: 2px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  background: none;
+  width: calc(100% - 20px);
+  text-align: left;
+  font-family: var(--font-body);
+  position: relative;
+}
+.nav-item .icon {
+  width: 18px; height: 18px;
+  opacity: 0.6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.nav-item:hover {
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+.nav-item:hover .icon { opacity: 1; }
+.nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+.nav-item.active .icon { opacity: 1; }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.avatar {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, #00BFA5 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem;
+  color: #0D1117; flex-shrink: 0;
+  font-family: var(--font-display);
+}
+.user-name { font-size: 0.8rem; font-weight: 600; color: var(--text-1); }
+.user-role { font-size: 0.68rem; color: var(--text-2); margin-top: 1px; }
+
+.theme-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-2);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.logout-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.logout-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+/* ── MAIN ────────────────────────────────────────────────────── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+[data-theme="dark"] .topbar {
+  background: rgba(22, 28, 39, 0.85);
+}
+.page-title h1 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.03em;
+}
+.page-title p {
+  font-size: 0.78rem;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-badge {
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 20px;
+  font-weight: 600;
+  border: 1px solid var(--accent-glow);
+}
+
+.content { padding: 28px 32px; flex: 1; }
+
+/* ── STATS ───────────────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--transition), transform var(--transition);
+}
+.stat-card:hover { border-color: var(--border-2); transform: translateY(-1px); }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.stat-card.c-green::before  { background: var(--accent); }
+.stat-card.c-yellow::before { background: var(--yellow); }
+.stat-card.c-blue::before   { background: var(--blue); }
+.stat-card.c-red::before    { background: var(--red); }
+
+.stat-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.1;
+  margin: 6px 0 8px;
+  letter-spacing: -0.03em;
+}
+.stat-meta {
+  font-size: 0.72rem;
+  color: var(--text-2);
+  display: flex; align-items: center; gap: 5px;
+}
+.stat-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-green  { background: var(--accent); }
+.dot-yellow { background: var(--yellow); }
+.dot-blue   { background: var(--blue); }
+.dot-red    { background: var(--red); }
+
+/* ── SECTION HEADER ──────────────────────────────────────────── */
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-head h2 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+}
+.section-head-link {
+  font-size: 0.75rem;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ── TABLE ───────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table-head {
+  display: grid;
+  grid-template-columns: 2fr 80px 1fr 80px 80px 100px;
+  padding: 10px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-2);
+  gap: 8px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 80px 1fr 80px 80px 100px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  gap: 8px;
+  transition: background var(--transition);
+}
+.table-row:last-child { border-bottom: none; }
+.table-row:hover { background: var(--surface-2); }
+
+.materia-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-1);
+}
+.materia-code {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+.materia-prof {
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
+
+/* Nota pill */
+.nota-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 26px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.nota-high  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); }
+.nota-mid   { background: var(--yellow-dim); color: var(--yellow); }
+.nota-low   { background: var(--red-dim);    color: var(--red); }
+.nota-empty { background: var(--surface-2);  color: var(--text-3); }
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.badge-green  { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+.badge-red    { background: var(--red-dim);    color: var(--red); }
+.badge-blue   { background: var(--blue-dim);   color: var(--blue); }
+
+/* ── GRID 2 ──────────────────────────────────────────────────── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+/* ── SIDE CARD ───────────────────────────────────────────────── */
+.side-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.event-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+  cursor: default;
+}
+.event-item:last-child { border-bottom: none; }
+.event-item:hover { background: var(--surface-2); }
+
+.event-date {
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  width: 40px;
+  text-align: center;
+  padding: 6px 0;
+  flex-shrink: 0;
+}
+.event-date .day {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1;
+}
+.event-date .mon {
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+.event-info .ev-title {
+  font-weight: 600;
+  font-size: 0.83rem;
+  color: var(--text-1);
+}
+.event-info .ev-sub {
+  font-size: 0.72rem;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+.ev-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.63rem;
+  font-weight: 700;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ev-tag.parcial { background: var(--red-dim);    color: var(--red); }
+.ev-tag.tp      { background: var(--yellow-dim); color: var(--yellow); }
+
+/* ── PROGRESS ────────────────────────────────────────────────── */
+.progress-block { padding: 18px 16px; }
+.progress-item { margin-bottom: 18px; }
+.progress-item:last-child { margin-bottom: 0; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.progress-label .pl-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-1);
+}
+.progress-label .pl-val {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
+.progress-track {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: visible;
+  position: relative;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  position: relative;
+}
+.progress-fill.green {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.progress-fill.orange {
+  background: var(--yellow);
+  box-shadow: 0 0 8px rgba(255,179,0,0.3);
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 48px 24px; gap: 10px;
+  color: var(--text-2);
+}
+.empty-icon { font-size: 2rem; opacity: 0.3; }
+.empty-state p { font-size: 0.83rem; text-align: center; color: var(--text-2); }
+
+/* ── SCROLLBAR ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">MC</div>
+      <div class="logo-text">mi<span>·</span>cursada</div>
+    </div>
+
+    <div class="nav">
+      <div class="nav-group">Principal</div>
+      <button class="nav-item active" onclick="selectNav(this)">
+        <span class="icon">⊞</span> Panel
+      </button>
+      <button class="nav-item" onclick="selectNav(this)">
+        <span class="icon">≡</span> Mis materias
+      </button>
+      <button class="nav-item" onclick="selectNav(this)">
+        <span class="icon">◷</span> Horarios
+      </button>
+      <button class="nav-item" onclick="selectNav(this)">
+        <span class="icon">✎</span> Notas
+      </button>
+      <div class="nav-group">Planificación</div>
+      <button class="nav-item" onclick="selectNav(this)">
+        <span class="icon">📝</span> Parciales
+      </button>
+      <button class="nav-item" onclick="selectNav(this)">
+        <span class="icon">🔗</span> Correlativas
+      </button>
+      <div class="nav-group">Cuenta</div>
+      <button class="nav-item" onclick="selectNav(this)">
+        <span class="icon">⚙</span> Configuración
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar">LM</div>
+        <div>
+          <div class="user-name">Lucho Mendieta</div>
+          <div class="user-role">Alumno · Informática</div>
+        </div>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-label">Modo claro</span>
+      </button>
+      <button class="logout-btn">↩ Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="page-title">
+        <h1>Panel general</h1>
+        <p>Ingeniería en Informática · 2026</p>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-badge">2° cuatrimestre activo</span>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card c-green">
+          <div class="stat-label">Materias activas</div>
+          <div class="stat-value">5</div>
+          <div class="stat-meta">
+            <span class="stat-dot dot-green"></span>
+            Este cuatrimestre
+          </div>
+        </div>
+        <div class="stat-card c-yellow">
+          <div class="stat-label">Promedio actual</div>
+          <div class="stat-value">7.8</div>
+          <div class="stat-meta">
+            <span class="stat-dot dot-yellow"></span>
+            12 notas cargadas
+          </div>
+        </div>
+        <div class="stat-card c-blue">
+          <div class="stat-label">Materias aprobadas</div>
+          <div class="stat-value">18</div>
+          <div class="stat-meta">
+            <span class="stat-dot dot-blue"></span>
+            de 36 totales
+          </div>
+        </div>
+        <div class="stat-card c-red">
+          <div class="stat-label">Próximo evento</div>
+          <div class="stat-value" style="font-size:1.5rem;">Mié 28</div>
+          <div class="stat-meta">
+            <span class="stat-dot dot-red"></span>
+            Parcial Algoritmos
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLA MATERIAS -->
+      <div class="section-head">
+        <h2>Mis materias</h2>
+        <span class="section-head-link">Ver todas →</span>
+      </div>
+      <div class="card">
+        <div class="table-head">
+          <div>Materia</div>
+          <div>Asistencia</div>
+          <div>Docente</div>
+          <div>Parcial 1</div>
+          <div>Parcial 2</div>
+          <div>Estado</div>
+        </div>
+
+        <div class="table-row">
+          <div>
+            <div class="materia-name">Algoritmos y Estructuras</div>
+            <div class="materia-code">COM01 · Lun 8:00–10:00</div>
+          </div>
+          <div style="font-size:.82rem;color:var(--text-1);font-weight:600;">88%</div>
+          <div class="materia-prof">Dr. García</div>
+          <div><span class="nota-pill nota-high">8</span></div>
+          <div><span class="nota-pill nota-empty">—</span></div>
+          <div><span class="status-badge badge-yellow"><span class="stat-dot dot-yellow"></span>Cursando</span></div>
+        </div>
+
+        <div class="table-row">
+          <div>
+            <div class="materia-name">Base de Datos I</div>
+            <div class="materia-code">COM02 · Mar 10:00–12:00</div>
+          </div>
+          <div style="font-size:.82rem;color:var(--text-1);font-weight:600;">92%</div>
+          <div class="materia-prof">Lic. Torres</div>
+          <div><span class="nota-pill nota-high">9</span></div>
+          <div><span class="nota-pill nota-high">8</span></div>
+          <div><span class="status-badge badge-green"><span class="stat-dot dot-green"></span>Regular</span></div>
+        </div>
+
+        <div class="table-row">
+          <div>
+            <div class="materia-name">Sistemas Operativos</div>
+            <div class="materia-code">COM03 · Mié 14:00–16:00</div>
+          </div>
+          <div style="font-size:.82rem;color:var(--text-1);font-weight:600;">74%</div>
+          <div class="materia-prof">Dr. Romero</div>
+          <div><span class="nota-pill nota-mid">6</span></div>
+          <div><span class="nota-pill nota-empty">—</span></div>
+          <div><span class="status-badge badge-yellow"><span class="stat-dot dot-yellow"></span>Cursando</span></div>
+        </div>
+
+        <div class="table-row">
+          <div>
+            <div class="materia-name">Matemática Discreta</div>
+            <div class="materia-code">COM04 · Jue 8:00–10:00</div>
+          </div>
+          <div style="font-size:.82rem;color:var(--text-1);font-weight:600;">65%</div>
+          <div class="materia-prof">Mg. Suárez</div>
+          <div><span class="nota-pill nota-low">3</span></div>
+          <div><span class="nota-pill nota-empty">—</span></div>
+          <div><span class="status-badge badge-red"><span class="stat-dot dot-red"></span>Libre</span></div>
+        </div>
+
+        <div class="table-row">
+          <div>
+            <div class="materia-name">Ingeniería de Software</div>
+            <div class="materia-code">COM05 · Vie 16:00–18:00</div>
+          </div>
+          <div style="font-size:.82rem;color:var(--text-1);font-weight:600;">95%</div>
+          <div class="materia-prof">Dr. Méndez</div>
+          <div><span class="nota-pill nota-high">10</span></div>
+          <div><span class="nota-pill nota-high">9</span></div>
+          <div><span class="status-badge badge-green"><span class="stat-dot dot-green"></span>Regular</span></div>
+        </div>
+      </div>
+
+      <!-- GRID LATERAL -->
+      <div class="grid-2">
+
+        <!-- EVENTOS -->
+        <div>
+          <div class="section-head">
+            <h2>Próximos eventos</h2>
+            <span class="section-head-link">Ver todos →</span>
+          </div>
+          <div class="side-card">
+            <div class="event-item">
+              <div class="event-date"><div class="day">28</div><div class="mon">May</div></div>
+              <div class="event-info">
+                <div class="ev-title">Parcial 2 — Algoritmos y Estructuras</div>
+                <div class="ev-sub">18:00 · Aula 204</div>
+                <span class="ev-tag parcial">Parcial</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-date"><div class="day">03</div><div class="mon">Jun</div></div>
+              <div class="event-info">
+                <div class="ev-title">TP Integrador — Ingeniería de Software</div>
+                <div class="ev-sub">Entrega virtual · Aula Teams</div>
+                <span class="ev-tag tp">TP</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-date"><div class="day">10</div><div class="mon">Jun</div></div>
+              <div class="event-info">
+                <div class="ev-title">Parcial 2 — Sistemas Operativos</div>
+                <div class="ev-sub">14:00 · Aula 108</div>
+                <span class="ev-tag parcial">Parcial</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-date"><div class="day">17</div><div class="mon">Jun</div></div>
+              <div class="event-info">
+                <div class="ev-title">Parcial 1 — Matemática Discreta (recuperatorio)</div>
+                <div class="ev-sub">8:00 · Aula 305</div>
+                <span class="ev-tag parcial">Parcial</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AVANCE -->
+        <div>
+          <div class="section-head"><h2>Avance de carrera</h2></div>
+          <div class="side-card">
+            <div class="progress-block">
+              <div class="progress-item">
+                <div class="progress-label">
+                  <span class="pl-name">Materias aprobadas</span>
+                  <span class="pl-val">18 / 36</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill green" style="width:50%"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-label">
+                  <span class="pl-name">Promedio histórico</span>
+                  <span class="pl-val">7.8 / 10</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill orange" style="width:78%"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-label">
+                  <span class="pl-name">Regularidades activas</span>
+                  <span class="pl-val">2 / 5</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill green" style="width:40%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /grid-2 -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const icon = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (html.dataset.theme === 'dark') {
+      html.dataset.theme = 'light';
+      icon.textContent = '🌙';
+      label.textContent = 'Modo oscuro';
+    } else {
+      html.dataset.theme = 'dark';
+      icon.textContent = '☀️';
+      label.textContent = 'Modo claro';
+    }
+  }
+
+  function selectNav(el) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

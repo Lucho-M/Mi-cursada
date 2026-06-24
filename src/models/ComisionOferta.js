@@ -4,7 +4,7 @@ class ComisionOferta {
     carrera_ref = '', materia_nombre = '', codigo_asignatura = null, comision = '',
     turno = '', dia = '', hora_rango = '', hora_inicio = '', hora_fin = '',
     modalidad = 'presencial', modalidad_detalle = '', sede = '', aula = null,
-    cuatrimestre = '1', anio_lectivo = String(new Date().getFullYear()),
+    cuatrimestre = '1', anio_lectivo = String(new Date().getFullYear()), contacto = '',
   } = {}) {
     this.id = id;
     this.carrera_ref = carrera_ref;
@@ -22,6 +22,7 @@ class ComisionOferta {
     this.aula = aula;
     this.cuatrimestre = cuatrimestre;
     this.anio_lectivo = anio_lectivo;
+    this.contacto = contacto;
   }
 
   toFirestore() {
@@ -41,6 +42,7 @@ class ComisionOferta {
       aula: this.aula,
       cuatrimestre: this.cuatrimestre,
       anio_lectivo: this.anio_lectivo,
+      contacto: this.contacto,
     };
   }
 

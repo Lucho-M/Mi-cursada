@@ -135,6 +135,7 @@ class ImportService {
       const sedeCelda = String(buscarCampo(item, 'sede')).trim();
       let aulaCelda = String(buscarCampo(item, 'aulas', 'aula')).trim();
       if (!aulaCelda || /^-+$/.test(aulaCelda)) aulaCelda = null;
+      const contactoCelda = String(buscarCampo(item, 'contacto', 'whatsapp')).trim();
 
       const comision = new ComisionOferta({
         carrera_ref: ultimaCarrera,
@@ -152,6 +153,7 @@ class ImportService {
         aula: aulaCelda,
         cuatrimestre: String(buscarCampo(item, 'cuatrimestre') || '1'),
         anio_lectivo: String(buscarCampo(item, 'anio_lectivo', 'ano lectivo', 'anio', 'ano') || new Date().getFullYear()),
+        contacto: contactoCelda,
       });
 
       batch.set(doc(colRef), comision.toFirestore());

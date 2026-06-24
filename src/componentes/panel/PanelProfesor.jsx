@@ -5,6 +5,8 @@ import Profesor from '../../models/Profesor';
 import Cronograma from '../../models/Cronograma';
 import ImportService from '../../services/ImportService';
 import SeccionConfiguracion from './SeccionConfiguracion';
+import SeccionTareas from './SeccionTareas';
+import SeccionChat from './SeccionChat';
 import CARRERAS_DISPONIBLES from '../../carrerasData';
 import { carreraEnOferta } from '../../utils/matchCarrera';
 import { slugTexto } from '../../utils/slugTexto';
@@ -778,7 +780,7 @@ function PanelProfesor({ perfil, seccion }) {
         {topbar('Calendario', 'Parciales, TPs y fechas clave de tus comisiones')}
         <div className="content">
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr'}}>
+            <div className="table-head" style={{gridTemplateColumns:'60px 2fr 1fr 1fr 1fr'}}>
               <div>Fecha</div><div>Materia</div><div>Tipo</div><div>Hora</div><div>Aula</div>
             </div>
             {cargando ? (
@@ -793,7 +795,7 @@ function PanelProfesor({ perfil, seccion }) {
                 const d = new Date(ev.fecha + 'T00:00:00');
                 const pasado = ev.fecha < hoyStr;
                 return (
-                  <div key={ev.id} className="table-row" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr', opacity: pasado ? 0.5 : 1}}>
+                  <div key={ev.id} className="table-row" style={{gridTemplateColumns:'60px 2fr 1fr 1fr 1fr', opacity: pasado ? 0.5 : 1}}>
                     <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
                       <div className="prox-date" style={{width:'42px'}}>
                         <div className="day">{d.getDate()}</div>
@@ -877,8 +879,8 @@ function PanelProfesor({ perfil, seccion }) {
               ) : (
                 <>
                   <div className="card">
-                    <div className="table-head" style={{gridTemplateColumns:'150px 2fr 1fr 1fr auto'}}>
-                      <div>Fecha</div><div>Unidad / Tema</div><div>Modalidad</div><div>Fecha clave</div><div></div>
+                    <div className="table-head" style={{gridTemplateColumns:'150px 2fr 1fr 1fr 60px'}}>
+                      <div>Fecha</div><div>Unidad / Tema</div><div>Modalidad</div><div>Fecha clave</div><div>Acciones</div>
                     </div>
                     {cronogramaClases.length === 0 ? (
                       <div className="empty-state">
@@ -887,7 +889,7 @@ function PanelProfesor({ perfil, seccion }) {
                       </div>
                     ) : (
                       cronogramaClases.map((c, i) => (
-                        <div key={i} className="table-row" style={{gridTemplateColumns:'150px 2fr 1fr 1fr auto'}}>
+                        <div key={i} className="table-row" style={{gridTemplateColumns:'150px 2fr 1fr 1fr 60px'}}>
                           <div>
                             <input type="date" value={c.fecha || ''} onChange={e => actualizarClaseCronograma(i, 'fecha', e.target.value)}
                               style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid #ddd'}} />
@@ -935,6 +937,24 @@ function PanelProfesor({ perfil, seccion }) {
             </>
           )}
         </div>
+      </>
+    );
+  }
+
+  if (seccion === 'tareas') {
+    return (
+      <>
+        {topbar('Tareas', 'Tu tablero personal, compartilo con tus compañeros')}
+        <SeccionTareas perfil={perfil} />
+      </>
+    );
+  }
+
+  if (seccion === 'chat') {
+    return (
+      <>
+        {topbar('Chat', 'Hablá con tus alumnos por comisión')}
+        <SeccionChat perfil={perfil} />
       </>
     );
   }

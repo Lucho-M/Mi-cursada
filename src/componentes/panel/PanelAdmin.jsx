@@ -6,16 +6,17 @@ import AdminCentro from '../../models/AdminCentro';
 import Carrera from '../../models/Carrera';
 import CARRERAS_DISPONIBLES from '../../carrerasData';
 import SeccionConfiguracion from './SeccionConfiguracion';
+import SeccionTareas from './SeccionTareas';
 
 const importService = new ImportService();
 
 const PLANTILLA_OFERTA_CSV =
-  'CARRERA,ASIGNATURA,COD. ASIG,COMISIÓN,TURNO,DIA,HORA,MODALIDAD,SEDE,Aulas\n' +
-  'Tec. en Automatizacion y Control y Tec. en Protesis Dental,"Herramientas computacionales para la Ing. Y la Ciencia",4,1,noche,martes,19 a 22,presencial,Escuela N° 5,4\n' +
-  ',,,2,noche,miércoles,19 a 22,presencial,Escuela N° 5,1\n' +
-  'Tec. en Comunicación Digital,"Taller de Ciencia, Tecnología y Sociedad/Ciencia, tecnología e Innovación",1/269,1,mañana,martes,8 a 12,virtual,virtual,---------------------\n' +
-  'Tec. en Diseño y Desarrollo de Producto,,,2,tarde,jueves,14 a 18,virtual,virtual,---------------------\n' +
-  'Lic. en Administración,,,3,mañana,martes,10 a 14,presencial,Campus Unab - Aula Magna,8\n';
+  'CARRERA,ASIGNATURA,COD. ASIG,COMISIÓN,TURNO,DIA,HORA,MODALIDAD,SEDE,Aulas,CONTACTO\n' +
+  'Tec. en Automatizacion y Control y Tec. en Protesis Dental,"Herramientas computacionales para la Ing. Y la Ciencia",4,1,noche,martes,19 a 22,presencial,Escuela N° 5,4,\n' +
+  ',,,2,noche,miércoles,19 a 22,presencial,Escuela N° 5,1,\n' +
+  'Tec. en Comunicación Digital,"Taller de Ciencia, Tecnología y Sociedad/Ciencia, tecnología e Innovación",1/269,1,mañana,martes,8 a 12,virtual,virtual,---------------------,\n' +
+  'Tec. en Diseño y Desarrollo de Producto,,,2,tarde,jueves,14 a 18,virtual,virtual,---------------------,\n' +
+  'Lic. en Administración,,,3,mañana,martes,10 a 14,presencial,Campus Unab - Aula Magna,8,https://wa.me/5491100000000\n';
 
 const PLANTILLA_PLAN_ESTUDIO_CSV =
   'CARRERA,AÑO VIGENCIA,AÑO,CUATRIMESTRE,COD.,ESPACIO CURRICULAR,HS,CURSADO (Cód.),APROBADO (Cód.)\n' +
@@ -667,8 +668,8 @@ function PanelAdmin({ perfil, seccion }) {
             <h2>Gestion de docentes</h2>
           </div>
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
-              <div>Docente</div><div>Comisiones</div><div>Modalidad</div><div>Link virtual</div><div></div>
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 110px'}}>
+              <div>Docente</div><div>Comisiones</div><div>Modalidad</div><div>Link virtual</div><div>Acciones</div>
             </div>
             {cargandoDocentes ? (
               <div className="empty-state"><p>Cargando docentes...</p></div>
@@ -679,7 +680,7 @@ function PanelAdmin({ perfil, seccion }) {
               </div>
             ) : (
               docentes.map(d => (
-                <div key={d.uid} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
+                <div key={d.uid} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 110px'}}>
                   <div>
                     <div className="materia-name">{d.nombre}</div>
                     <div className="materia-code">{d.email}</div>
@@ -766,6 +767,7 @@ function PanelAdmin({ perfil, seccion }) {
       { key: 'modalidad', label: 'Modalidad' },
       { key: 'sede', label: 'Sede' },
       { key: 'aula', label: 'Aula' },
+      { key: 'contacto', label: 'Contacto/WhatsApp' },
     ];
     return (
       <>
@@ -1157,8 +1159,8 @@ function PanelAdmin({ perfil, seccion }) {
             </button>
           </div>
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
-              <div>Nombre</div><div>Tipo</div><div>Duracion</div><div>Estado</div><div></div>
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 160px'}}>
+              <div>Nombre</div><div>Tipo</div><div>Duracion</div><div>Estado</div><div>Acciones</div>
             </div>
             {cargandoCarreras ? (
               <div className="empty-state"><p>Cargando carreras...</p></div>
@@ -1169,7 +1171,7 @@ function PanelAdmin({ perfil, seccion }) {
               </div>
             ) : (
               carrerasList.map(c => (
-                <div key={c.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr auto'}}>
+                <div key={c.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 160px'}}>
                   <div className="materia-name">{c.nombre}</div>
                   <div style={{fontSize:'0.85rem'}}>{c.tipo}</div>
                   <div style={{fontSize:'0.85rem'}}>{c.duracionAnios} anios</div>
@@ -1201,6 +1203,15 @@ function PanelAdmin({ perfil, seccion }) {
             onCerrar={() => { setModalCarreraAbierto(false); setCarreraEditando(null); }}
           />
         )}
+      </>
+    );
+  }
+
+  if (seccion === 'tareas') {
+    return (
+      <>
+        {topbar}
+        <SeccionTareas perfil={perfil} />
       </>
     );
   }

@@ -3,7 +3,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendEmailVerification,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  verifyBeforeUpdateEmail,
 } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { normalizarDni } from "./utils/normalizarDni";
@@ -58,6 +61,19 @@ class AuthService {
     );
     if (snap.empty) throw new Error("DNI no encontrado");
     return snap.docs[0].data().email;
+  }
+
+  // Vuelve a pedir la contraseña actual antes de una accion sensible
+  // (editar datos de cuenta, cambiar email, dar de baja).
+  async reautenticar(passwordActual) {
+    const credential = EmailAuthProvider.credential(auth.currentUser.email, passwordActual);
+    await reauthenticateWithCredential(auth.currentUser, credential);
+  }
+
+  // No cambia el email todavia: Firebase manda un link al correo nuevo y
+  // el cambio se aplica solo cuando el usuario lo confirma desde ahi.
+  async actualizarEmail(nuevoEmail) {
+    await verifyBeforeUpdateEmail(auth.currentUser, nuevoEmail, actionCodeSettings);
   }
 }
 

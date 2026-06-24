@@ -1,22 +1,46 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, addDoc, getDocs, getDoc, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { collection, setDoc, updateDoc, getDocs, getDoc, query, where, deleteDoc, doc } from 'firebase/firestore';
 import { normalizarTexto, carreraEnOferta } from '../../utils/matchCarrera';
 import { slugTexto } from '../../utils/slugTexto';
 
 const SIU_URL = 'https://inscripcion.unab.edu.ar/rectorado/acceso';
+const CAMPUS_URL = 'https://campus.unab.edu.ar/';
+
+const INSCRIPCION_VACIA = {
+  materiaNombre: '', comision: '', dia: '', horario: '', aula: '', docente: '', modalidad: 'presencial', sede: '', codigoAsignatura: '', contacto: ''
+};
+
+// Extrae el rango horario "19 a 22" -> [19, 22] para poder detectar superposiciones.
+function parseRangoHoras(horario) {
+  const m = String(horario || '').match(/(\d{1,2})\s*a\s*(\d{1,2})/i);
+  if (!m) return null;
+  return [Number(m[1]), Number(m[2])];
+}
+
+function haySuperposicion(diaA, horarioA, diaB, horarioB) {
+  if (!diaA || !diaB) return false;
+  if (String(diaA).trim().toLowerCase() !== String(diaB).trim().toLowerCase()) return false;
+  const rA = parseRangoHoras(horarioA);
+  const rB = parseRangoHoras(horarioB);
+  if (!rA || !rB) return false;
+  return rA[0] < rB[1] && rB[0] < rA[1];
+}
 
 export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) {
   const [tab, setTab] = useState('inscripciones');
   const [filtro, setFiltro] = useState('todas');
+  const [filtroTurno, setFiltroTurno] = useState('');
+  const [filtroDia, setFiltroDia] = useState('');
+  const [filtroModalidad, setFiltroModalidad] = useState('');
+  const [filtroAnio, setFiltroAnio] = useState('');
   const [inscripciones, setInscripciones] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [ofertaData, setOfertaData] = useState([]);
   const [planInfo, setPlanInfo] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [nuevaInscripcion, setNuevaInscripcion] = useState({
-    materiaNombre: '', comision: '', dia: '', horario: '', aula: '', docente: '', modalidad: 'presencial', sede: '', codigoAsignatura: ''
-  });
+  const [inscripcionEditando, setInscripcionEditando] = useState(null);
+  const [nuevaInscripcion, setNuevaInscripcion] = useState(INSCRIPCION_VACIA);
   const [mensaje, setMensaje] = useState('');
   const [detalleInsc, setDetalleInsc] = useState(null);
   const [cronogramaDetalle, setCronogramaDetalle] = useState(null);
@@ -42,19 +66,40 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
   // Filtrar oferta por carrera del alumno
   const ofertaCarrera = ofertaData.filter(o => carreraEnOferta(o.carrera_ref, carreraActual));
 
-  // Agrupar oferta por materia
-  const ofertaAgrupada = ofertaCarrera.reduce((acc, o) => {
+  const buscarMateriaPlan = (nombreMateria) =>
+    materiasCarrera.find(m => normalizarTexto(m.nombre).includes(normalizarTexto(nombreMateria).substring(0, 15)));
+
+  // Agrupar oferta por materia, aplicando los filtros de turno/dia/modalidad/anio sobre las comisiones
+  const ofertaCarreraFiltrada = ofertaCarrera.filter(o =>
+    (!filtroTurno || (o.turno || '').toLowerCase() === filtroTurno) &&
+    (!filtroDia || (o.dia || '').toLowerCase() === filtroDia) &&
+    (!filtroModalidad || (o.modalidad || '').toLowerCase() === filtroModalidad) &&
+    (!filtroAnio || String(buscarMateriaPlan(o.materia_nombre)?.anio || '') === filtroAnio)
+  );
+  const ofertaAgrupada = ofertaCarreraFiltrada.reduce((acc, o) => {
     const key = o.materia_nombre;
     if (!acc[key]) acc[key] = { nombre: key, comisiones: [] };
     acc[key].comisiones.push(o);
     return acc;
   }, {});
 
+  // Agrupado sin los filtros de la pestaña "Oferta" — usado en el modal de agregar/editar materia
+  const ofertaAgrupadaCompleta = ofertaCarrera.reduce((acc, o) => {
+    const key = o.materia_nombre;
+    if (!acc[key]) acc[key] = { nombre: key, comisiones: [] };
+    acc[key].comisiones.push(o);
+    return acc;
+  }, {});
+
+  // Valores unicos disponibles para los selects de filtro (sobre la oferta sin filtrar)
+  const turnosDisponibles = [...new Set(ofertaCarrera.map(o => (o.turno || '').toLowerCase()).filter(Boolean))].sort();
+  const diasDisponibles = [...new Set(ofertaCarrera.map(o => (o.dia || '').toLowerCase()).filter(Boolean))].sort();
+  const modalidadesDisponibles = [...new Set(ofertaCarrera.map(o => (o.modalidad || '').toLowerCase()).filter(Boolean))].sort();
+  const aniosDisponibles = [...new Set(materiasCarrera.map(m => m.anio).filter(Boolean))].sort((a, b) => a - b);
+
   // Verificar correlativas
   const puedeInscribirse = (nombreMateria) => {
-    const materia = materiasCarrera.find(m =>
-      normalizarTexto(m.nombre).includes(normalizarTexto(nombreMateria).substring(0, 15))
-    );
+    const materia = buscarMateriaPlan(nombreMateria);
     if (!materia) return true;
     const corrParaCursar = materia.correlativas?.para_cursar || [];
     const corrParaAprobar = materia.correlativas?.para_aprobar || [];
@@ -113,13 +158,37 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
       setMensaje('error:Ingresa el nombre de la materia.');
       return;
     }
+
+    const editandoId = inscripcionEditando?.id || null;
+
+    // Bloquear doble inscripcion a la misma materia (en la misma carrera del alumno)
+    const yaInscrito = inscripciones.some(i =>
+      i.id !== editandoId && i.materiaNombre === nuevaInscripcion.materiaNombre
+    );
+    if (yaInscrito) {
+      setMensaje('error:Ya estas inscrito en esta materia. Elimina o edita la inscripcion existente.');
+      return;
+    }
+
+    // Detectar superposicion de horarios con otras materias ya inscritas
+    const conflictos = inscripciones.filter(i =>
+      i.id !== editandoId && haySuperposicion(i.dia, i.horario, nuevaInscripcion.dia, nuevaInscripcion.horario)
+    );
+    if (conflictos.length > 0) {
+      const detalle = conflictos.map(c => `${c.materiaNombre} (${c.dia} ${c.horario}hs)`).join(', ');
+      const continuar = window.confirm(
+        `⚠ Esta comision se superpone en horario con: ${detalle}.\n¿Querés inscribirte igual?`
+      );
+      if (!continuar) return;
+    }
+
     try {
       // El materiaId/comisionId deben coincidir con el esquema que usa el profesor
       // al anotarse en una comision (codigo de asignatura + numero de comision),
       // para poder cruzar inscripciones <-> comisiones/cronogramas.
       const materiaIdKey = nuevaInscripcion.codigoAsignatura || slugTexto(nuevaInscripcion.materiaNombre);
       const comisionDocId = slugTexto(materiaIdKey + '_' + nuevaInscripcion.comision);
-      const docRef = await addDoc(collection(db, 'inscripciones'), {
+      const datos = {
         alumnoUid: perfil.uid,
         materiaId: materiaIdKey,
         materiaNombre: nuevaInscripcion.materiaNombre,
@@ -131,19 +200,56 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
         docente: nuevaInscripcion.docente,
         modalidad: nuevaInscripcion.modalidad,
         sede: nuevaInscripcion.sede,
+        contacto: nuevaInscripcion.contacto || '',
         cuatrimestre: 1,
         anio: 2026,
-      });
-      setInscripciones(prev => [...prev, {
-        id: docRef.id, ...nuevaInscripcion, materiaId: materiaIdKey,
-        comisionId: comisionDocId, comisionNumero: nuevaInscripcion.comision, alumnoUid: perfil.uid,
-      }]);
-      setNuevaInscripcion({ materiaNombre:'', comision:'', dia:'', horario:'', aula:'', docente:'', modalidad:'presencial', sede:'', codigoAsignatura:'' });
-      setMensaje('ok:Materia agregada correctamente.');
+      };
+
+      // El id del documento de inscripcion es deterministico (alumno + comision)
+      // para que las reglas de Firestore puedan verificar membresia del chat
+      // con un simple exists(), sin necesitar una query.
+      const inscDocId = perfil.uid + '_' + comisionDocId;
+
+      if (editandoId) {
+        if (editandoId === inscDocId) {
+          await updateDoc(doc(db, 'inscripciones', editandoId), datos);
+        } else {
+          // Cambio de comision: el id deterministico cambia, hay que mover el documento.
+          await deleteDoc(doc(db, 'inscripciones', editandoId));
+          await setDoc(doc(db, 'inscripciones', inscDocId), datos);
+        }
+        setInscripciones(prev => prev.map(i => i.id === editandoId ? { id: inscDocId, ...datos } : i));
+        setMensaje('ok:Inscripcion actualizada correctamente.');
+      } else {
+        await setDoc(doc(db, 'inscripciones', inscDocId), datos);
+        setInscripciones(prev => [...prev, { id: inscDocId, ...datos }]);
+        setMensaje('ok:Materia agregada correctamente.');
+      }
+      setNuevaInscripcion(INSCRIPCION_VACIA);
+      setInscripcionEditando(null);
+      setModalAbierto(false);
     } catch (e) {
       setMensaje('error:Error al guardar. Intenta de nuevo.');
       console.error(e);
     }
+  };
+
+  const editarInscripcion = (insc) => {
+    setInscripcionEditando(insc);
+    setNuevaInscripcion({
+      materiaNombre: insc.materiaNombre || '',
+      comision: insc.comisionNumero || '',
+      dia: insc.dia || '',
+      horario: insc.horario || '',
+      aula: insc.aula || '',
+      docente: insc.docente || '',
+      modalidad: insc.modalidad || 'presencial',
+      sede: insc.sede || '',
+      codigoAsignatura: insc.materiaId || '',
+      contacto: insc.contacto || '',
+    });
+    setMensaje('');
+    setModalAbierto(true);
   };
 
   const abrirDetalleMateria = async (insc) => {
@@ -191,11 +297,15 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
           style={{marginLeft:'auto',padding:'8px 18px',borderRadius:'8px',background:'#1565c0',color:'white',fontWeight:600,fontSize:'0.88rem',textDecoration:'none',display:'flex',alignItems:'center',gap:'6px'}}>
           Inscribirme en SIU Guarani →
         </a>
+        <a href={CAMPUS_URL} target="_blank" rel="noreferrer"
+          style={{padding:'8px 18px',borderRadius:'8px',background:'#00897b',color:'white',fontWeight:600,fontSize:'0.88rem',textDecoration:'none',display:'flex',alignItems:'center',gap:'6px'}}>
+          Campus Virtual →
+        </a>
       </div>
 
       {tab === 'oferta' && (
         <div>
-          <div style={{display:'flex',gap:'8px',marginBottom:'16px'}}>
+          <div style={{display:'flex',gap:'8px',marginBottom:'12px',flexWrap:'wrap'}}>
             {[{key:'todas',label:'Todas las materias'},{key:'puedo',label:'Puedo cursar'}].map(f => (
               <button key={f.key} onClick={() => setFiltro(f.key)}
                 style={{padding:'6px 14px',borderRadius:'20px',border:'1px solid #ddd',cursor:'pointer',fontWeight:600,fontSize:'0.82rem',
@@ -204,6 +314,36 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                 {f.label}
               </button>
             ))}
+          </div>
+          <div style={{display:'flex',gap:'8px',marginBottom:'16px',flexWrap:'wrap'}}>
+            <select value={filtroTurno} onChange={e => setFiltroTurno(e.target.value)}
+              style={{padding:'6px 10px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.8rem',color:'#333'}}>
+              <option value="">Todos los turnos</option>
+              {turnosDisponibles.map(t => <option key={t} value={t} style={{textTransform:'capitalize'}}>{t}</option>)}
+            </select>
+            <select value={filtroDia} onChange={e => setFiltroDia(e.target.value)}
+              style={{padding:'6px 10px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.8rem',color:'#333'}}>
+              <option value="">Todos los dias</option>
+              {diasDisponibles.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+            <select value={filtroModalidad} onChange={e => setFiltroModalidad(e.target.value)}
+              style={{padding:'6px 10px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.8rem',color:'#333'}}>
+              <option value="">Toda modalidad</option>
+              {modalidadesDisponibles.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+            {aniosDisponibles.length > 0 && (
+              <select value={filtroAnio} onChange={e => setFiltroAnio(e.target.value)}
+                style={{padding:'6px 10px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.8rem',color:'#333'}}>
+                <option value="">Todos los anios</option>
+                {aniosDisponibles.map(a => <option key={a} value={String(a)}>Año {a}</option>)}
+              </select>
+            )}
+            {(filtroTurno || filtroDia || filtroModalidad || filtroAnio) && (
+              <button onClick={() => { setFiltroTurno(''); setFiltroDia(''); setFiltroModalidad(''); setFiltroAnio(''); }}
+                style={{padding:'6px 10px',borderRadius:'8px',border:'1px solid #ddd',background:'#f5f5f5',cursor:'pointer',fontSize:'0.8rem',color:'#555'}}>
+                Limpiar filtros
+              </button>
+            )}
           </div>
           <p style={{fontSize:'0.85rem',color:'var(--text-2)',marginBottom:'16px'}}>
             Materias disponibles para tu carrera este cuatrimestre. Las marcadas en verde cumplen las correlativas.
@@ -230,8 +370,15 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                   </div>
                   <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
                     {grupo.comisiones.map((c, i) => (
-                      <div key={i} style={{fontSize:'0.75rem',background:'var(--surface-2)',borderRadius:'6px',padding:'4px 8px',color:'var(--text-2)'}}>
-                        Com. {c.comision} · {c.dia} {c.hora_rango}hs · {c.sede || c.modalidad}
+                      <div key={i} style={{fontSize:'0.75rem',background:'var(--surface-2)',borderRadius:'6px',padding:'4px 8px',color:'var(--text-2)',display:'flex',justifyContent:'space-between',alignItems:'center',gap:'8px'}}>
+                        <span>Com. {c.comision} · {c.dia} {c.hora_rango}hs · {c.sede || c.modalidad}</span>
+                        {c.contacto && (
+                          <a href={c.contacto.startsWith('http') ? c.contacto : 'https://wa.me/' + c.contacto.replace(/\D/g,'')}
+                            target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
+                            style={{color:'#25d366',fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>
+                            💬 Contacto
+                          </a>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -264,11 +411,11 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
             </div>
           ) : (
             <div className="card">
-              <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr auto'}}>
-                <div>Materia</div><div>Dia</div><div>Horario</div><div>Aula</div><div>Comision</div><div></div>
+              <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr 230px'}}>
+                <div>Materia</div><div>Dia</div><div>Horario</div><div>Aula</div><div>Comision</div><div>Acciones</div>
               </div>
               {inscripciones.map(insc => (
-                <div key={insc.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr auto'}}>
+                <div key={insc.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr 230px'}}>
                   <div>
                     <div className="materia-name">{insc.materiaNombre}</div>
                     <div className="materia-code">{insc.sede || insc.modalidad || ''}</div>
@@ -281,6 +428,10 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                     <button onClick={() => abrirDetalleMateria(insc)}
                       style={{background:'none',border:'none',cursor:'pointer',color:'#1565c0',fontSize:'0.78rem',fontWeight:600,whiteSpace:'nowrap'}}>
                       📍 Ver detalles
+                    </button>
+                    <button onClick={() => editarInscripcion(insc)}
+                      style={{background:'none',border:'none',cursor:'pointer',color:'#2e7d32',fontSize:'0.78rem',fontWeight:600,whiteSpace:'nowrap'}}>
+                      ✏ Editar
                     </button>
                     <button onClick={() => eliminarInscripcion(insc.id)}
                       style={{background:'none',border:'none',cursor:'pointer',color:'#c0392b',fontSize:'0.85rem',fontWeight:700}}>
@@ -297,7 +448,7 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
       {modalAbierto && (
         <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
           <div style={{background:'white',borderRadius:'12px',padding:'28px',width:'500px',maxWidth:'90vw',maxHeight:'90vh',overflowY:'auto'}}>
-            <h3 style={{marginBottom:'16px',color:'#222'}}>Agregar materia cursando</h3>
+            <h3 style={{marginBottom:'16px',color:'#222'}}>{inscripcionEditando ? 'Editar materia cursando' : 'Agregar materia cursando'}</h3>
 
             <div style={{marginBottom:'14px'}}>
               <label style={{display:'block',fontSize:'0.85rem',fontWeight:600,marginBottom:'6px',color:'#333'}}>Materia *</label>
@@ -305,13 +456,17 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                 value={nuevaInscripcion.materiaNombre}
                 onChange={e => {
                   const nombre = e.target.value;
-                  setNuevaInscripcion({ materiaNombre: nombre, comision: '', dia: '', horario: '', aula: '', docente: '', modalidad: 'presencial', sede: '' });
+                  setNuevaInscripcion({ ...INSCRIPCION_VACIA, materiaNombre: nombre });
                 }}
                 style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid #ddd',color:'#333'}}>
                 <option value="">Selecciona una materia</option>
-                {Object.keys(ofertaAgrupada).filter(n => puedeInscribirse(n)).sort().map(nombre => (
-                  <option key={nombre} value={nombre}>{nombre}</option>
-                ))}
+                {Object.keys(ofertaAgrupadaCompleta)
+                  .filter(n => puedeInscribirse(n))
+                  .filter(n => n === inscripcionEditando?.materiaNombre || !inscripciones.some(i => i.id !== inscripcionEditando?.id && i.materiaNombre === n))
+                  .sort()
+                  .map(nombre => (
+                    <option key={nombre} value={nombre}>{nombre}</option>
+                  ))}
               </select>
             </div>
 
@@ -322,7 +477,7 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                   value={nuevaInscripcion.comision}
                   onChange={e => {
                     const comNum = e.target.value;
-                    const com = ofertaAgrupada[nuevaInscripcion.materiaNombre]?.comisiones.find(c => c.comision === comNum);
+                    const com = ofertaAgrupadaCompleta[nuevaInscripcion.materiaNombre]?.comisiones.find(c => c.comision === comNum);
                     if (com) {
                       setNuevaInscripcion(prev => ({
                         ...prev,
@@ -333,12 +488,13 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                         modalidad: com.modalidad || 'presencial',
                         sede: com.sede || '',
                         codigoAsignatura: com.codigo_asignatura || '',
+                        contacto: com.contacto || '',
                       }));
                     }
                   }}
                   style={{width:'100%',padding:'8px',borderRadius:'6px',border:'1px solid #ddd',color:'#333'}}>
                   <option value="">Selecciona una comision</option>
-                  {(ofertaAgrupada[nuevaInscripcion.materiaNombre]?.comisiones || []).map((c, i) => (
+                  {(ofertaAgrupadaCompleta[nuevaInscripcion.materiaNombre]?.comisiones || []).map((c, i) => (
                     <option key={i} value={c.comision}>
                       Comision {c.comision} - {c.dia} {c.hora_rango}hs - {c.sede || c.modalidad}
                     </option>
@@ -366,14 +522,14 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
             </div>
 
             <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginTop:'16px'}}>
-              <button onClick={() => {setModalAbierto(false);setMensaje('');setNuevaInscripcion({materiaNombre:'',comision:'',dia:'',horario:'',aula:'',docente:'',modalidad:'presencial',sede:''}); }}
+              <button onClick={() => { setModalAbierto(false); setMensaje(''); setNuevaInscripcion(INSCRIPCION_VACIA); setInscripcionEditando(null); }}
                 style={{padding:'8px 18px',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',background:'white',color:'#333'}}>
                 Cancelar
               </button>
               <button onClick={agregarInscripcion}
                 disabled={!nuevaInscripcion.materiaNombre || !nuevaInscripcion.comision}
                 style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontWeight:600,opacity:(!nuevaInscripcion.materiaNombre || !nuevaInscripcion.comision)?0.5:1}}>
-                Agregar
+                {inscripcionEditando ? 'Guardar cambios' : 'Agregar'}
               </button>
             </div>
           </div>
@@ -398,6 +554,15 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
               <div><strong>Aula:</strong> {detalleInsc.aula || '-'}</div>
               <div><strong>Modalidad:</strong> {detalleInsc.modalidad || '-'}</div>
               <div><strong>Docente:</strong> {detalleInsc.docente || '-'}</div>
+              {detalleInsc.contacto && (
+                <div style={{gridColumn:'1 / -1'}}>
+                  <strong>Contacto:</strong>{' '}
+                  <a href={detalleInsc.contacto.startsWith('http') ? detalleInsc.contacto : 'https://wa.me/' + detalleInsc.contacto.replace(/\D/g,'')}
+                    target="_blank" rel="noreferrer" style={{color:'#25d366',fontWeight:700}}>
+                    💬 Escribir por WhatsApp
+                  </a>
+                </div>
+              )}
             </div>
 
             <div className="section-head" style={{marginBottom:'10px'}}><h2>🗓 Cronograma de la materia</h2></div>

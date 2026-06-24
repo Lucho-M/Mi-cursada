@@ -4,6 +4,8 @@ import { collection, query, where, getDocs, getDoc, doc, updateDoc, limit } from
 import Alumno from '../../models/Alumno';
 import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
+import SeccionTareas from './SeccionTareas';
+import SeccionChat from './SeccionChat';
 import SeccionNotas from './SeccionNotas';
 
 const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
@@ -591,6 +593,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                               <div className="ev-name-sch">{ev.materiaNombre || ev.materiaId}</div>
                               <div className="ev-room-sch">Com. {ev.comisionNumero || '—'} · Aula {ev.aula || '—'}</div>
                               <div className="ev-room-sch">{ev.sede || '—'}</div>
+                              {ev.docente && <div className="ev-room-sch">👤 {ev.docente}</div>}
                               <div className="ev-room-sch" style={{ marginTop: 4, opacity: 0.6 }}>{ev.horario}hs</div>
                             </div>
                           )}
@@ -874,6 +877,26 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
     );
   }
 
+
+  // TAREAS
+  if (seccion === 'tareas') {
+    return (
+      <>
+        <Topbar titulo="Tareas" subtitulo="Tu tablero personal, compartilo con tus compañeros" />
+        <SeccionTareas perfil={perfil} />
+      </>
+    );
+  }
+
+  // CHAT
+  if (seccion === 'chat') {
+    return (
+      <>
+        <Topbar titulo="Chat" subtitulo="Hablá con tus profesores por materia" />
+        <SeccionChat perfil={perfil} />
+      </>
+    );
+  }
 
   // CONFIG
   if (seccion === 'config') {
