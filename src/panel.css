@@ -660,3 +660,42 @@
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* Alineación tabla profesor */
+.cols-profesor > div:not(:first-child) {
+  text-align: center;
+  justify-self: center;
+}
+
+
+/* Calendario profesor */
+.calendario-profesor > div:not(:first-child) {
+  text-align: center;
+  justify-self: center;
+}
+
+
+.calendario-profesor .table-head > div:not(:first-child),
+.table-head.calendario-profesor > div:not(:first-child) {
+  text-align: center;
+  justify-self: center;
+}
+
+.calendario-profesor .table-row > div:not(:first-child),
+.table-row.calendario-profesor > div:not(:first-child) {
+  text-align: center;
+  justify-self: center;
+}
+
+
+/* Cronograma profesor */
+.table-head.cronograma-profesor > div:not(:first-child) {
+  text-align: center;
+  justify-self: center;
+}
+
+.table-row.cronograma-profesor > div:not(:first-child) {
+  text-align: center;
+  justify-self: center;
+}
+

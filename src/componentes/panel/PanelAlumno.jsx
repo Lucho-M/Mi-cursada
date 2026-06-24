@@ -466,21 +466,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
                         }} />
                       </div>
                     </div>
-                    <div className="progress-item">
-                      <div className="progress-label">
-                        <span className="pl-name">Regularidades activas</span>
-                        <span className="pl-val">
-                          {materiasConNotas.filter(m => m.estado === 'Regular').length} / {inscripciones.length}
-                        </span>
-                      </div>
-                      <div className="progress-track">
-                        <div className="progress-fill blue" style={{
-                          width: inscripciones.length
-                            ? `${(materiasConNotas.filter(m => m.estado === 'Regular').length / inscripciones.length) * 100}%`
-                            : '0%'
-                        }} />
-                      </div>
-                    </div>
+
                   </div>
                 ) : (
                   <div className="empty-state">

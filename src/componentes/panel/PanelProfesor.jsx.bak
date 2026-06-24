@@ -573,8 +573,8 @@ function PanelProfesor({ perfil, seccion }) {
                 style={{padding:'8px 16px',borderRadius:'8px',border:'1px solid var(--border-2)',cursor:'pointer',
                   background: comSeleccionada?.id === com.id ? '#2e7d32' : 'var(--surface-2)',
                   color: comSeleccionada?.id === com.id ? 'white' : 'var(--text-1)',
-                  fontWeight: 600, fontSize:'0.85rem', textAlign:'center'}}>
-                <><div>{com.materiaNombre || com.materiaId}</div><div style={{fontSize:'0.72rem',opacity:0.8,marginTop:'2px'}}>Comisión {com.numero || com.id.slice(0,4)}</div></>
+                  fontWeight: 600, fontSize:'0.85rem'}}>
+                {com.materiaNombre || com.materiaId}
               </button>
             ))}
           </div>
@@ -778,7 +778,7 @@ function PanelProfesor({ perfil, seccion }) {
         {topbar('Calendario', 'Parciales, TPs y fechas clave de tus comisiones')}
         <div className="content">
           <div className="card">
-            <div className="table-head calendario-profesor" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr'}}>
+            <div className="table-head" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr'}}>
               <div>Fecha</div><div>Materia</div><div>Tipo</div><div>Hora</div><div>Aula</div>
             </div>
             {cargando ? (
@@ -793,7 +793,7 @@ function PanelProfesor({ perfil, seccion }) {
                 const d = new Date(ev.fecha + 'T00:00:00');
                 const pasado = ev.fecha < hoyStr;
                 return (
-                  <div key={ev.id} className="table-row calendario-profesor" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr', opacity: pasado ? 0.5 : 1}}>
+                  <div key={ev.id} className="table-row" style={{gridTemplateColumns:'auto 2fr 1fr 1fr 1fr', opacity: pasado ? 0.5 : 1}}>
                     <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
                       <div className="prox-date" style={{width:'42px'}}>
                         <div className="day">{d.getDate()}</div>
@@ -833,7 +833,7 @@ function PanelProfesor({ perfil, seccion }) {
                 style={{padding:'8px 16px',borderRadius:'8px',border:'1px solid var(--border-2)',cursor:'pointer',
                   background: cronogramaComSel?.id === com.id ? '#2e7d32' : 'var(--surface-2)',
                   color: cronogramaComSel?.id === com.id ? 'white' : 'var(--text-1)',
-                  fontWeight: 600, fontSize:'0.85rem', textAlign:'center'}}>
+                  fontWeight: 600, fontSize:'0.85rem'}}>
                 {com.materiaNombre || com.materiaId} · Com. {com.numero || com.id.slice(0,4)}
               </button>
             ))}
@@ -877,7 +877,7 @@ function PanelProfesor({ perfil, seccion }) {
               ) : (
                 <>
                   <div className="card">
-                    <div className="table-head cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 1fr auto'}}>
+                    <div className="table-head" style={{gridTemplateColumns:'150px 2fr 1fr 1fr auto'}}>
                       <div>Fecha</div><div>Unidad / Tema</div><div>Modalidad</div><div>Fecha clave</div><div></div>
                     </div>
                     {cronogramaClases.length === 0 ? (
@@ -887,28 +887,28 @@ function PanelProfesor({ perfil, seccion }) {
                       </div>
                     ) : (
                       cronogramaClases.map((c, i) => (
-                        <div key={i} className="table-row cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 1fr auto'}}>
+                        <div key={i} className="table-row" style={{gridTemplateColumns:'150px 2fr 1fr 1fr auto'}}>
                           <div>
                             <input type="date" value={c.fecha || ''} onChange={e => actualizarClaseCronograma(i, 'fecha', e.target.value)}
-                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',background:'var(--surface-2)',color:'var(--text-1)'}} />
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)'}} />
                           </div>
                           <div>
                             <input type="text" value={c.tema || ''} onChange={e => actualizarClaseCronograma(i, 'tema', e.target.value)}
                               placeholder="Unidad / tema de la clase"
-                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box',background:'var(--surface-2)',color:'var(--text-1)',display:'block',margin:'0 auto'}} />
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box'}} />
                           </div>
                           <div>
                             <select value={c.modalidad || 'presencial'} onChange={e => actualizarClaseCronograma(i, 'modalidad', e.target.value)}
-                              style={{width:'125px',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',background:'var(--surface-2)',color:'var(--text-1)',display:'block',margin:'0 auto'}}>
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)'}}>
                               <option value="presencial">Presencial</option>
                               <option value="virtual">Virtual</option>
-                              <option value="mixta">Híbrida</option>
+                              <option value="mixta">Mixta</option>
                             </select>
                           </div>
                           <div>
                             <input type="text" value={c.fechaClave || ''} onChange={e => actualizarClaseCronograma(i, 'fechaClave', e.target.value)}
                               placeholder="-"
-                              style={{width:'180px',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box',background:'var(--surface-2)',color:'var(--text-1)',display:'block',margin:'0 auto',textAlign:'center'}} />
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box'}} />
                           </div>
                           <div>
                             <button onClick={() => eliminarClaseCronograma(i)}
