@@ -119,7 +119,7 @@ function ModalDocente({ docente, onGuardar, onCerrar }) {
 
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-      <div style={{background:'white',borderRadius:'12px',padding:'28px',width:'480px',maxWidth:'90vw'}}>
+      <div style={{background:'var(--surface)',borderRadius:'12px',padding:'28px',width:'480px',maxWidth:'90vw'}}>
         <h3 style={{marginBottom:'16px'}}>{docente.nombre}</h3>
 
         <div style={{marginBottom:'14px'}}>
@@ -146,7 +146,7 @@ function ModalDocente({ docente, onGuardar, onCerrar }) {
           <div style={{display:'flex',gap:'8px',marginBottom:'8px'}}>
             <input type="text" value={nuevoAux} onChange={e => setNuevoAux(e.target.value)}
               placeholder="Nombre del auxiliar"
-              style={{flex:1,padding:'8px',borderRadius:'6px',border:'1px solid #ddd'}} />
+              style={{flex:1,padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
             <button onClick={agregarAux}
               style={{padding:'8px 14px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer'}}>
               Agregar
@@ -161,7 +161,7 @@ function ModalDocente({ docente, onGuardar, onCerrar }) {
         </div>
 
         <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginTop:'20px'}}>
-          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',background:'white'}}>Cancelar</button>
+          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)'}}>Cancelar</button>
           <button onClick={() => onGuardar({ modalidad, linkVirtual, auxiliares })}
             style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer'}}>
             Guardar
@@ -179,7 +179,7 @@ function ModalCarrera({ carrera, onGuardar, onCerrar }) {
 
   return (
     <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
-      <div style={{background:'white',borderRadius:'12px',padding:'28px',width:'440px',maxWidth:'90vw'}}>
+      <div style={{background:'var(--surface)',borderRadius:'12px',padding:'28px',width:'440px',maxWidth:'90vw'}}>
         <h3 style={{marginBottom:'16px'}}>{carrera ? 'Editar carrera' : 'Nueva carrera'}</h3>
 
         <div style={{marginBottom:'14px'}}>
@@ -206,7 +206,7 @@ function ModalCarrera({ carrera, onGuardar, onCerrar }) {
         </div>
 
         <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginTop:'20px'}}>
-          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',background:'white'}}>Cancelar</button>
+          <button onClick={onCerrar} style={{padding:'8px 18px',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',background:'var(--surface-2)',color:'var(--text-1)'}}>Cancelar</button>
           <button onClick={() => onGuardar({ nombre: nombre.trim(), tipo, duracionAnios })}
             disabled={!nombre.trim()}
             style={{padding:'8px 18px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',opacity:nombre.trim()?1:0.5}}>
@@ -214,6 +214,64 @@ function ModalCarrera({ carrera, onGuardar, onCerrar }) {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+
+function DocenteRow({ d, onEditar }) {
+  const [expandido, setExpandido] = useState(false);
+  return (
+    <div>
+      <div className="table-row" style={{gridTemplateColumns:'2fr 1fr 60px 60px',cursor:'pointer'}} onClick={() => setExpandido(prev => !prev)}>
+        <div>
+          <div className="materia-name">{d.nombre}</div>
+          <div className="materia-code">{d.email}</div>
+        </div>
+        <div style={{fontSize:'0.85rem',textAlign:'center'}}>{d.comisiones.length} materia(s)</div>
+        <div style={{textAlign:'center'}}>
+          <button onClick={e => { e.stopPropagation(); onEditar(d); }}
+            style={{padding:'5px 12px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
+            Editar
+          </button>
+        </div>
+        <div style={{textAlign:'center',fontSize:'1rem'}}>{expandido ? '▲' : '▼'}</div>
+      </div>
+      {expandido && (
+        <div style={{background:'var(--surface-2)',padding:'12px 20px',borderBottom:'1px solid var(--border)'}}>
+          {d.comisiones.length === 0 ? (
+            <p style={{fontSize:'0.82rem',color:'var(--text-3)'}}>Sin comisiones asignadas.</p>
+          ) : (
+            <>
+              <div style={{display:'grid',gridTemplateColumns:'2fr 80px 1fr 1fr 1fr 1fr',gap:'8px',padding:'4px 0 8px',borderBottom:'1px solid var(--border)',fontSize:'0.7rem',color:'var(--text-3)',fontWeight:700,textTransform:'uppercase'}}>
+                <div>Materia</div><div style={{textAlign:'center'}}>Comision</div><div style={{textAlign:'center'}}>Modalidad</div><div style={{textAlign:'center'}}>Horario</div><div style={{textAlign:'center'}}>Aula</div><div style={{textAlign:'center'}}>Link</div>
+              </div>
+              {d.comisiones.map((com, i) => (
+              <div key={com.id || i} style={{
+                display:'grid',
+                gridTemplateColumns:'2fr 80px 1fr 1fr 1fr 1fr',
+                gap:'8px',
+                padding:'8px 0',
+                borderBottom: i < d.comisiones.length - 1 ? '1px solid var(--border)' : 'none',
+                fontSize:'0.82rem',
+                alignItems:'center'
+              }}>
+                <div style={{fontWeight:600,color:'var(--text-1)'}}>{com.materiaNombre || com.materiaId || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center'}}>Com. {com.numero || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center',textTransform:'capitalize'}}>{com.modalidad || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center'}}>{com.horario || '-'}</div>
+                <div style={{color:'var(--text-2)',textAlign:'center'}}>{com.aula || '-'}</div>
+                <div style={{textAlign:'center'}}>
+                  {com.linkVirtual
+                    ? <a href={com.linkVirtual} target="_blank" rel="noreferrer" style={{color:'var(--accent)',fontSize:'0.78rem'}}>Ver link</a>
+                    : <span style={{opacity:0.4,color:'var(--text-3)'}}>Sin link</span>}
+                </div>
+              </div>
+            ))}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -227,6 +285,7 @@ function PanelAdmin({ perfil, seccion }) {
   const [alumnos, setAlumnos] = useState([]);
   const [cargandoAlumnos, setCargandoAlumnos] = useState(false);
   const [busquedaAlumno, setBusquedaAlumno] = useState('');
+  const [busquedaCarreraAlumno, setBusquedaCarreraAlumno] = useState('');
   const [carrerasList, setCarrerasList] = useState([]);
   const [cargandoCarreras, setCargandoCarreras] = useState(false);
   const [carreraEditando, setCarreraEditando] = useState(null);
@@ -239,6 +298,7 @@ function PanelAdmin({ perfil, seccion }) {
   const [ofertaLista, setOfertaLista] = useState([]);
   const [cargandoOfertaLista, setCargandoOfertaLista] = useState(false);
   const [busquedaOferta, setBusquedaOferta] = useState('');
+  const [paginaOferta, setPaginaOferta] = useState(1);
   const [editandoOfertaId, setEditandoOfertaId] = useState(null);
   const [edicionOferta, setEdicionOferta] = useState({});
 
@@ -263,14 +323,14 @@ function PanelAdmin({ perfil, seccion }) {
       try {
         const [usuariosSnap, materiasSnap, carrerasSnap] = await Promise.all([
           getDocs(collection(db, 'usuarios')),
-          getDocs(collection(db, 'materias')),
+          getDocs(collection(db, 'comisionesOferta')),
           getDocs(collection(db, 'planesEstudio')),
         ]);
         const usuarios = usuariosSnap.docs.map(d => d.data());
         setStats({
           alumnos:  usuarios.filter(u => u.rol === 'alumno').length,
           docentes: usuarios.filter(u => u.rol === 'profesor').length,
-          materias: materiasSnap.size,
+          materias: new Set(materiasSnap.docs.map(d => d.data().materia_nombre).filter(Boolean)).size,
           carreras: new Set(carrerasSnap.docs.map(d => d.data().carrera)).size,
         });
       } catch (e) {
@@ -295,7 +355,7 @@ function PanelAdmin({ perfil, seccion }) {
           ...doc,
           comisiones: comisiones.filter(c => c.profesorUid === doc.uid),
         }));
-        setDocentes(docentesConCom);
+        setDocentes(docentesConCom.sort((a, b) => (a.nombre || "").localeCompare(b.nombre || "", "es")));
       } catch (e) {
         console.error('Error cargando docentes:', e);
       } finally {
@@ -623,7 +683,7 @@ function PanelAdmin({ perfil, seccion }) {
           </p>
           <div className="card">
             <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr'}}>
-              <div>Usuario</div><div>DNI</div><div>Carrera</div><div>Rol</div>
+              <div>Usuario</div><div style={{textAlign:'center'}}>DNI</div><div style={{textAlign:'center'}}>Carrera</div><div style={{textAlign:'center'}}>Rol</div>
             </div>
             {cargandoUsuarios ? (
               <div className="empty-state"><p>Cargando usuarios...</p></div>
@@ -639,9 +699,9 @@ function PanelAdmin({ perfil, seccion }) {
                     <div className="materia-name">{u.nombre || '(sin nombre)'}</div>
                     <div className="materia-code">{u.email}</div>
                   </div>
-                  <div style={{fontSize:'0.85rem'}}>{u.dni || '-'}</div>
-                  <div style={{fontSize:'0.85rem'}}>{u.carrera || '-'}</div>
-                  <div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{u.dni || '-'}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{u.carrera || '-'}</div>
+                  <div style={{textAlign:'center'}}>
                     <select
                       value={ROLES.some(r => r.value === u.rol) ? u.rol : 'alumno'}
                       disabled={guardandoRolUid === u.docId}
@@ -668,8 +728,8 @@ function PanelAdmin({ perfil, seccion }) {
             <h2>Gestion de docentes</h2>
           </div>
           <div className="card">
-            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 110px'}}>
-              <div>Docente</div><div>Comisiones</div><div>Modalidad</div><div>Link virtual</div><div>Acciones</div>
+            <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 60px 60px'}}>
+              <div>Docente</div><div style={{textAlign:'center'}}>Materias</div><div></div><div></div>
             </div>
             {cargandoDocentes ? (
               <div className="empty-state"><p>Cargando docentes...</p></div>
@@ -680,25 +740,7 @@ function PanelAdmin({ perfil, seccion }) {
               </div>
             ) : (
               docentes.map(d => (
-                <div key={d.uid} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 110px'}}>
-                  <div>
-                    <div className="materia-name">{d.nombre}</div>
-                    <div className="materia-code">{d.email}</div>
-                  </div>
-                  <div style={{fontSize:'0.85rem'}}>{d.comisiones.length} asignadas</div>
-                  <div style={{fontSize:'0.85rem',textTransform:'capitalize'}}>{d.modalidad || 'Presencial'}</div>
-                  <div style={{fontSize:'0.8rem'}}>
-                    {d.linkVirtual
-                      ? <a href={d.linkVirtual} target="_blank" rel="noreferrer" style={{color:'#2e7d32'}}>Ver link</a>
-                      : <span style={{opacity:0.4}}>Sin link</span>}
-                  </div>
-                  <div>
-                    <button onClick={() => setDocenteEditando(d)}
-                      style={{padding:'5px 12px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
-                      Editar
-                    </button>
-                  </div>
-                </div>
+                <DocenteRow key={d.uid} d={d} onEditar={setDocenteEditando} />
               ))
             )}
           </div>
@@ -747,15 +789,20 @@ function PanelAdmin({ perfil, seccion }) {
   }
 
   if (seccion === 'oferta') {
-    const busq = busquedaOferta.toLowerCase();
+    const norm = t => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const busq = norm(busquedaOferta);
     const ofertaFiltrada = ofertaLista.filter(o =>
       !busq ||
-      (o.carrera_ref || '').toLowerCase().includes(busq) ||
-      (o.materia_nombre || '').toLowerCase().includes(busq) ||
-      (o.codigo_asignatura || '').toLowerCase().includes(busq) ||
-      String(o.comision || '').toLowerCase().includes(busq)
+      norm(o.carrera_ref).includes(busq) ||
+      norm(o.materia_nombre).includes(busq) ||
+      norm(o.codigo_asignatura).includes(busq) ||
+      norm(String(o.comision || '')).includes(busq)
     );
-    const ofertaAMostrar = busq ? ofertaFiltrada : ofertaFiltrada.slice(0, 50);
+    const normCarrera = s => (s || '').replace(/\.$/,'').trim().toLowerCase();
+    const ofertaOrdenada = [...ofertaFiltrada].sort((a, b) => normCarrera(a.carrera_ref).localeCompare(normCarrera(b.carrera_ref), 'es'));
+    const PAGINA_SIZE = 50;
+    const totalPaginas = Math.ceil(ofertaOrdenada.length / PAGINA_SIZE);
+    const ofertaAMostrar = ofertaOrdenada.slice((paginaOferta - 1) * PAGINA_SIZE, paginaOferta * PAGINA_SIZE);
     const camposOferta = [
       { key: 'carrera_ref', label: 'Carrera' },
       { key: 'materia_nombre', label: 'Materia' },
@@ -789,40 +836,49 @@ function PanelAdmin({ perfil, seccion }) {
           <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <h2>Oferta academica ({ofertaLista.length} comisiones)</h2>
             <input type="text" placeholder="Buscar por carrera, materia o codigo..." value={busquedaOferta}
-              onChange={e => setBusquedaOferta(e.target.value)}
+              onChange={e => { setBusquedaOferta(e.target.value); setPaginaOferta(1); }}
               style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'300px'}} />
           </div>
-          {!busq && ofertaLista.length > 50 && (
-            <p style={{fontSize:'0.8rem',color:'var(--text-2)',marginBottom:'12px'}}>
-              Mostrando 50 de {ofertaLista.length}. Usa el buscador para encontrar otras comisiones.
-            </p>
-          )}
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'12px',fontSize:'0.82rem',color:'var(--text-2)'}}>
+            <span>Mostrando {((paginaOferta - 1) * 50) + 1}-{Math.min(paginaOferta * 50, ofertaOrdenada.length)} de {ofertaOrdenada.length} comisiones</span>
+            <div style={{display:'flex',gap:'6px',alignItems:'center'}}>
+              <button onClick={() => setPaginaOferta(p => Math.max(1, p - 1))} disabled={paginaOferta === 1}
+                style={{padding:'4px 12px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',cursor:'pointer',opacity:paginaOferta===1?0.4:1}}>
+                Anterior
+              </button>
+              <span>Pagina {paginaOferta} de {totalPaginas}</span>
+              <button onClick={() => setPaginaOferta(p => Math.min(totalPaginas, p + 1))} disabled={paginaOferta === totalPaginas}
+                style={{padding:'4px 12px',borderRadius:'6px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)',cursor:'pointer',opacity:paginaOferta===totalPaginas?0.4:1}}>
+                Siguiente
+              </button>
+            </div>
+          </div>
           <div className="card" style={{overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
               <thead>
-                <tr style={{background:'#f5f5f5'}}>
+                <tr style={{background:'var(--surface-2)'}}>
                   {camposOferta.map(c => (
-                    <th key={c.key} style={{padding:'8px 10px',textAlign:'left',fontWeight:600,whiteSpace:'nowrap'}}>{c.label}</th>
+                    <th key={c.key} style={{padding:'8px 10px',textAlign:'left',fontWeight:600,whiteSpace:'nowrap',color:'var(--text-2)'}}>{c.label}</th>
                   ))}
                   <th style={{padding:'8px 10px'}}></th>
                 </tr>
               </thead>
               <tbody>
                 {cargandoOfertaLista ? (
-                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'#999'}}>Cargando...</td></tr>
+                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>Cargando...</td></tr>
                 ) : ofertaAMostrar.length === 0 ? (
-                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'#999'}}>No hay comisiones que coincidan.</td></tr>
+                  <tr><td colSpan={camposOferta.length + 1} style={{textAlign:'center',padding:'24px',color:'var(--text-3)'}}>No hay comisiones que coincidan.</td></tr>
                 ) : (
                   ofertaAMostrar.map(item => {
                     const editando = editandoOfertaId === item.id;
                     return (
-                      <tr key={item.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                      <tr key={item.id} style={{borderBottom:'1px solid var(--border)'}}>
                         {camposOferta.map(c => (
                           <td key={c.key} style={{padding:'6px 8px'}}>
                             {editando ? (
                               <input type="text" value={edicionOferta[c.key] || ''}
                                 onChange={e => setEdicionOferta(prev => ({ ...prev, [c.key]: e.target.value }))}
-                                style={{width:'100px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd',fontSize:'0.78rem'}} />
+                                style={{width:'100px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',fontSize:'0.78rem',background:'var(--surface-2)',color:'var(--text-1)'}} />
                             ) : (
                               <span>{item[c.key] || '-'}</span>
                             )}
@@ -836,7 +892,7 @@ function PanelAdmin({ perfil, seccion }) {
                                 Guardar
                               </button>
                               <button onClick={() => setEditandoOfertaId(null)}
-                                style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>
+                                style={{padding:'4px 10px',background:'var(--surface-2)',color:'var(--text-1)',border:'1px solid var(--border)',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>
                                 Cancelar
                               </button>
                             </>
@@ -895,7 +951,7 @@ function PanelAdmin({ perfil, seccion }) {
             <div>
               <label style={{display:'block',fontSize:'0.8rem',fontWeight:600,marginBottom:'6px'}}>Carrera</label>
               <select value={planSeleccionadoId} onChange={e => seleccionarPlan(e.target.value)}
-                style={{padding:'8px',borderRadius:'6px',border:'1px solid #ddd',minWidth:'300px'}}>
+                style={{padding:'8px',borderRadius:'6px',border:'1px solid var(--border)',minWidth:'300px',background:'var(--surface-2)',color:'var(--text-1)'}}>
                 <option value="">Selecciona un plan de estudio</option>
                 {planesLista.map(p => (
                   <option key={p.id} value={p.id}>{p.carrera} ({p.anioVigencia}) · {p.materias.length} materias</option>
@@ -906,7 +962,7 @@ function PanelAdmin({ perfil, seccion }) {
               <div>
                 <input type="text" placeholder="Buscar materia..." value={busquedaPlanMateria}
                   onChange={e => setBusquedaPlanMateria(e.target.value)}
-                  style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'220px'}} />
+                  style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',width:'220px',background:'var(--surface-2)',color:'var(--text-1)'}} />
               </div>
             )}
           </div>
@@ -923,7 +979,7 @@ function PanelAdmin({ perfil, seccion }) {
               <div className="card" style={{overflowX:'auto'}}>
                 <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
                   <thead>
-                    <tr style={{background:'#f5f5f5'}}>
+                    <tr style={{background:'var(--surface-2)'}}>
                       <th style={{padding:'8px 10px',textAlign:'left'}}>Cod.</th>
                       <th style={{padding:'8px 10px',textAlign:'left'}}>Materia</th>
                       <th style={{padding:'8px 10px',textAlign:'left'}}>Año</th>
@@ -938,38 +994,38 @@ function PanelAdmin({ perfil, seccion }) {
                     {materiasPlanFiltradas.map((m) => {
                       const idx = materiasPlanEdit.indexOf(m);
                       return (
-                        <tr key={idx} style={{borderBottom:'1px solid #f0f0f0'}}>
+                        <tr key={idx} style={{borderBottom:'1px solid var(--border)'}}>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={m.codigo || ''} onChange={e => actualizarMateriaPlan(idx, 'codigo', e.target.value)}
-                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={m.nombre || ''} onChange={e => actualizarMateriaPlan(idx, 'nombre', e.target.value)}
-                              style={{width:'220px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'220px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="number" min="1" value={m.anio || 1} onChange={e => actualizarMateriaPlan(idx, 'anio', e.target.value)}
-                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="number" min="1" max="2" value={m.cuatrimestre || 1} onChange={e => actualizarMateriaPlan(idx, 'cuatrimestre', e.target.value)}
-                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="number" min="0" value={m.horas || 0} onChange={e => actualizarMateriaPlan(idx, 'horas', e.target.value)}
-                              style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={(m.correlativas?.para_cursar || []).join(', ')}
                               onChange={e => actualizarMateriaPlan(idx, 'para_cursar', e.target.value)}
                               placeholder="codigos separados por coma"
-                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <input type="text" value={(m.correlativas?.para_aprobar || []).join(', ')}
                               onChange={e => actualizarMateriaPlan(idx, 'para_aprobar', e.target.value)}
                               placeholder="codigos separados por coma"
-                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
+                              style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid var(--border)',background:'var(--surface-2)',color:'var(--text-1)'}} />
                           </td>
                           <td style={{padding:'6px 8px'}}>
                             <button onClick={() => eliminarMateriaPlan(idx)}
@@ -1000,123 +1056,35 @@ function PanelAdmin({ perfil, seccion }) {
     );
   }
 
-  if (seccion === 'materias') {
-    const busqM = busquedaMateria.toLowerCase();
-    const materiasFiltradas = materiasLista.filter(m =>
-      (m.nombre || '').toLowerCase().includes(busqM) ||
-      (m.codigo || '').toLowerCase().includes(busqM) ||
-      (m.carrera || '').toLowerCase().includes(busqM)
-    );
-    return (
-      <>
-        {topbar}
-        <div className="content">
-          {admin.tienePermiso('importar_oferta') && (
-            <div style={{marginBottom:'28px',maxWidth:'520px'}}>
-              <DropZoneImport
-                titulo="Importar Catalogo de Materias"
-                descripcion="Importa el listado completo de materias con codigo, anio, cuatrimestre y correlativas."
-                onImportar={archivo => importService.importarMaterias(archivo).then(c => { setMateriasLista([]); return c; })}
-              />
-            </div>
-          )}
-
-          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <h2>Catalogo de materias ({materiasLista.length})</h2>
-            <input type="text" placeholder="Buscar por nombre, codigo o carrera..." value={busquedaMateria}
-              onChange={e => setBusquedaMateria(e.target.value)}
-              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'300px'}} />
-          </div>
-          <div className="card" style={{overflowX:'auto'}}>
-            <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.8rem'}}>
-              <thead>
-                <tr style={{background:'#f5f5f5'}}>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Codigo</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Nombre</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Carrera</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Año</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Cuatrim.</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Creditos</th>
-                  <th style={{padding:'8px 10px',textAlign:'left'}}>Correlativas</th>
-                  <th style={{padding:'8px 10px'}}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {cargandoMateriasLista ? (
-                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'#999'}}>Cargando...</td></tr>
-                ) : materiasFiltradas.length === 0 ? (
-                  <tr><td colSpan={8} style={{textAlign:'center',padding:'24px',color:'#999'}}>No hay materias que coincidan.</td></tr>
-                ) : (
-                  materiasFiltradas.map(item => {
-                    const editando = editandoMateriaId === item.id;
-                    return (
-                      <tr key={item.id} style={{borderBottom:'1px solid #f0f0f0'}}>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="text" value={edicionMateria.codigo || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, codigo: e.target.value }))} style={{width:'60px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.codigo}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="text" value={edicionMateria.nombre || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, nombre: e.target.value }))} style={{width:'200px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.nombre}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="text" value={edicionMateria.carrera || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, carrera: e.target.value }))} style={{width:'160px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.carrera}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="number" value={edicionMateria.anio || 1} onChange={e => setEdicionMateria(prev => ({ ...prev, anio: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.anio}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="number" value={edicionMateria.cuatrimestre || 1} onChange={e => setEdicionMateria(prev => ({ ...prev, cuatrimestre: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.cuatrimestre}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando ? <input type="number" value={edicionMateria.creditos || 0} onChange={e => setEdicionMateria(prev => ({ ...prev, creditos: e.target.value }))} style={{width:'50px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} /> : item.creditos}
-                        </td>
-                        <td style={{padding:'6px 8px'}}>
-                          {editando
-                            ? <input type="text" value={edicionMateria.correlativas || ''} onChange={e => setEdicionMateria(prev => ({ ...prev, correlativas: e.target.value }))} placeholder="codigos separados por coma" style={{width:'150px',padding:'4px 6px',borderRadius:'4px',border:'1px solid #ddd'}} />
-                            : (item.correlativas || []).join(', ') || '-'}
-                        </td>
-                        <td style={{padding:'6px 8px',whiteSpace:'nowrap'}}>
-                          {editando ? (
-                            <>
-                              <button onClick={guardarEdicionMateria} style={{padding:'4px 10px',background:'#2e7d32',color:'white',border:'none',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Guardar</button>
-                              <button onClick={() => setEditandoMateriaId(null)} style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Cancelar</button>
-                            </>
-                          ) : (
-                            <>
-                              <button onClick={() => iniciarEdicionMateria(item)} style={{padding:'4px 10px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem',marginRight:'4px'}}>Editar</button>
-                              <button onClick={() => eliminarMateria(item.id)} style={{padding:'4px 10px',background:'#fff0f0',border:'1px solid #f5c6c6',color:'#c0392b',borderRadius:'6px',cursor:'pointer',fontSize:'0.75rem'}}>Eliminar</button>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </>
-    );
-  }
-
   if (seccion === 'alumnos') {
-    const alumnosFiltrados = alumnos.filter(a =>
-      (a.nombre || '').toLowerCase().includes(busquedaAlumno.toLowerCase()) ||
-      (a.email || '').toLowerCase().includes(busquedaAlumno.toLowerCase())
-    );
+    const carrerasUnicas = [...new Set(alumnos.map(a => a.carrera || '').filter(Boolean))].sort();
+    const alumnosFiltrados = alumnos
+      .filter(a =>
+        ((a.nombre || '').toLowerCase().includes(busquedaAlumno.toLowerCase()) ||
+        (a.email || '').toLowerCase().includes(busquedaAlumno.toLowerCase())) &&
+        (!busquedaCarreraAlumno || (a.carrera || '') === busquedaCarreraAlumno)
+      )
+      .sort((a, b) => (a.nombre || '').localeCompare(b.nombre || '', 'es'));
     return (
       <>
         {topbar}
         <div className="content">
-          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div className="section-head" style={{marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'8px'}}>
             <h2>Alumnos registrados</h2>
-            <input type="text" placeholder="Buscar por nombre o email..." value={busquedaAlumno}
-              onChange={e => setBusquedaAlumno(e.target.value)}
-              style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid #ddd',fontSize:'0.85rem',width:'260px'}} />
+            <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
+              <select value={busquedaCarreraAlumno} onChange={e => setBusquedaCarreraAlumno(e.target.value)}
+                style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',background:'var(--surface-2)',color:'var(--text-1)'}}>
+                <option value="">Todas las carreras</option>
+                {carrerasUnicas.map(car => <option key={car} value={car}>{car}</option>)}
+              </select>
+              <input type="text" placeholder="Buscar por nombre o email..." value={busquedaAlumno}
+                onChange={e => setBusquedaAlumno(e.target.value)}
+                style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',width:'260px',background:'var(--surface-2)',color:'var(--text-1)'}} />
+            </div>
           </div>
           <div className="card">
             <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 2fr'}}>
-              <div>Alumno</div><div>DNI</div><div>Carrera</div><div></div>
+              <div>Alumno</div><div style={{textAlign:'center'}}>DNI</div><div style={{textAlign:'center'}}>Carrera</div><div></div>
             </div>
             {cargandoAlumnos ? (
               <div className="empty-state"><p>Cargando alumnos...</p></div>
@@ -1132,9 +1100,9 @@ function PanelAdmin({ perfil, seccion }) {
                     <div className="materia-name">{a.nombre}</div>
                     <div className="materia-code">{a.email}</div>
                   </div>
-                  <div style={{fontSize:'0.85rem'}}>{a.dni || '-'}</div>
-                  <div style={{fontSize:'0.85rem'}}>{a.carrera || '-'}</div>
-                  <div style={{fontSize:'0.78rem',color:'#999'}}>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{a.dni || '-'}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{a.carrera || '-'}</div>
+                  <div style={{fontSize:'0.78rem',color:'var(--text-3)'}}>
                     {Array.isArray(a.carreras) && a.carreras.length > 1 ? `+${a.carreras.length - 1} carrera(s) mas` : ''}
                   </div>
                 </div>
@@ -1160,7 +1128,7 @@ function PanelAdmin({ perfil, seccion }) {
           </div>
           <div className="card">
             <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 160px'}}>
-              <div>Nombre</div><div>Tipo</div><div>Duracion</div><div>Estado</div><div>Acciones</div>
+              <div>Nombre</div><div style={{textAlign:'center'}}>Tipo</div><div style={{textAlign:'center'}}>Duración</div><div style={{textAlign:'center'}}>Estado</div><div>Acciones</div>
             </div>
             {cargandoCarreras ? (
               <div className="empty-state"><p>Cargando carreras...</p></div>
@@ -1173,21 +1141,21 @@ function PanelAdmin({ perfil, seccion }) {
               carrerasList.map(c => (
                 <div key={c.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 160px'}}>
                   <div className="materia-name">{c.nombre}</div>
-                  <div style={{fontSize:'0.85rem'}}>{c.tipo}</div>
-                  <div style={{fontSize:'0.85rem'}}>{c.duracionAnios} anios</div>
-                  <div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{c.tipo}</div>
+                  <div style={{fontSize:'0.85rem',textAlign:'center'}}>{c.duracionAnios} años</div>
+                  <div style={{textAlign:'center'}}>
                     <span className={'status-badge ' + (c.activa ? 'badge-green' : 'badge-red')}
                       style={{cursor:'pointer'}} onClick={() => toggleActivaCarrera(c)}>
                       {c.activa ? 'Activa' : 'Inactiva'}
                     </span>
                   </div>
-                  <div style={{display:'flex',gap:'6px'}}>
+                  <div style={{display:'flex',gap:'6px',justifyContent:'center'}}>
                     <button onClick={() => { setCarreraEditando(c); setModalCarreraAbierto(true); }}
-                      style={{padding:'5px 12px',background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
+                      style={{padding:'5px 12px',background:'var(--surface-2)',border:'1px solid var(--border)',color:'var(--text-1)',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
                       Editar
                     </button>
                     <button onClick={() => eliminarCarrera(c.id)}
-                      style={{padding:'5px 12px',background:'#fff0f0',border:'1px solid #f5c6c6',color:'#c0392b',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
+                      style={{padding:'5px 12px',background:'var(--red-dim)',border:'1px solid var(--red)',color:'var(--red)',borderRadius:'6px',cursor:'pointer',fontSize:'0.8rem'}}>
                       Eliminar
                     </button>
                   </div>

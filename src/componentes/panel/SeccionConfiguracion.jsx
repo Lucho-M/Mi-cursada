@@ -313,7 +313,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
 
   return (
     <div className="content">
-      <div style={{display:'flex',gap:'10px',marginBottom:'24px',borderBottom:'1px solid #eee',paddingBottom:'12px'}}>
+      <div style={{display:'flex',gap:'10px',marginBottom:'24px',borderBottom:'1px solid var(--border)',paddingBottom:'12px'}}>
         {[
           {key:'datos',label:'Mis datos'},
           ...(esAlumno ? [{key:'historial',label:'Mi historial'}] : []),
@@ -411,7 +411,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
             {anios.map(a => (
               <button key={a} onClick={() => setAnioActual(a)}
                 style={{padding:'6px 14px',borderRadius:'20px',border:'1px solid #ddd',cursor:'pointer',fontWeight:600,fontSize:'0.82rem',
-                  background: anioActual === a ? '#2e7d32' : 'white',
+                  background: anioActual === a ? '#2e7d32' : '#f5f5f5',
                   color: anioActual === a ? 'white' : '#333'}}>
                 {a} año
               </button>
@@ -451,7 +451,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
                           <input type="number" min="1" max="10" step="0.5"
                             value={datos[campo.key] || ''}
                             onChange={e => setEstadoMateria(m.codigo, campo.key, e.target.value)}
-                            style={{width:'52px',padding:'4px 6px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem',textAlign:'center'}} />
+                            style={{width:'52px',padding:'4px 6px',borderRadius:'6px',border:'1px solid var(--border)',fontSize:'0.82rem',textAlign:'center',background:'var(--surface-2)',color:'var(--text-1)'}} />
                         </div>
                       ))}
                     </div>
@@ -461,7 +461,7 @@ export default function SeccionConfiguracion({ perfil, onBaja }) {
                       <label style={{fontSize:'0.8rem',color:'var(--text-2)'}}>Nota:</label>
                       <input type="number" min="1" max="10" step="0.5" value={datos.nota || ''}
                         onChange={e => setEstadoMateria(m.codigo, 'nota', e.target.value)}
-                        style={{width:'65px',padding:'4px 8px',borderRadius:'6px',border:'1px solid #ddd',fontSize:'0.82rem'}} />
+                        style={{width:'65px',padding:'4px 8px',borderRadius:'6px',border:'1px solid var(--border)',fontSize:'0.82rem',background:'var(--surface-2)',color:'var(--text-1)'}} />
                     </div>
                   )}
                 </div>

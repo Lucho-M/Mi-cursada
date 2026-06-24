@@ -412,7 +412,7 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
           ) : (
             <div className="card">
               <div className="table-head" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr 230px'}}>
-                <div>Materia</div><div>Dia</div><div>Horario</div><div>Aula</div><div>Comision</div><div>Acciones</div>
+                <div>Materia</div><div style={{textAlign:'center'}}>Dia</div><div style={{textAlign:'center'}}>Horario</div><div style={{textAlign:'center'}}>Aula</div><div style={{textAlign:'center'}}>Comision</div><div>Acciones</div>
               </div>
               {inscripciones.map(insc => (
                 <div key={insc.id} className="table-row" style={{gridTemplateColumns:'2fr 1fr 1fr 1fr 1fr 230px'}}>
@@ -420,10 +420,10 @@ export default function SeccionMaterias({ perfil, notasHistorial, setSeccion }) 
                     <div className="materia-name">{insc.materiaNombre}</div>
                     <div className="materia-code">{insc.sede || insc.modalidad || ''}</div>
                   </div>
-                  <div style={{fontSize:'0.82rem',textTransform:'capitalize'}}>{insc.dia || '-'}</div>
-                  <div style={{fontSize:'0.82rem'}}>{insc.horario || '-'}</div>
-                  <div style={{fontSize:'0.82rem'}}>{insc.aula || '-'}</div>
-                  <div style={{fontSize:'0.82rem'}}>{insc.comisionNumero || insc.comisionId ? 'Com. ' + (insc.comisionNumero || insc.comisionId) : '-'}</div>
+                  <div style={{fontSize:'0.82rem',textTransform:'capitalize',textAlign:'center'}}>{insc.dia || '-'}</div>
+                  <div style={{fontSize:'0.82rem',textAlign:'center'}}>{insc.horario || '-'}</div>
+                  <div style={{fontSize:'0.82rem',textAlign:'center'}}>{insc.aula || '-'}</div>
+                  <div style={{fontSize:'0.82rem',textAlign:'center'}}>{insc.comisionNumero || insc.comisionId ? 'Com. ' + (insc.comisionNumero || insc.comisionId) : '-'}</div>
                   <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
                     <button onClick={() => abrirDetalleMateria(insc)}
                       style={{background:'none',border:'none',cursor:'pointer',color:'#1565c0',fontSize:'0.78rem',fontWeight:600,whiteSpace:'nowrap'}}>
