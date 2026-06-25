@@ -1,0 +1,28 @@
+Tengo cargado en este proyecto el código de "Mi Cursada", un sistema de gestión académica que desarrollé para la materia Desarrollo de Software (2do cuatrimestre, UNAB). Necesito que me ayudes a preparar la presentación/defensa del proyecto frente al profesor y mis compañeros.
+
+CONTEXTO DEL PROYECTO:
+- Stack: React 18 + Vite en el frontend, Firebase (Authentication + Firestore) en el backend.
+- Patrón de diseño: Programación Orientada a Objetos — cada entidad (Usuario, Alumno, Profesor, AdminCentro, Materia, PlanEstudio, OfertaAcademica, Tarea, MensajeChat, etc.) tiene su propia clase en src/models/, con métodos toFirestore()/fromFirestore().
+- Tres roles de usuario con paneles distintos: Alumno, Profesor y Administrador (admin_centro), cada uno con su propio dashboard.
+- Es un proyecto en equipo (trabajé junto a una compañera), con historial de commits en Git que muestra la evolución y el trabajo colaborativo (incluyendo merges reales con resolución de conflictos).
+
+FUNCIONALIDADES PRINCIPALES A MOSTRAR:
+1. Autenticación con Firebase (registro, login, verificación de email, recupero de contraseña por DNI).
+2. Gestión académica: oferta académica por cuatrimestre, planes de estudio con correlativas, inscripción a comisiones, carga de notas por parcial.
+3. Panel del Alumno: sus materias, horarios, notas, correlativas, oferta académica completa (todas las carreras), parciales/TPs.
+4. Panel del Profesor: sus comisiones, alumnos inscriptos (con búsqueda por nombre), carga de notas, calendario y cronograma de clases.
+5. Panel del Administrador: importación masiva de oferta académica y planes de estudio (CSV/JSON), gestión de usuarios y roles, gestión de carreras y docentes.
+6. Chat en tiempo real por comisión, restringido por reglas de seguridad de Firestore a solo quienes están realmente inscriptos (alumno) o son el profesor de esa comisión.
+7. Tablero de tareas estilo Kanban, compartible entre compañeros.
+8. La app es instalable como PWA (Progressive Web App).
+9. Reglas de seguridad de Firestore (firestore.rules) que controlan qué puede leer/escribir cada rol.
+
+LO QUE NECESITO QUE ME AYUDES A ARMAR:
+1. Una estructura de presentación (slides) clara: problema que resuelve, objetivos, stack elegido y por qué, arquitectura (diagrama simple del flujo Auth → Panel → Secciones), demo en vivo, conclusiones y posibles mejoras futuras.
+2. Un guion para la demo en vivo: qué flujo mostrar primero (ej: login como alumno → inscribirse a una materia → ver oferta académica → mandar un mensaje en el chat → cambiar a profesor y cargar una nota), en qué orden, qué decir en cada paso.
+3. Una explicación breve y clara (para alguien no técnico) de por qué usé POO con clases por entidad, y qué ventaja le da al proyecto.
+4. Una explicación simple de cómo funcionan las reglas de seguridad de Firestore y por qué son importantes (sin que suene a clase de seguridad informática).
+5. Anticipar preguntas típicas que podría hacer el profesor (sobre arquitectura, decisiones de diseño, trabajo en equipo, qué harías diferente) y ayudarme a preparar respuestas cortas y seguras.
+6. Tres o cuatro "puntos fuertes" para destacar que distingan este proyecto de uno básico (ej: chat con reglas de seguridad reales, importación masiva de datos, trabajo colaborativo con control de versiones, PWA instalable).
+
+Quiero que la presentación sea clara, no demasiado técnica para la parte de audiencia general, pero que muestre profundidad cuando el profesor pregunte. Ayudame a armar esto paso a paso, empezando por la estructura general de slides.
