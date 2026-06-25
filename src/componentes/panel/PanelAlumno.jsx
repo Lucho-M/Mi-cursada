@@ -158,6 +158,7 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
   const [nuevoEvento, setNuevoEvento] = useState({ materiaId: '', tipo: 'Parcial', fecha: '', hora: '', aula: '', descripcion: '' });
   const [guardandoEvento, setGuardandoEvento] = useState(false);
   const [cronogramasPropios, setCronogramasPropios] = useState([]);
+  const [comisionCronogramaSel, setComisionCronogramaSel] = useState(null);
   const [diasAviso, setDiasAviso] = useState(perfil?.diasAvisoEventos ?? 3);
   const [guardandoDiasAviso, setGuardandoDiasAviso] = useState(false);
 
@@ -253,8 +254,8 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
         titulo: `${c.materiaNombre || insc?.materiaNombre || ''}: ${cl.fechaClave}`,
         tipo: inferirTipoEvento(cl.fechaClave),
         fecha: cl.fecha,
-        hora: '',
-        aula: insc?.aula || '',
+        hora: cl.horaEvento || insc?.horario || '',
+        aula: cl.aulaEvento || insc?.aula || '',
         materiaId: c.materiaId,
       }));
   });
@@ -776,6 +777,71 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
             </div>
           </div>
         )}
+      </>
+    );
+  }
+
+  // ── CRONOGRAMA (solo lectura) ─────────────────────────────────────
+  if (seccion === 'cronograma') {
+    const comisionesPropias = [...new Map(
+      inscripciones.filter(i => i.comisionId).map(i => [i.comisionId, i])
+    ).values()];
+    const cronogramaSel = comisionCronogramaSel
+      ? cronogramasPropios.find(c => c.id === comisionCronogramaSel.comisionId)
+      : null;
+    const clasesOrdenadas = cronogramaSel
+      ? [...(cronogramaSel.clases || [])].sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''))
+      : [];
+    return (
+      <>
+        <Topbar titulo="Cronograma" subtitulo={comisionCronogramaSel ? (comisionCronogramaSel.materiaNombre || comisionCronogramaSel.materiaId) : 'Selecciona una materia'} />
+        <div className="content">
+          <div className="section-head" style={{marginBottom:'12px'}}>
+            <h2>Selecciona una materia</h2>
+          </div>
+          <div style={{display:'flex',gap:'10px',flexWrap:'wrap',marginBottom:'24px'}}>
+            {comisionesPropias.map(insc => (
+              <button key={insc.comisionId}
+                onClick={() => setComisionCronogramaSel(insc)}
+                style={{padding:'8px 16px',borderRadius:'8px',border:'1px solid var(--border-2)',cursor:'pointer',
+                  background: comisionCronogramaSel?.comisionId === insc.comisionId ? '#2e7d32' : 'var(--surface-2)',
+                  color: comisionCronogramaSel?.comisionId === insc.comisionId ? 'white' : 'var(--text-1)',
+                  fontWeight: 600, fontSize:'0.85rem', textAlign:'center'}}>
+                {insc.materiaNombre || insc.materiaId} · Com. {insc.comisionNumero || insc.comisionId.slice(0,4)}
+              </button>
+            ))}
+          </div>
+
+          {!comisionCronogramaSel ? (
+            <div className="empty-state">
+              <div className="icon">🗓</div>
+              <p>Elegi una materia para ver su cronograma de clases.</p>
+            </div>
+          ) : (
+            <div className="card">
+              <div className="table-head cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 90px 90px 1fr'}}>
+                <div>Fecha</div><div>Unidad / Tema</div><div>Modalidad</div><div>Hora</div><div>Aula</div><div>Fecha clave</div>
+              </div>
+              {clasesOrdenadas.length === 0 ? (
+                <div className="empty-state">
+                  <div className="icon">🗓</div>
+                  <p>El profesor todavia no cargo el cronograma de esta materia.</p>
+                </div>
+              ) : (
+                clasesOrdenadas.map((c, i) => (
+                  <div key={i} className="table-row cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 90px 90px 1fr'}}>
+                    <div style={{fontSize:'0.85rem'}}>{c.fecha || '-'}</div>
+                    <div style={{fontSize:'0.85rem'}}>{c.tema || '-'}</div>
+                    <div style={{fontSize:'0.85rem',textTransform:'capitalize'}}>{c.modalidad || '-'}</div>
+                    <div style={{fontSize:'0.85rem'}}>{c.horaEvento || comisionCronogramaSel.horario || '-'}</div>
+                    <div style={{fontSize:'0.85rem'}}>{c.aulaEvento || comisionCronogramaSel.aula || '-'}</div>
+                    <div style={{fontSize:'0.85rem'}}>{c.fechaClave || '-'}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </>
     );
   }

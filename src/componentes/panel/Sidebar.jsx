@@ -11,6 +11,7 @@ const NAV_ALUMNO = [
   { seccion: 'notas',        label: 'Notas',         icon: '✎' },
   { grupo: 'Planificación' },
   { seccion: 'parciales',    label: 'Parciales',     icon: '📝' },
+  { seccion: 'cronograma',   label: 'Cronograma',    icon: '🗓' },
   { seccion: 'correlativas', label: 'Correlativas',  icon: '🔗' },
   { seccion: 'tareas',       label: 'Tareas',        icon: '🗂' },
   { seccion: 'chat',         label: 'Chat',          icon: '💬' },

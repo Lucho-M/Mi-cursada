@@ -8,7 +8,7 @@ class Cronograma {
     this.materiaId = materiaId;
     this.materiaNombre = materiaNombre;
     this.profesorUid = profesorUid;
-    this.clases = clases; // [{ fecha, tema, modalidad, fechaClave }]
+    this.clases = clases; // [{ fecha, tema, modalidad, fechaClave, horaEvento?, aulaEvento? }]
   }
 
   ordenarPorFecha() {

@@ -136,7 +136,27 @@ function PanelProfesor({ perfil, seccion }) {
     const comSnap = await getDocs(
       query(collection(db, 'comisiones'), where('profesorUid', '==', perfil.uid))
     );
-    setComisiones(comSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const comisionesData = comSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // El array 'alumnos' del documento de comisiones nunca se completa al
+    // inscribirse un alumno (la inscripcion real vive en 'inscripciones'),
+    // asi que lo calculamos aca para que el conteo en el Panel y en "Mis
+    // comisiones" sea real en vez de quedar siempre en 0.
+    const ids = comisionesData.map(c => c.id);
+    if (ids.length > 0) {
+      const porComision = {};
+      for (let i = 0; i < ids.length; i += 30) {
+        const tanda = ids.slice(i, i + 30);
+        const inscSnap = await getDocs(
+          query(collection(db, 'inscripciones'), where('comisionId', 'in', tanda))
+        );
+        inscSnap.docs.forEach(d => {
+          const data = d.data();
+          (porComision[data.comisionId] ||= []).push(data.alumnoUid);
+        });
+      }
+      comisionesData.forEach(c => { c.alumnos = porComision[c.id] || []; });
+    }
+    setComisiones(comisionesData);
   };
 
   useEffect(() => {
@@ -431,19 +451,20 @@ function PanelProfesor({ perfil, seccion }) {
   };
 
   const hoyStr = new Date().toISOString().split('T')[0];
-  const eventosCronogramaTodos = cronogramasPropios.flatMap(c =>
-    (c.clases || [])
+  const eventosCronogramaTodos = cronogramasPropios.flatMap(c => {
+    const com = comisiones.find(co => co.id === c.id);
+    return (c.clases || [])
       .filter(cl => cl.fechaClave)
       .map(cl => ({
         id: `cron_${c.id}_${cl.fecha}`,
         titulo: `${c.materiaNombre || ''}: ${cl.fechaClave}`,
         tipo: inferirTipoEvento(cl.fechaClave),
         fecha: cl.fecha,
-        hora: '',
-        aula: '',
+        hora: cl.horaEvento || com?.horario || '',
+        aula: cl.aulaEvento || com?.aula || '',
         materiaId: c.materiaId,
-      }))
-  );
+      }));
+  });
   const eventosCronograma = eventosCronogramaTodos.filter(ev => ev.fecha >= hoyStr);
 
   const materiaIdsPropias = new Set(comisiones.map(c => c.materiaId));
@@ -912,8 +933,8 @@ function PanelProfesor({ perfil, seccion }) {
               ) : (
                 <>
                   <div className="card">
-                    <div className="table-head cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 1fr 60px'}}>
-                      <div>Fecha</div><div>Unidad / Tema</div><div>Modalidad</div><div>Fecha clave</div><div>Acciones</div>
+                    <div className="table-head cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 90px 90px 1fr 60px'}}>
+                      <div>Fecha</div><div>Unidad / Tema</div><div>Modalidad</div><div>Hora</div><div>Aula</div><div>Fecha clave</div><div>Acciones</div>
                     </div>
                     {cronogramaClases.length === 0 ? (
                       <div className="empty-state">
@@ -922,7 +943,7 @@ function PanelProfesor({ perfil, seccion }) {
                       </div>
                     ) : (
                       cronogramaClases.map((c, i) => (
-                        <div key={i} className="table-row cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 1fr 60px'}}>
+                        <div key={i} className="table-row cronograma-profesor" style={{gridTemplateColumns:'150px 2fr 1fr 90px 90px 1fr 60px'}}>
                           <div>
                             <input type="date" value={c.fecha || ''} onChange={e => actualizarClaseCronograma(i, 'fecha', e.target.value)}
                               style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',background:'var(--surface-2)',color:'var(--text-1)'}} />
@@ -941,9 +962,19 @@ function PanelProfesor({ perfil, seccion }) {
                             </select>
                           </div>
                           <div>
+                            <input type="text" value={c.horaEvento || ''} onChange={e => actualizarClaseCronograma(i, 'horaEvento', e.target.value)}
+                              placeholder={cronogramaComSel?.horario || '-'}
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box',background:'var(--surface-2)',color:'var(--text-1)',textAlign:'center'}} />
+                          </div>
+                          <div>
+                            <input type="text" value={c.aulaEvento || ''} onChange={e => actualizarClaseCronograma(i, 'aulaEvento', e.target.value)}
+                              placeholder={cronogramaComSel?.aula || '-'}
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box',background:'var(--surface-2)',color:'var(--text-1)',textAlign:'center'}} />
+                          </div>
+                          <div>
                             <input type="text" value={c.fechaClave || ''} onChange={e => actualizarClaseCronograma(i, 'fechaClave', e.target.value)}
                               placeholder="-"
-                              style={{width:'180px',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box',background:'var(--surface-2)',color:'var(--text-1)',display:'block',margin:'0 auto',textAlign:'center'}} />
+                              style={{width:'100%',padding:'6px',borderRadius:'6px',border:'1px solid var(--border-2)',boxSizing:'border-box',background:'var(--surface-2)',color:'var(--text-1)',display:'block',margin:'0 auto',textAlign:'center'}} />
                           </div>
                           <div>
                             <button onClick={() => eliminarClaseCronograma(i)}
