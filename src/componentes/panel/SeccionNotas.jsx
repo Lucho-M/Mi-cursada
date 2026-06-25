@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, doc, setDoc, writeBatch } from 'firebase/firestore';
 
+// Las claves de parcial deben coincidir exactamente con las que usa el
+// profesor en PanelProfesor.jsx (misma coleccion 'notas', mismo docId
+// alumnoUid_materiaId_parcial) para que el alumno vea la nota que carga
+// el profesor en vez de un duplicado desconectado.
 const PARCIALES = [
-  { key: 'p1',    label: 'Parcial 1' },
-  { key: 'rec1',  label: 'Recup. P1' },
-  { key: 'p2',    label: 'Parcial 2' },
-  { key: 'rec2',  label: 'Recup. P2' },
+  { key: '1',    label: 'Parcial 1' },
+  { key: 'rec1', label: 'Recup. P1' },
+  { key: '2',    label: 'Parcial 2' },
+  { key: 'rec2', label: 'Recup. P2' },
   { key: 'final1', label: 'Final' },
 ];
 
@@ -15,8 +19,8 @@ function calcularEstado(notas) {
     const n = notas.find(n => n.parcial === key);
     return n && n.nota !== null && n.nota !== undefined ? Number(n.nota) : null;
   };
-  const p1 = get('rec1') !== null ? get('rec1') : get('p1');
-  const p2 = get('rec2') !== null ? get('rec2') : get('p2');
+  const p1 = get('rec1') !== null ? get('rec1') : get('1');
+  const p2 = get('rec2') !== null ? get('rec2') : get('2');
   const final = get('final1');
 
   if (p1 !== null && p2 !== null) {
@@ -131,16 +135,15 @@ export default function SeccionNotas({ perfil }) {
         const estado = calcularEstado(notasList);
         const docId = perfil.uid + '_' + insc.materiaId + '_historial';
         const notaFinal = notasList.find(n => n.parcial === 'final1');
-        const notaDefinitiva = notasList.find(n => n.parcial === 'rec1' || n.parcial === 'p1');
         batch.set(doc(db, 'notas', docId), {
           alumnoUid: perfil.uid,
           materiaId: insc.materiaId,
           tipo: 'historial',
           estado,
           nota: notaFinal?.nota || null,
-          p1: notasList.find(n => n.parcial === 'p1')?.nota || null,
+          p1: notasList.find(n => n.parcial === '1')?.nota || null,
           rec1: notasList.find(n => n.parcial === 'rec1')?.nota || null,
-          p2: notasList.find(n => n.parcial === 'p2')?.nota || null,
+          p2: notasList.find(n => n.parcial === '2')?.nota || null,
           rec2: notasList.find(n => n.parcial === 'rec2')?.nota || null,
           final: notaFinal?.nota || null,
         });

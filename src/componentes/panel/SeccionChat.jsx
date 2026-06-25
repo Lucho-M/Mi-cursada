@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { db } from '../../firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import ChatService from '../../services/ChatService';
 
 const chatService = new ChatService();
@@ -14,6 +14,8 @@ function horaDe(fecha) {
   return fecha.toDate().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 }
 
+const normTexto = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
 export default function SeccionChat({ perfil }) {
   const esProfesor = perfil?.rol === 'profesor';
   const [comisiones, setComisiones] = useState([]);
@@ -22,6 +24,7 @@ export default function SeccionChat({ perfil }) {
   const [mensajes, setMensajes] = useState([]);
   const [texto, setTexto] = useState('');
   const [enviando, setEnviando] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState('');
   const finRef = useRef(null);
 
   useEffect(() => {
@@ -35,14 +38,46 @@ export default function SeccionChat({ perfil }) {
             comisionId: d.id, materiaNombre: d.data().materiaNombre || d.data().materiaId, numero: d.data().numero,
           })));
         } else {
-          const snap = await getDocs(query(collection(db, 'inscripciones'), where('alumnoUid', '==', perfil.uid)));
+          const [inscSnap, comSnap] = await Promise.all([
+            getDocs(query(collection(db, 'inscripciones'), where('alumnoUid', '==', perfil.uid))),
+            getDocs(collection(db, 'comisiones')),
+          ]);
+          const todasComisiones = comSnap.docs.map(d => ({ id: d.id, ...d.data() }));
           const vistos = new Map();
-          snap.docs.forEach(d => {
+          for (const d of inscSnap.docs) {
             const data = d.data();
-            if (data.comisionId && !vistos.has(data.comisionId)) {
-              vistos.set(data.comisionId, { comisionId: data.comisionId, materiaNombre: data.materiaNombre, numero: data.comisionNumero });
+            if (!data.comisionId) continue;
+            // El profesor identifica su comision por el id real del documento
+            // en 'comisiones'. Si la inscripcion quedo con un comisionId viejo
+            // o desalineado, resolvemos el id canonico por materiaId+numero y
+            // reparamos la inscripcion para que vuelva a coincidir.
+            // Primero intenta por materiaId (codigo de asignatura); si no matchea
+            // (por ejemplo, la oferta tenia el codigo vacio de un lado y no del
+            // otro), cae a comparar por nombre de materia + numero de comision,
+            // que suele ser idéntico en ambos lados porque viene del mismo dato.
+            const canonica = todasComisiones.find(c =>
+              c.materiaId === data.materiaId && String(c.numero) === String(data.comisionNumero)
+            ) || todasComisiones.find(c =>
+              normTexto(c.materiaNombre) === normTexto(data.materiaNombre) && String(c.numero) === String(data.comisionNumero)
+            );
+            const comisionId = canonica ? canonica.id : data.comisionId;
+            const idCorrecto = perfil.uid + '_' + comisionId;
+            // No alcanza con corregir el campo comisionId: la regla de Firestore
+            // chequea exists() sobre el PATH del documento (uid_comisionId). Si
+            // la inscripcion es de antes de ese esquema (id viejo/random), el
+            // campo puede estar "bien" pero el documento sigue en otra ruta.
+            if (d.id !== idCorrecto) {
+              try {
+                await setDoc(doc(db, 'inscripciones', idCorrecto), { ...data, comisionId });
+                await deleteDoc(doc(db, 'inscripciones', d.id));
+              } catch (e) {
+                console.error('Error reparando inscripcion para el chat:', e);
+              }
             }
-          });
+            if (!vistos.has(comisionId)) {
+              vistos.set(comisionId, { comisionId, materiaNombre: data.materiaNombre, numero: data.comisionNumero });
+            }
+          }
           setComisiones([...vistos.values()]);
         }
       } catch (e) {
@@ -67,6 +102,7 @@ export default function SeccionChat({ perfil }) {
   const enviar = async () => {
     if (!texto.trim() || !comisionActiva) return;
     setEnviando(true);
+    setErrorEnvio('');
     try {
       await chatService.enviarMensaje({
         comisionId: comisionActiva.comisionId,
@@ -79,6 +115,11 @@ export default function SeccionChat({ perfil }) {
       setTexto('');
     } catch (e) {
       console.error('Error enviando mensaje:', e);
+      setErrorEnvio(
+        e.code === 'permission-denied'
+          ? 'No tenes permiso para escribir en este chat. Probá entrar de nuevo a Chat (esto repara tu inscripción) o avisale al profesor.'
+          : 'No se pudo enviar el mensaje. Probá de nuevo.'
+      );
     } finally {
       setEnviando(false);
     }
@@ -142,8 +183,13 @@ export default function SeccionChat({ perfil }) {
                 )}
                 <div ref={finRef} />
               </div>
+              {errorEnvio && (
+                <div style={{padding:'8px 16px',fontSize:'0.78rem',color:'var(--red)',background:'var(--red-dim)',borderTop:'1px solid var(--border)'}}>
+                  {errorEnvio}
+                </div>
+              )}
               <div className="chat-input-row">
-                <input type="text" value={texto} onChange={e => setTexto(e.target.value)}
+                <input type="text" value={texto} onChange={e => { setTexto(e.target.value); setErrorEnvio(''); }}
                   placeholder="Escribi un mensaje..."
                   onKeyDown={e => { if (e.key === 'Enter') enviar(); }} />
                 <button className="btn btn-primary" onClick={enviar} disabled={enviando || !texto.trim()}>

@@ -6,6 +6,7 @@ import SeccionMaterias from './SeccionMaterias';
 import SeccionConfiguracion from './SeccionConfiguracion';
 import SeccionTareas from './SeccionTareas';
 import SeccionChat from './SeccionChat';
+import SeccionOfertaAcademica from './SeccionOfertaAcademica';
 import SeccionNotas from './SeccionNotas';
 
 const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
@@ -491,6 +492,16 @@ function PanelAlumno({ perfil, seccion, setSeccion }) {
       <>
         <Topbar titulo="Mis materias" subtitulo={carreraActual} />
         <SeccionMaterias perfil={perfil} notasHistorial={notas} setSeccion={setSeccion} />
+      </>
+    );
+  }
+
+  // ── OFERTA ACADEMICA (todas las carreras, solo lectura) ──────────
+  if (seccion === 'oferta') {
+    return (
+      <>
+        <Topbar titulo="Oferta académica" subtitulo="Todas las carreras y comisiones del cuatrimestre" />
+        <SeccionOfertaAcademica />
       </>
     );
   }

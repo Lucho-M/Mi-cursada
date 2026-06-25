@@ -7,6 +7,7 @@ import ImportService from '../../services/ImportService';
 import SeccionConfiguracion from './SeccionConfiguracion';
 import SeccionTareas from './SeccionTareas';
 import SeccionChat from './SeccionChat';
+import SeccionOfertaAcademica from './SeccionOfertaAcademica';
 import CARRERAS_DISPONIBLES from '../../carrerasData';
 import { carreraEnOferta } from '../../utils/matchCarrera';
 import { slugTexto } from '../../utils/slugTexto';
@@ -34,6 +35,8 @@ function descargarPlantillaCronograma() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+const normTexto = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 const PARCIALES = [
   { key: '1',    label: 'Parcial 1' },
@@ -108,6 +111,7 @@ function PanelProfesor({ perfil, seccion }) {
   const [notas, setNotas] = useState({});
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState('');
+  const [filtroAlumno, setFiltroAlumno] = useState('');
 
   const [cronogramaComSel, setCronogramaComSel] = useState(null);
   const [cronogramaClases, setCronogramaClases] = useState([]);
@@ -581,76 +585,105 @@ function PanelProfesor({ perfil, seccion }) {
             ))}
           </div>
 
-          {comSeleccionada && (
+          {comSeleccionada && (() => {
+            const alumnosFiltrados = alumnos.filter(a => normTexto(a.nombre).includes(normTexto(filtroAlumno)));
+            return (
             <>
               {mensaje && (
                 <div style={{background:mensaje.startsWith('ok:')?'#e0ffe0':'#ffe0e0',color:mensaje.startsWith('ok:')?'#1a7a1a':'#c0392b',border:'1px solid '+(mensaje.startsWith('ok:')?'#2ecc71':'#e74c3c'),borderRadius:'8px',padding:'10px 14px',marginBottom:'14px',fontSize:'0.88rem'}}>
                   {mensaje.split(':')[1]}
                 </div>
               )}
-              <div className="card" style={{overflowX:'auto'}}>
-                <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.82rem'}}>
-                  <thead>
-                    <tr style={{background:'var(--surface-2)'}}>
-                      <th style={{padding:'10px 12px',textAlign:'left',fontWeight:600}}>Alumno</th>
-                      {PARCIALES.map(p => (
-                        <th key={p.key} style={{padding:'10px 8px',textAlign:'center',fontWeight:600,whiteSpace:'nowrap'}}>{p.label}</th>
-                      ))}
-                      <th style={{padding:'10px 12px',textAlign:'center',fontWeight:600}}>Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {alumnos.length === 0 ? (
-                      <tr><td colSpan={PARCIALES.length + 2} style={{textAlign:'center',padding:'24px',color:'#999'}}>
-                        No hay alumnos inscriptos en esta comision.
-                      </td></tr>
-                    ) : (
-                      alumnos.map(a => {
-                        const notasAlumno = notas[a.uid] || [];
-                        const estado = calcularEstado(notasAlumno);
-                        return (
-                          <tr key={a.uid} style={{borderBottom:'1px solid #f0f0f0'}}>
-                            <td style={{padding:'10px 12px'}}>
-                              <div style={{fontWeight:600}}>{a.nombre}</div>
-                              <div style={{fontSize:'0.75rem',color:'#999'}}>{a.email}</div>
-                            </td>
-                            {PARCIALES.map(p => {
-                              const notaObj = notasAlumno.find(n => n.parcial === p.key);
-                              return (
-                                <td key={p.key} style={{padding:'6px 8px',textAlign:'center',background:'var(--surface-2)',color:'var(--text-1)'}}>
-                                  {seccion === 'notas' ? (
-                                    <NotaInput
-                                      valor={notaObj?.nota ?? null}
-                                      onChange={val => actualizarNota(a.uid, p.key, val)}
-                                    />
-                                  ) : (
-                                    <span className={'nota-pill ' + (notaObj ? (Number(notaObj.nota) >= 4 ? 'nota-high' : 'nota-low') : 'nota-empty')}>
-                                      {notaObj ? notaObj.nota : '-'}
-                                    </span>
-                                  )}
-                                </td>
-                              );
-                            })}
-                            <td style={{padding:'10px 12px',textAlign:'center',background:'var(--surface-2)',color:'var(--text-1)'}}>
-                              <BadgeEstado estado={estado} />
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+              <div style={{marginBottom:'14px'}}>
+                <input type="text" placeholder="Buscar alumno por nombre..." value={filtroAlumno}
+                  onChange={e => setFiltroAlumno(e.target.value)}
+                  style={{padding:'8px 12px',borderRadius:'8px',border:'1px solid var(--border)',fontSize:'0.85rem',width:'280px',background:'var(--surface-2)',color:'var(--text-1)'}} />
               </div>
-              {seccion === 'notas' && (
-                <div style={{marginTop:'16px',textAlign:'right'}}>
-                  <button onClick={guardarNotas} disabled={guardando}
-                    style={{padding:'10px 24px',background:'#2e7d32',color:'white',border:'none',borderRadius:'8px',cursor:'pointer',fontWeight:600,fontSize:'0.9rem'}}>
-                    {guardando ? 'Guardando...' : 'Guardar notas'}
-                  </button>
+              {seccion === 'alumnos' ? (
+                <div className="card" style={{overflowX:'auto'}}>
+                  <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.82rem'}}>
+                    <thead>
+                      <tr style={{background:'var(--surface-2)'}}>
+                        <th style={{padding:'10px 12px',textAlign:'left',fontWeight:600}}>Alumno</th>
+                        <th style={{padding:'10px 12px',textAlign:'left',fontWeight:600}}>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {alumnosFiltrados.length === 0 ? (
+                        <tr><td colSpan={2} style={{textAlign:'center',padding:'24px',color:'#999'}}>
+                          {alumnos.length === 0 ? 'No hay alumnos inscriptos en esta comision.' : 'Ningun alumno coincide con la busqueda.'}
+                        </td></tr>
+                      ) : (
+                        alumnosFiltrados.map(a => (
+                          <tr key={a.uid} style={{borderBottom:'1px solid #f0f0f0'}}>
+                            <td style={{padding:'10px 12px',fontWeight:600}}>{a.nombre}</td>
+                            <td style={{padding:'10px 12px',color:'#999'}}>{a.email}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
+              ) : (
+                <>
+                  <div className="card" style={{overflowX:'auto'}}>
+                    <table style={{width:'100%',borderCollapse:'collapse',fontSize:'0.82rem'}}>
+                      <thead>
+                        <tr style={{background:'var(--surface-2)'}}>
+                          <th style={{padding:'10px 12px',textAlign:'left',fontWeight:600}}>Alumno</th>
+                          {PARCIALES.map(p => (
+                            <th key={p.key} style={{padding:'10px 8px',textAlign:'center',fontWeight:600,whiteSpace:'nowrap'}}>{p.label}</th>
+                          ))}
+                          <th style={{padding:'10px 12px',textAlign:'center',fontWeight:600}}>Estado</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {alumnosFiltrados.length === 0 ? (
+                          <tr><td colSpan={PARCIALES.length + 2} style={{textAlign:'center',padding:'24px',color:'#999'}}>
+                            {alumnos.length === 0 ? 'No hay alumnos inscriptos en esta comision.' : 'Ningun alumno coincide con la busqueda.'}
+                          </td></tr>
+                        ) : (
+                          alumnosFiltrados.map(a => {
+                            const notasAlumno = notas[a.uid] || [];
+                            const estado = calcularEstado(notasAlumno);
+                            return (
+                              <tr key={a.uid} style={{borderBottom:'1px solid #f0f0f0'}}>
+                                <td style={{padding:'10px 12px'}}>
+                                  <div style={{fontWeight:600}}>{a.nombre}</div>
+                                  <div style={{fontSize:'0.75rem',color:'#999'}}>{a.email}</div>
+                                </td>
+                                {PARCIALES.map(p => {
+                                  const notaObj = notasAlumno.find(n => n.parcial === p.key);
+                                  return (
+                                    <td key={p.key} style={{padding:'6px 8px',textAlign:'center',background:'var(--surface-2)',color:'var(--text-1)'}}>
+                                      <NotaInput
+                                        valor={notaObj?.nota ?? null}
+                                        onChange={val => actualizarNota(a.uid, p.key, val)}
+                                      />
+                                    </td>
+                                  );
+                                })}
+                                <td style={{padding:'10px 12px',textAlign:'center',background:'var(--surface-2)',color:'var(--text-1)'}}>
+                                  <BadgeEstado estado={estado} />
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{marginTop:'16px',textAlign:'right'}}>
+                    <button onClick={guardarNotas} disabled={guardando}
+                      style={{padding:'10px 24px',background:'#2e7d32',color:'white',border:'none',borderRadius:'8px',cursor:'pointer',fontWeight:600,fontSize:'0.9rem'}}>
+                      {guardando ? 'Guardando...' : 'Guardar notas'}
+                    </button>
+                  </div>
+                </>
               )}
             </>
-          )}
+            );
+          })()}
         </div>
       </>
     );
@@ -937,6 +970,15 @@ function PanelProfesor({ perfil, seccion }) {
             </>
           )}
         </div>
+      </>
+    );
+  }
+
+  if (seccion === 'oferta') {
+    return (
+      <>
+        {topbar('Oferta académica', 'Todas las carreras y comisiones del cuatrimestre')}
+        <SeccionOfertaAcademica />
       </>
     );
   }

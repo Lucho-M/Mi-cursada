@@ -848,6 +848,7 @@
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   overflow-y: auto;
 }
+.chat-list-pane > .empty-state { height: 100%; box-sizing: border-box; }
 .chat-list-item {
   padding: 12px 14px; border-bottom: 1px solid var(--border);
   cursor: pointer; transition: background var(--transition);
@@ -862,6 +863,7 @@
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   display: flex; flex-direction: column; overflow: hidden;
 }
+.chat-thread-pane > .empty-state { flex: 1; }
 .chat-thread-head {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
